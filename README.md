@@ -422,26 +422,18 @@ LIMIT 1;
 
 ## Limitations
 
-- **Hard SQL is still hard.** On Olist, nested queries, ratios and `HAVING` score far below simple questions (40% on "hard"). On the warehouse, "extra hard" is 33%.
-- **Small golden sets.** 27 to 49 scored questions per dataset gives wide confidence intervals. Results are not yet comparable with public leaderboards like Spider or BIRD.
-- **Latency.** Free-tier models and rate limits mean 15 to 30 seconds for a typical answer.
-- **Shared quotas.** API keys belong to the server, so all users share the same free limits.
-- **Trust is not truth.** The trust layer checks that the answer matches the rows, not that the SQL asked the right question. For example, an "unanswerable" Spotify-streams question was answered from invoice data; the trust score dropped to 15, but it still answered.
-- **No roles.** Every account is equal; there is no admin or viewer role yet.
-- **Two UIs.** The Streamlit app and the Next.js UI coexist while features move to Next.js.
+- **Complex SQL is the weak spot.** Nested queries, ratios and `HAVING` clauses score lowest (40% on "hard" Olist questions).
+- **Free models are slow.** A typical answer takes 15 to 30 seconds because of free-tier speed and rate limits.
+- **The trust score checks the answer, not the intent.** It proves the answer matches the returned rows, but not that the SQL asked the right question.
 
 ---
 
 ## Roadmap
 
+- [ ] **Plan-then-write SQL** for nested queries and ratios
+- [ ] **Intent checks** in the trust layer, so it also judges whether the SQL matches the question
+- [ ] **Spider / BIRD benchmark subset** for comparison with public results
 - [ ] **Live demo** with a sample database
-- [ ] **Bring your own API key** per account, stored encrypted
-- [ ] **Spider / BIRD benchmark subset** for public comparability
-- [ ] **CI** with GitHub Actions running the test suite and an eval quality gate on every push
-- [ ] **Better hard-query accuracy:** plan-then-write SQL for nested queries and ratios
-- [ ] **Semantic checks** so the trust layer also judges whether the SQL matches the intent
-- [ ] **Roles and sharing** for teams
-- [ ] **Single UI:** finish moving everything to Next.js
 
 ---
 
