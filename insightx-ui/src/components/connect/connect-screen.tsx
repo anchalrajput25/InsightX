@@ -42,6 +42,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DemoCard } from "@/components/connect/demo-card";
 import { useConnection } from "@/components/providers/connection-provider";
 import { connectionsApi } from "@/lib/api/connections";
 import { errorMessage } from "@/lib/api/client";
@@ -527,6 +528,7 @@ export function ConnectScreen() {
       />
       <div className="mt-6 space-y-6">
         {connection && !adding && <CurrentConnection connection={connection} onDisconnect={() => setConnection(null)} />}
+        {showForm && <DemoCard onConnected={(response, label) => onConnected(toConnection(response, label))} />}
         {showForm && (
           <Card>
             <CardHeader>
