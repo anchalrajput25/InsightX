@@ -1,0 +1,7 @@
+# Streamlit settings for InsightX (read when running `streamlit run app.py`
+# from the project folder).
+
+[server]
+# Maximum size of an uploaded file (the ZIP of CSV/Excel files), in MB.
+# Keep this in line with INSIGHTX_MAX_UPLOAD_MB on the backend (default 1024).
+maxUploadSize = 1024

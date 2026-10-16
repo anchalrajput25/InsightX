@@ -1,0 +1,36 @@
+# Run InsightX on your own computer with one command:
+#
+#   docker compose up --build
+#
+# then open http://localhost:7860. A PostgreSQL database is included:
+# it keeps accounts, chats, traces and saved answers, and you can import
+# uploaded files into it (host "db", database "insightx", user and
+# password "insightx").
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: insightx
+      POSTGRES_USER: insightx
+      POSTGRES_PASSWORD: insightx
+    volumes:
+      - insightx-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insightx"]
+      interval: 5s
+      retries: 20
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      INSIGHTX_APP_DB_URL: postgresql+psycopg2://insightx:insightx@db:5432/insightx
+    ports:
+      - "7860:7860"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  insightx-db:
