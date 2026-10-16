@@ -420,23 +420,6 @@ LIMIT 1;
 
 ---
 
-## Limitations
-
-- **Complex SQL is the weak spot.** Nested queries, ratios and `HAVING` clauses score lowest (40% on "hard" Olist questions).
-- **Free models are slow.** A typical answer takes 15 to 30 seconds because of free-tier speed and rate limits.
-- **The trust score checks the answer, not the intent.** It proves the answer matches the returned rows, but not that the SQL asked the right question.
-
----
-
-## Roadmap
-
-- [ ] **Plan-then-write SQL** for nested queries and ratios
-- [ ] **Intent checks** in the trust layer, so it also judges whether the SQL matches the question
-- [ ] **Spider / BIRD benchmark subset** for comparison with public results
-- [ ] **Live demo** with a sample database
-
----
-
 ## Contributing & License
 
 Contributions are welcome. Open an issue to discuss a bug or an idea, or send a pull request:
