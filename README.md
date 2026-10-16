@@ -133,31 +133,10 @@ See each of the 13 steps behind an answer: how the question was rewritten, which
 
 ## System Architecture
 
-```mermaid
-flowchart LR
-    U([User]) --> UI[Next.js UI]
-    U --> ST[Streamlit app]
-    UI -->|/api proxy| API[FastAPI]
-    ST --> API
-
-    subgraph Core["Backend"]
-        API --> AG[Text-to-SQL agent<br/>LangGraph]
-        API --> INV[Investigation engine]
-        API --> ALR[Alert scheduler]
-        API --> OPS[LLMOps<br/>capture, monitor, evals, routing]
-        AG --> TRUST[Trust layer<br/>claim verification]
-        AG --> SAFE[SQL safety<br/>sqlglot AST, read-only]
-        AG --> GW[AI gateway]
-        INV --> GW
-        OPS -. reorders models .-> GW
-    end
-
-    GW --> G1[Gemini]
-    GW --> G2[Groq]
-    GW --> G3[OpenRouter free]
-    SAFE --> DB[(Your database)]
-    API --> APP[(App store<br/>accounts, chats, traces,<br/>usage, evals)]
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/architecture-dark.png" />
+  <img src="docs/images/architecture-light.png" alt="InsightX system architecture: interfaces, API edge, 13-stage LangGraph agent, investigation engine, insight and visuals, alerting, trust and safety layer, knowledge layer, AI gateway, data plane and the LLMOps control loop" width="100%" />
+</picture>
 
 <details>
 <summary><strong>Repository layout</strong></summary>
