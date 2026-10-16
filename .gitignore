@@ -1,0 +1,50 @@
+# ---- Secrets: never upload ----
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# ---- Your own data and app storage ----
+logs/
+data/
+sample_datasets/
+temp_uploads/
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.sql.gz
+*.jsonl
+.insightx_threads/
+.insightx_threads.json
+.insightx_threads.imported
+
+# ---- Local helper files with passwords or machine details ----
+*.bat
+*_log.txt
+backend/text_to_sql/test_sql_validator.py
+backend/text_to_sql/test_query_executor.py
+IMPORT_DEPENDENCY_AUDIT.pdf
+_to_delete/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ---- Node / Next.js ----
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# ---- Editors and OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

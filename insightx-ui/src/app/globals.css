@@ -1,0 +1,378 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * InsightX Studio design tokens.
+ * Neutral surfaces, one cool accent, and colour used only for meaning
+ * (good / warning / critical / up / down). Dark is the default theme.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.985 0.002 260);
+  --foreground: oklch(0.2 0.006 265);
+  --surface: oklch(0.97 0.003 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.006 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.006 265);
+  --primary: oklch(0.52 0.16 262);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.955 0.004 260);
+  --secondary-foreground: oklch(0.25 0.006 265);
+  --muted: oklch(0.955 0.004 260);
+  --muted-foreground: oklch(0.5 0.012 265);
+  --accent: oklch(0.945 0.008 262);
+  --accent-foreground: oklch(0.22 0.01 265);
+  --destructive: oklch(0.58 0.2 25);
+  --border: oklch(0.91 0.004 260);
+  --input: oklch(0.9 0.004 260);
+  --ring: oklch(0.52 0.16 262 / 0.45);
+
+  --success: oklch(0.6 0.14 155);
+  --warning: oklch(0.72 0.15 75);
+  --critical: oklch(0.6 0.2 25);
+  --info: oklch(0.6 0.13 245);
+
+  --chart-1: oklch(0.58 0.16 262);
+  --chart-2: oklch(0.65 0.12 190);
+  --chart-3: oklch(0.72 0.14 75);
+  --chart-4: oklch(0.62 0.16 320);
+  --chart-5: oklch(0.6 0.13 150);
+  --chart-grid: oklch(0.92 0.004 260);
+  --chart-axis: oklch(0.55 0.01 265);
+
+  --sidebar: oklch(0.975 0.003 260);
+  --sidebar-foreground: oklch(0.3 0.008 265);
+  --sidebar-border: oklch(0.92 0.004 260);
+  --sidebar-active: oklch(0.93 0.008 262);
+
+  --glow: oklch(0.52 0.16 262 / 0.22);
+  --glow-2: oklch(0.65 0.12 190 / 0.18);
+  --edge: oklch(1 0 0 / 0.7);
+}
+
+.dark {
+  --background: oklch(0.142 0.007 268);
+  --foreground: oklch(0.96 0.003 260);
+  --surface: oklch(0.168 0.008 268);
+  --card: oklch(0.178 0.009 268);
+  --card-foreground: oklch(0.96 0.003 260);
+  --popover: oklch(0.205 0.005 265);
+  --popover-foreground: oklch(0.96 0.003 260);
+  --primary: oklch(0.74 0.14 268);
+  --primary-foreground: oklch(0.16 0.02 268);
+  --secondary: oklch(0.235 0.005 265);
+  --secondary-foreground: oklch(0.94 0.003 260);
+  --muted: oklch(0.225 0.005 265);
+  --muted-foreground: oklch(0.68 0.01 265);
+  --accent: oklch(0.25 0.008 265);
+  --accent-foreground: oklch(0.97 0.003 260);
+  --destructive: oklch(0.65 0.19 25);
+  --border: oklch(1 0 0 / 0.075);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.72 0.12 262 / 0.5);
+
+  --success: oklch(0.72 0.15 155);
+  --warning: oklch(0.8 0.14 78);
+  --critical: oklch(0.68 0.19 25);
+  --info: oklch(0.72 0.12 245);
+
+  --chart-1: oklch(0.72 0.12 262);
+  --chart-2: oklch(0.74 0.1 190);
+  --chart-3: oklch(0.8 0.13 78);
+  --chart-4: oklch(0.72 0.13 320);
+  --chart-5: oklch(0.72 0.13 150);
+  --chart-grid: oklch(1 0 0 / 0.06);
+  --chart-axis: oklch(0.62 0.01 265);
+
+  --sidebar: oklch(0.128 0.007 268);
+  --sidebar-foreground: oklch(0.82 0.006 265);
+  --sidebar-border: oklch(1 0 0 / 0.06);
+  --sidebar-active: oklch(1 0 0 / 0.07);
+
+  --glow: oklch(0.74 0.14 268 / 0.35);
+  --glow-2: oklch(0.78 0.12 200 / 0.25);
+  --edge: oklch(1 0 0 / 0.06);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-critical: var(--critical);
+  --color-info: var(--info);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-active: var(--sidebar-active);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01", "tnum" 0;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 30%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 18%, transparent) transparent;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/*
+ * Motion and surface effects, in the style of 21st.dev components
+ * (Aurora background, grid pattern, spotlight card, border beam, blur fade,
+ * animated gradient text). Written in plain CSS so no extra packages are needed.
+ */
+@property --fx-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes fx-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes fx-spin {
+  to {
+    --fx-angle: 360deg;
+  }
+}
+@keyframes fx-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, -4%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-4%, 5%, 0) scale(0.96);
+  }
+}
+@keyframes fx-shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+@keyframes fx-sheen {
+  from {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-20deg);
+  }
+}
+
+@layer utilities {
+  /* Blur fade: content rises in softly. Use --d for a delay. */
+  .fx-enter {
+    animation: fx-enter 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .fx-stagger > * {
+    animation: fx-enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .fx-stagger > *:nth-child(2) { animation-delay: 50ms; }
+  .fx-stagger > *:nth-child(3) { animation-delay: 100ms; }
+  .fx-stagger > *:nth-child(4) { animation-delay: 150ms; }
+  .fx-stagger > *:nth-child(5) { animation-delay: 200ms; }
+  .fx-stagger > *:nth-child(6) { animation-delay: 250ms; }
+  .fx-stagger > *:nth-child(n + 7) { animation-delay: 300ms; }
+
+  /* Headline text with a soft vertical fade. */
+  .fx-title {
+    background: linear-gradient(180deg, var(--foreground) 30%, color-mix(in oklch, var(--foreground) 62%, transparent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Animated gradient text for hero words. */
+  .fx-gradient-text {
+    background: linear-gradient(90deg, var(--chart-1), var(--chart-2), var(--chart-4), var(--chart-1));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: fx-shimmer 6s linear infinite;
+  }
+
+  /* Grid pattern that fades out towards the edges. */
+  .fx-grid {
+    background-image:
+      linear-gradient(var(--chart-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--chart-grid) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 75%);
+  }
+  .fx-dots {
+    background-image: radial-gradient(color-mix(in oklch, var(--foreground) 14%, transparent) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent 80%);
+  }
+
+  /* Raised surface: thin top highlight and a soft lift on hover. */
+  .fx-surface {
+    background-image: linear-gradient(180deg, color-mix(in oklch, var(--foreground) 2.5%, transparent), transparent 60%);
+    box-shadow:
+      inset 0 1px 0 0 var(--edge),
+      0 1px 2px rgb(0 0 0 / 0.08);
+  }
+
+  /* Spotlight: a glow that follows the pointer (see SpotlightCard). */
+  .fx-spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .fx-spotlight::before,
+  .fx-spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .fx-spotlight::before {
+    z-index: -1;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), color-mix(in oklch, var(--primary) 10%, transparent), transparent 45%);
+  }
+  .fx-spotlight::after {
+    inset: -1px;
+    padding: 1px;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), color-mix(in oklch, var(--primary) 70%, transparent), transparent 50%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+  .fx-spotlight:hover::before,
+  .fx-spotlight:hover::after {
+    opacity: 1;
+  }
+
+  /* Border beam: a light that travels around the border. */
+  .fx-beam {
+    position: relative;
+  }
+  .fx-beam::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: conic-gradient(from var(--fx-angle), transparent 0 62%, var(--chart-2) 76%, var(--primary) 88%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    animation: fx-spin 3.5s linear infinite;
+  }
+
+  /* Sheen that sweeps across a primary button on hover. */
+  .fx-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .fx-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    pointer-events: none;
+  }
+  .fx-sheen:hover::after {
+    animation: fx-sheen 0.8s ease-out;
+  }
+
+  /* Soft coloured glow behind an element. */
+  .fx-glow {
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 35%, transparent), 0 8px 40px -12px var(--glow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-gradient-text,
+  .fx-beam::after,
+  .fx-aurora-blob {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
