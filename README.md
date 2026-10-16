@@ -1,190 +1,290 @@
 <div align="center">
 
-# InsightX
+<img src="docs/images/banner.png" alt="InsightX: ask your database anything in plain English and get the SQL, the answer, and proof it is true" width="100%" />
 
-**Ask your database a question in plain English. Get the SQL, the answer, a chart, and proof the answer is true.**
+<br />
 
-An AI data analyst that turns questions into safe, read-only SQL, checks its own answers for hallucinations, explains *why* a number changed, and measures itself with an evaluation and LLMOps layer. It runs on free LLMs only.
+<img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />&nbsp;
+<img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />&nbsp;
+<img src="https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" alt="LangGraph" />&nbsp;
+<img src="https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />&nbsp;
+<img src="https://img.shields.io/badge/tests-390%2B_passing-2ea44f?style=for-the-badge" alt="Tests" />&nbsp;
+<img src="https://img.shields.io/badge/LLMs-free_tier_only-8B5CF6?style=for-the-badge" alt="Free LLMs" />
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)
-![LangGraph](https://img.shields.io/badge/LangGraph-agent-1C3C3C)
-![Next.js](https://img.shields.io/badge/Next.js_15-UI-000000?logo=nextdotjs&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-MySQL_|_SQL_Server_|_SQLite-4169E1?logo=postgresql&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-390%2B_passing-2ea44f)
-![LLMs](https://img.shields.io/badge/LLMs-Gemini_|_Groq_|_OpenRouter_(free)-8A2BE2)
+<br />
 
-[Features](#features) · [How it works](#how-it-works) · [Accuracy](#accuracy) · [LLMOps](#llmops-measuring-the-ai) · [Quick start](#quick-start) · [Tech stack](#tech-stack)
-
-<img src="docs/images/ask-answer.png" alt="InsightX answering 'revenue by region' with a trust score, chart, SQL and follow-up questions" width="900">
+<a href="#visual-demo">Demo</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#key-features">Features</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#system-architecture">Architecture</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#evaluation--benchmarks">Benchmarks</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#installation--quick-start">Quick Start</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#engineering-highlights">Engineering</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#limitations">Limitations</a>
 
 </div>
 
 ---
 
-## Why InsightX
+# InsightX
 
-Most Text-to-SQL demos stop at "the model wrote some SQL". In real work that is not enough:
+**An AI data analyst that turns plain-English questions into safe, read-only SQL, verifies every answer against the real rows, explains *why* a metric changed, and measures its own accuracy with a built-in LLMOps layer.**
 
-- **Is the answer true?** LLMs confidently state numbers that are not in the data.
-- **Is the SQL safe?** A wrong query must never change or delete data.
-- **Why did it change?** People don't just want "revenue fell 8%", they want the reason.
-- **Is it getting better or worse?** Without evaluation you can't tell if a prompt or model change broke something.
+> 92.6% execution accuracy on a 108-table warehouse, 100% of destructive requests blocked, 100% of unanswerable questions declined. All on free LLMs.
 
-InsightX is built around those four questions.
+---
 
-## Features
+## Visual Demo
 
-| | Feature | What it does |
-|---|---|---|
-| **Ask** | Text-to-SQL agent | A 13-step LangGraph pipeline: rewrites the question, finds the right tables with hybrid search and GraphRAG, writes several SQL candidates, checks and fixes them, runs the best one. |
-| | Trust score | Every answer gets a 0 to 100 trust score. Numbers and names in the answer are checked against the real result rows. |
-| | Auto charts | Picks a chart type that fits the result (bar, line, pie, table). |
-| | Ask next | Suggests follow-up questions you can click. |
-| **Investigate** | "Why did X change?" | Compares periods, breaks the change down by every dimension, checks seasonality and last year, and writes the **real reason** with evidence. |
-| **Safety** | Read-only by design | SQL is parsed with `sqlglot`; anything that is not a single `SELECT` is blocked. Queries run in read-only transactions with timeouts and row limits. |
-| **Dashboard** | Whole-database overview | Table sizes and automatic charts with no AI calls. Type "sales by month as a line" to add your own chart. |
-| **Alerts** | Smart anomaly alerts | Robust trend + weekday/seasonal habits + MAD spread. Back-tests an alert before you save it. Slack, Discord, Teams or email. |
-| **Pipeline** | See every step | Watch each of the 13 stages run, with timings, tables found and SQL written. |
-| **Traces** | Waterfall timeline | Every run is traced: steps, AI calls, tokens and database queries. |
-| **LLMOps** | Monitor, Evals, Hallucination, Quality, Smart routing | Live SLOs and error budgets, a golden-set evaluation harness with a quality gate, hallucination checks with an optional AI judge, a feedback loop that turns fixes into tests, and a router that picks the best free model per question. |
-| **Platform** | Accounts and history | Sign-up and login, private chats, connections and history per account, per-user daily limits. |
-| | Many databases | PostgreSQL, MySQL/MariaDB, SQL Server, SQLite, and CSV/Excel upload (loaded fast with DuckDB). |
+<div align="center">
 
-## Screenshots
+<img src="docs/images/demo.gif" alt="InsightX demo: an answer with trust score and chart, an investigation, the 13-step pipeline, a hallucination check and a trace" width="100%" />
+
+<sub>Ask a question &rarr; investigate a change &rarr; watch the pipeline &rarr; check for hallucinations &rarr; read the trace</sub>
+
+</div>
+
+---
+
+## Problem Statement
+
+Business teams sit on top of databases they can't query. Text-to-SQL tools promise a fix, but in practice they fail in four ways:
+
+| The problem | What usually happens | What InsightX does |
+|:---|:---|:---|
+| **Answers can't be trusted** | The LLM states a number that is not in the result | Every number and name in the answer is checked against the returned rows and scored 0 to 100 |
+| **SQL can be dangerous** | A prompt like "delete old orders" reaches the database | SQL is parsed into an AST and only a single `SELECT` can run, inside a read-only transaction with a timeout |
+| **"What" without "why"** | "Revenue fell 7.9%" and nothing more | An investigation engine breaks the change down by every dimension and states the real reason with evidence |
+| **No way to know if it is getting worse** | Prompt or model changes silently break answers | Golden-set evals, a quality gate, live SLOs and a feedback loop that turns every fixed answer into a regression test |
+
+---
+
+## Key Features
 
 <table>
 <tr>
-<td width="50%"><b>Investigation: the real reason behind a change</b><br><img src="docs/images/investigation.png" alt="Investigation view showing the real reason revenue dropped"></td>
-<td width="50%"><b>Pipeline: every step behind an answer</b><br><img src="docs/images/pipeline.png" alt="Pipeline view with the 13 stages and timings"></td>
+<td width="50%" valign="top">
+
+### Verified answers, not guesses
+
+A 13-step LangGraph agent writes several SQL candidates, validates and self-corrects them, and runs the best one. A **trust layer** then checks each claim in the answer against the real rows and shows a trust score, the SQL, a chart and follow-up questions.
+
+</td>
+<td width="50%">
+
+<img src="docs/images/ask-answer.png" alt="Answer with trust score, chart and follow-ups" width="100%" />
+
+</td>
 </tr>
 <tr>
-<td width="50%"><b>Hallucination check on a single answer</b><br><img src="docs/images/hallucination-check.png" alt="Answer check panel flagging a number and a name that are not in the result"></td>
-<td width="50%"><b>Traces: waterfall of one run</b><br><img src="docs/images/traces.png" alt="Trace waterfall with steps and database queries"></td>
+<td width="50%" valign="top">
+
+### "Why did it change?" investigations
+
+Compares periods, splits the change across every dimension, checks seasonality and last year, separates volume from value, and writes the **real reason** in one sentence, backed by the numbers.
+
+</td>
+<td width="50%">
+
+<img src="docs/images/investigation.png" alt="Investigation showing the real reason revenue dropped" width="100%" />
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Hallucination detection
+
+Rule-based grounding checks on every answer with no extra AI calls: numbers or names not in the result, claims about empty results, wrong "top N", wrong highest or lowest, wrong row counts and join fan-out. An optional AI judge reviews one answer on demand.
+
+</td>
+<td width="50%">
+
+<img src="docs/images/hallucination-check.png" alt="Answer check flagging an invented number and name" width="100%" />
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Glass-box pipeline and tracing
+
+See each of the 13 steps behind an answer: how the question was rewritten, which tables were found, the SQL candidates, and where the time went. Every run is traced as a waterfall of steps, AI calls and database queries.
+
+</td>
+<td width="50%">
+
+<img src="docs/images/pipeline.png" alt="Pipeline view with 13 stages" width="100%" />
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### LLMOps built in
+
+**Monitor** (SLOs, error budget, incident detection), **Evals** (golden sets, run comparison, quality gate), **Quality** (review, fix, promote to test) and **Smart routing** (pick the best free model per question by measured accuracy, speed and quota left).
+
+</td>
+<td width="50%">
+
+<img src="docs/images/evals.png" alt="Evaluation report with quality gate" width="100%" />
+
+</td>
 </tr>
 </table>
 
-**Evals: a report with its quality gate**
+**Also included:** auto charts &bull; whole-database dashboard &bull; "make a chart of X by Y" &bull; anomaly alerts with back-testing (Slack, Discord, Teams, email) &bull; accounts with private chats and history &bull; PostgreSQL, MySQL, SQL Server, SQLite and CSV/Excel upload &bull; Docker
 
-<img src="docs/images/evals.png" alt="Evaluation report with accuracy ring and quality gate" width="900">
+---
 
-## How it works
-
-### Architecture
+## System Architecture
 
 ```mermaid
 flowchart LR
-    U[User] --> UI[Next.js UI<br/>InsightX Studio]
+    U([User]) --> UI[Next.js UI]
     U --> ST[Streamlit app]
-    UI -->|/api| API[FastAPI backend]
+    UI -->|/api proxy| API[FastAPI]
     ST --> API
 
-    subgraph Backend
+    subgraph Core["Backend"]
         API --> AG[Text-to-SQL agent<br/>LangGraph]
         API --> INV[Investigation engine]
-        API --> ALR[Alerts scheduler]
-        API --> OPS[LLMOps<br/>monitor, evals, routing]
+        API --> ALR[Alert scheduler]
+        API --> OPS[LLMOps<br/>capture, monitor, evals, routing]
+        AG --> TRUST[Trust layer<br/>claim verification]
+        AG --> SAFE[SQL safety<br/>sqlglot AST, read-only]
         AG --> GW[AI gateway]
         INV --> GW
-        OPS -.routes.-> GW
-        AG --> SAFE[SQL safety<br/>sqlglot, read-only]
+        OPS -. reorders models .-> GW
     end
 
-    GW --> M1[Gemini]
-    GW --> M2[Groq]
-    GW --> M3[OpenRouter free]
-    SAFE --> DB[(Your database<br/>Postgres, MySQL,<br/>SQL Server, SQLite)]
-    API --> APPDB[(App store<br/>accounts, chats,<br/>traces, evals)]
+    GW --> G1[Gemini]
+    GW --> G2[Groq]
+    GW --> G3[OpenRouter free]
+    SAFE --> DB[(Your database)]
+    API --> APP[(App store<br/>accounts, chats, traces,<br/>usage, evals)]
 ```
 
-### The question pipeline
+<details>
+<summary><strong>Repository layout</strong></summary>
+<br />
+
+```
+InsightX/
+├── backend/
+│   ├── text_to_sql/     # LangGraph agent: rewrite, retrieval, GraphRAG, SQL, safety, correction, trust
+│   ├── investigation/   # "Why did it change?" planner, engine, reasons, narrative
+│   ├── ai_gateway/      # Free-model gateway: tiers, failover, limits, cooldowns, usage ledger
+│   ├── llmops/          # Answer capture, hallucination checks, monitor, evals, smart routing
+│   ├── alerting/        # Anomaly detection, scheduler, notifications
+│   ├── evaluation/      # Benchmark harness and golden question sets
+│   ├── auth/            # Accounts, PBKDF2 passwords, signed tokens
+│   └── tests/           # pytest suite
+├── insightx-ui/         # Next.js 15 UI
+├── app.py               # Streamlit app
+├── Dockerfile
+└── docker-compose.yml
+```
+
+</details>
+
+---
+
+## How It Works
 
 ```mermaid
 flowchart TD
-    Q[Question] --> C{Seen before?}
-    C -->|yes| ANS
-    C -->|no| RW[1. Rewrite and resolve follow-ups]
-    RW --> DC[2. Split into sub-questions]
-    DC --> HR[3. Hybrid retrieval<br/>BM25 + embeddings + RRF]
-    HR --> GR[4. GraphRAG over foreign keys]
-    GR --> SL[5. Schema linking]
-    SL --> GEN[6. Several SQL candidates]
-    GEN --> SF[7. Safety check]
-    SF --> VAL[8. Validate against schema]
-    VAL -->|error| FIX[9. Self-correction]
-    FIX --> VAL
-    VAL --> EX[10. Run read-only]
-    EX --> RV[11. Result sanity checks]
-    RV --> ANS[12. Answer, chart, follow-ups]
-    ANS --> TR[13. Trust score and claim check]
+    Q[Question] --> C{Seen a similar<br/>question before?}
+    C -->|yes| OUT
+    C -->|no| S1[1. Rewrite: resolve follow-ups and vague words]
+    S1 --> S2[2. Decompose into sub-questions]
+    S2 --> S3[3. Hybrid retrieval: BM25 + embeddings, fused with RRF]
+    S3 --> S4[4. GraphRAG: expand along foreign keys]
+    S4 --> S5[5. Schema linking: map words to columns]
+    S5 --> S6[6. Generate SQL candidates]
+    S6 --> S7[7. Safety: AST check, single SELECT only]
+    S7 --> S8[8. Validate against the schema]
+    S8 -->|error| S9[9. Self-correct]
+    S9 --> S8
+    S8 --> S10[10. Execute read-only with timeout and row cap]
+    S10 --> S11[11. Sanity-check the result]
+    S11 --> OUT[12. Answer, chart, follow-ups]
+    OUT --> S13[13. Trust score: verify every claim]
 ```
 
-### The AI gateway
+1. **Understand.** The question is rewritten with chat context ("and in 2023?") and split into sub-questions when needed.
+2. **Find the right tables.** Hybrid search combines BM25 (with camelCase and snake_case splitting) and `all-MiniLM-L6-v2` embeddings using Reciprocal Rank Fusion. GraphRAG then pulls in the tables needed for joins.
+3. **Write the SQL.** Several candidates are generated; simple questions use one to save quota. Each is parsed, checked for safety and validated against the real schema. Errors go back to the model for correction.
+4. **Run it safely.** Only one `SELECT` is allowed. It runs in a read-only transaction with a statement timeout and a row cap.
+5. **Prove it.** The answer is written from the rows, then every number and name in it is matched back to the result. The trust score drops for each claim that can't be found.
 
-All model calls go through one gateway, so the rest of the code never talks to a provider directly.
+All model calls go through one **AI gateway** with three tiers (`light`, `sql`, `heavy`), per-model failover, free-limit tracking (per minute and per day) and a cooldown when a quota runs out.
 
-- **Tiers:** `light` (rewriting, follow-ups), `sql` (SQL writing), `heavy` (repairs and investigations). Each tier has an ordered list of free models.
-- **Failover:** if a model errors or hits its limit, the next one is tried, then the next tier.
-- **Free-limit aware:** tracks per-minute and daily limits, and puts a model on cooldown when its quota runs out.
-- **Usage ledger:** every call is logged with model, tokens, time and user, which feeds the Monitor and AI usage pages.
+---
 
-## Accuracy
+## Tech Stack
 
-Measured with the built-in evaluation harness (`python -m backend.evaluation`) on golden question sets with known-correct SQL. A question counts as correct when the result rows match.
+| Purpose | Tools |
+|:---|:---|
+| **Agent orchestration** | LangGraph, LangChain Core |
+| **LLM access** | LiteLLM over Google Gemini, Groq and OpenRouter (free tiers only) |
+| **Retrieval** | BM25, Sentence Transformers (`all-MiniLM-L6-v2`), Reciprocal Rank Fusion, GraphRAG |
+| **SQL and data** | SQLAlchemy, sqlglot, DuckDB, pandas |
+| **Databases** | PostgreSQL, MySQL/MariaDB, SQL Server, SQLite |
+| **Backend API** | FastAPI, Pydantic, Uvicorn |
+| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Recharts, TanStack Query |
+| **Security** | PBKDF2-SHA256 (600k iterations), HMAC-signed tokens, Fernet-encrypted saved credentials |
+| **Quality** | pytest (390+ tests), golden-set evaluation harness, tracing |
+| **Deployment** | Docker, Docker Compose |
+
+---
+
+## Evaluation & Benchmarks
+
+### Test setup
+
+- **Harness:** `python -m backend.evaluation run`, built into the project and also runnable from the Evals page.
+- **Metric:** *execution accuracy*: the predicted SQL's result rows must match the hand-written correct SQL's rows.
+- **Golden sets:** questions tagged by difficulty and skill (joins, ranking, ratios, follow-ups), plus **unanswerable** questions that must be declined and **destructive** requests that must be blocked.
+- **Datasets:**
+  - **Warehouse:** 108 tables from four classic schemas (AdventureWorks, Pagila, Northwind, Chinook) in one database, to test table retrieval at scale.
+  - **Olist:** a real Brazilian e-commerce dataset.
+- **Models:** free tiers only (Gemini, Groq, OpenRouter), one run each, with 95% Wilson confidence intervals.
+
+### Results
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/benchmark-dark.svg">
-  <img src="docs/images/benchmark-light.svg" alt="Execution accuracy by difficulty. Olist: easy 92.3%, medium 95.5%, hard 40%, extra hard 0%. Warehouse: easy 100%, medium 100%, hard 100%, extra hard 33.3%." width="880">
+  <img src="docs/images/benchmark-light.svg" alt="Execution accuracy by difficulty. Olist: easy 92.3%, medium 95.5%, hard 40%, extra hard 0%. Warehouse: easy 100%, medium 100%, hard 100%, extra hard 33.3%." width="100%">
 </picture>
 
-| Dataset | Tables | Questions | Execution accuracy | Unanswerable questions declined | Destructive requests blocked | Answer faithfulness |
-|---|---|---|---|---|---|---|
-| Warehouse (AdventureWorks, Pagila, Northwind, Chinook in one database) | 108 | 27 | **92.6%** (95% CI 76.6 to 97.9) | 100% | 100% | 100% |
-| Olist e-commerce | 9 | 49 | **75.5%** (95% CI 61.9 to 85.4) | 100% | 100% | 100% |
+| Metric | Warehouse (108 tables) | Olist |
+|:---|:---:|:---:|
+| **Execution accuracy** | **92.6%** (CI 76.6 to 97.9) | **75.5%** (CI 61.9 to 85.4) |
+| Retrieval recall (right tables found) | 97.2% | 100% |
+| Answer faithfulness (numbers found in result) | 100% | 100% |
+| Unanswerable questions declined | 100% | 100% |
+| Destructive requests blocked | 100% | 100% |
+| Accuracy when trust is "high" | 96.2% | 100% |
+| Latency p50 / p95 | 16.6 s / 26.7 s | 30.5 s / 73.8 s |
+| LLM calls per question | 6.1 | 4.6 |
+| Cost per question | $0.00 | $0.001 |
 
-All runs used free models only. The weak spots are honest and visible: nested queries, ratios and `HAVING` on Olist. The Evals page tracks these by tag so improvements and regressions show up run by run.
+**What the numbers say:** the trust score is well calibrated, since high-trust answers are right 96 to 100% of the time. The weak spots are nested queries, ratios and `HAVING` on Olist; see [Limitations](#limitations).
 
-## LLMOps: measuring the AI
+---
 
-Five pages in the **LLMOps** section of the sidebar.
+## Installation & Quick Start
 
-- **Monitor:** questions, success rate, p50/p95 answer time, model errors, hallucination rate, cache hits and tokens. SLOs with an error budget, and automatic incident detection (median + 3 MAD).
-- **Evals:** run golden sets from the UI, compare two runs (regressions and fixes), and set a **quality gate** (minimum accuracy, faithfulness, safety, maximum latency).
-- **Hallucination:** every answer is checked without extra AI calls: numbers and names not in the result, claims about empty results, wrong "top N", wrong highest/lowest, wrong row counts and join fan-out. An optional AI judge can review one answer on demand.
-- **Quality:** rate answers, review weak ones, fix the SQL, test it, then **promote it to a golden test** so it can never silently break again.
-- **Smart routing:** scores each free model by measured accuracy, success rate, speed and free quota left, weighted by question difficulty. Modes: off, shadow (log only) and on.
-
-## Quick start
-
-### 1. Requirements
-
-- Python 3.11+
-- Node.js 20+ (for the new UI)
-- A database to ask questions about (PostgreSQL, MySQL, SQL Server or SQLite), or just upload CSV/Excel files
-- At least one **free** AI key: [Google Gemini](https://aistudio.google.com/apikey), [Groq](https://console.groq.com/keys) or [OpenRouter](https://openrouter.ai/keys)
-
-### 2. Get the code and set your keys
+You need **Python 3.11+**, **Node.js 20+**, and at least one free AI key: [Gemini](https://aistudio.google.com/apikey), [Groq](https://console.groq.com/keys) or [OpenRouter](https://openrouter.ai/keys).
 
 ```bash
-git clone https://github.com/anchalrajput25/InsightX.git
-cd InsightX
-cp .env.example .env        # on Windows: copy .env.example .env
-```
+git clone https://github.com/anchalrajput25/InsightX.git && cd InsightX
 
-Open `.env` and paste your own key(s). Your `.env` is ignored by git and never uploaded.
+cp .env.example .env               # Windows: copy .env.example .env
+# open .env and paste at least one API key
 
-### 3. Start the backend
-
-```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate      macOS/Linux: source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn backend.main:app --reload --port 8000
 ```
 
-API docs are at http://localhost:8000/docs.
-
-### 4. Start the UI
+In a second terminal:
 
 ```bash
 cd insightx-ui
@@ -192,66 +292,176 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000, create an account, connect a database and ask a question.
+Open **http://localhost:3000**, create an account, connect a database (or upload CSV/Excel files) and ask a question. API docs are at http://localhost:8000/docs.
 
-> There is also the original Streamlit app: `streamlit run app.py`.
+> [!TIP]
+> Your `.env` is listed in `.gitignore` and never leaves your machine. No keys are stored in the code.
 
-### Docker
+<details>
+<summary><strong>Run with Docker</strong></summary>
+<br />
 
 ```bash
 docker compose up --build
 ```
 
-Starts the app and a PostgreSQL database for InsightX's own data. See [DEPLOY.md](DEPLOY.md) to put it online for free.
+Starts the app and a PostgreSQL database for InsightX's own data at http://localhost:7860. See [DEPLOY.md](DEPLOY.md) for free hosting.
 
-## Configuration
+</details>
 
-| Variable | Needed | What it is |
-|---|---|---|
-| `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY` | at least one | Free AI keys |
-| `INSIGHTX_AUTH_SECRET` | online | Long random text that signs logins and encrypts saved database passwords |
-| `INSIGHTX_APP_DB_URL` | online | PostgreSQL URL for accounts, chats, traces and evals (local files are used if empty) |
-| `INSIGHTX_USER_DAILY_QUESTIONS` | optional | Questions per user per day (default 100) |
-| `INSIGHTX_AUTH_REQUIRED` | optional | `0` turns sign-in off on your own PC |
+<details>
+<summary><strong>Streamlit version</strong></summary>
+<br />
 
-## Tech stack
-
-| Layer | Tools |
-|---|---|
-| Agent | LangGraph, LangChain Core, LiteLLM |
-| Retrieval | BM25, `all-MiniLM-L6-v2` embeddings, Reciprocal Rank Fusion, GraphRAG over foreign keys |
-| SQL | SQLAlchemy, sqlglot (parsing, safety and dialects), DuckDB (fast file loading) |
-| Backend | FastAPI, Pydantic, Uvicorn |
-| Frontend | Next.js 15, React 19, Tailwind CSS 4, shadcn/ui, Recharts, TanStack Query |
-| Data | PostgreSQL, MySQL/MariaDB, SQL Server, SQLite |
-| Quality | pytest (390+ tests), golden-set evaluation harness, tracing |
-| Deploy | Docker, Docker Compose |
-
-## Project structure
-
-```
-backend/
-  text_to_sql/     LangGraph agent: rewrite, retrieval, GraphRAG, SQL generation, safety, correction, trust
-  investigation/   "Why did it change?" engine
-  ai_gateway/      Free-model gateway: tiers, failover, limits, usage ledger
-  llmops/          Monitor, evals, hallucination checks, feedback, smart routing
-  alerting/        Anomaly detection and notifications
-  evaluation/      Benchmark harness and golden sets
-  auth/            Accounts, passwords, tokens
-  tests/           pytest suite
-insightx-ui/       Next.js UI (InsightX Studio)
-app.py             Streamlit app
+```bash
+streamlit run app.py
 ```
 
-## Run the tests
+</details>
+
+<details>
+<summary><strong>Run the tests and a benchmark</strong></summary>
+<br />
 
 ```bash
 pytest
+python -m backend.evaluation run --golden backend/evaluation/golden/warehouse.yaml
 ```
+
+The benchmark reads the target database from `INSIGHTX_EVAL_DATABASE_URL`.
+
+</details>
+
+<details>
+<summary><strong>Configuration</strong></summary>
+<br />
+
+| Variable | Needed | What it is |
+|:---|:---|:---|
+| `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY` | at least one | Free AI keys |
+| `INSIGHTX_AUTH_SECRET` | when online | Long random text that signs logins and encrypts saved database passwords |
+| `INSIGHTX_APP_DB_URL` | when online | PostgreSQL URL for accounts, chats, traces and evals (local files if empty) |
+| `INSIGHTX_USER_DAILY_QUESTIONS` | optional | Questions per user per day (default 100) |
+| `INSIGHTX_AUTH_REQUIRED` | optional | `0` turns sign-in off on your own PC |
+
+</details>
+
+---
+
+## Example Workflow
+
+Real inputs and outputs from the warehouse benchmark run (108 tables).
+
+**1. A multi-join question**
+
+> **Input:** *In Northwind, which product category earned the most revenue, where revenue is unit price times quantity minus the discount?*
+
+```sql
+WITH category_revenue AS (
+    SELECT c.category_id, c.category_name,
+           SUM(od.unit_price * od.quantity - od.discount) AS total_revenue
+    FROM nw_order_details od
+    JOIN nw_products p   ON od.product_id = p.product_id
+    JOIN nw_categories c ON p.category_id = c.category_id
+    GROUP BY c.category_id, c.category_name
+)
+SELECT category_name, total_revenue
+FROM category_revenue
+ORDER BY total_revenue DESC
+LIMIT 1;
+```
+
+> **Output:** *The product category that earned the most revenue is Beverages, with a total revenue of 286,501.95.*
+> Trust 100 &bull; correct &bull; found 3 of 108 tables &bull; 7 LLM calls &bull; 19.5 s
+
+**2. A follow-up that needs chat memory**
+
+> **Input:** *And how many tracks do they have?* (after asking about Iron Maiden)
+>
+> **Output:** *They have 213 tracks.* (the agent resolved "they" to the artist and joined `music_track` &rarr; `music_album` &rarr; `music_artist`)
+
+**3. A destructive request**
+
+> **Input:** *Drop all the DVD tables, we don't need them anymore.*
+>
+> **Output:** no SQL is produced and nothing in the database changes.
+
+**4. A question the data can't answer**
+
+> **Input:** *How did the weather affect AdventureWorks bike sales?*
+>
+> **Output:** *Weather data (temperature, precipitation) is required to analyze its effect on bike sales... Missing weather data in the provided schema.*
+
+---
+
+## Engineering Highlights
+
+**Design decisions**
+- **Deterministic checks before AI checks.** Hallucination and trust checks are rule-based and free. The AI judge only runs when asked, which keeps every answer cheap and the checks reproducible.
+- **One gateway for every model call.** Agents ask for a *tier*, not a model. That made failover, rate-limit tracking, usage accounting and smart routing possible without touching agent code.
+- **Adaptive effort.** Simple questions get one SQL candidate; harder ones get several. This saves free-tier quota where it doesn't change accuracy.
+- **Additive architecture.** LLMOps is an ASGI middleware that copies `/query` responses and stores checks on a background thread. It never changes a response, and smart routing starts in **shadow mode** (log only) before it is allowed to reorder models.
+
+**Validation and safety**
+- SQL is parsed with `sqlglot`. Multiple statements, DDL/DML, and dangerous functions and keywords are rejected before execution. Execution adds a read-only transaction, a statement timeout and a row cap.
+- Passwords use PBKDF2-SHA256 with 600,000 iterations. Tokens are HMAC-signed with constant-time comparison, and logins lock after repeated failures. Saved database credentials are encrypted with Fernet.
+- Every account's chats, connections, history and usage are private, and there is a per-user daily question limit.
+
+**Error handling**
+- Model errors, timeouts and 429s trigger failover to the next model, then the next tier. Exhausted quotas put a model on cooldown until its reset time.
+- SQL errors are fed back to the model for self-correction instead of surfacing to the user.
+- Empty or suspicious results (fan-out, impossible counts) lower the trust score instead of being presented as fact.
+- Anomaly alerts use a robust statistic (median + MAD with leave-one-out) so one outlier doesn't hide the next.
+
+**Trade-offs**
+- **Free models over the best models:** latency is higher (p50 around 17 to 30 s), but the whole system costs nothing to run.
+- **Several candidates over one:** more calls per hard question, but fewer wrong answers.
+- **Rule-based grounding over LLM-as-judge by default:** it can miss subtle reasoning errors, but it is instant, free and never hallucinates itself.
+
+---
+
+## Limitations
+
+- **Hard SQL is still hard.** On Olist, nested queries, ratios and `HAVING` score far below simple questions (40% on "hard"). On the warehouse, "extra hard" is 33%.
+- **Small golden sets.** 27 to 49 scored questions per dataset gives wide confidence intervals. Results are not yet comparable with public leaderboards like Spider or BIRD.
+- **Latency.** Free-tier models and rate limits mean 15 to 30 seconds for a typical answer.
+- **Shared quotas.** API keys belong to the server, so all users share the same free limits.
+- **Trust is not truth.** The trust layer checks that the answer matches the rows, not that the SQL asked the right question. For example, an "unanswerable" Spotify-streams question was answered from invoice data; the trust score dropped to 15, but it still answered.
+- **No roles.** Every account is equal; there is no admin or viewer role yet.
+- **Two UIs.** The Streamlit app and the Next.js UI coexist while features move to Next.js.
+
+---
 
 ## Roadmap
 
-- [ ] Live demo link
-- [ ] Bring-your-own API key per account
-- [ ] Spider / BIRD benchmark subset
-- [ ] CI with GitHub Actions
+- [ ] **Live demo** with a sample database
+- [ ] **Bring your own API key** per account, stored encrypted
+- [ ] **Spider / BIRD benchmark subset** for public comparability
+- [ ] **CI** with GitHub Actions running the test suite and an eval quality gate on every push
+- [ ] **Better hard-query accuracy:** plan-then-write SQL for nested queries and ratios
+- [ ] **Semantic checks** so the trust layer also judges whether the SQL matches the intent
+- [ ] **Roles and sharing** for teams
+- [ ] **Single UI:** finish moving everything to Next.js
+
+---
+
+## Contributing & License
+
+Contributions are welcome. Open an issue to discuss a bug or an idea, or send a pull request:
+
+1. Fork the repo and create a branch.
+2. Run `pytest` and, for UI changes, `npm run lint && npm run typecheck` in `insightx-ui/`.
+3. Describe what changed and why in the pull request.
+
+**License:** not chosen yet. Until a license file is added, all rights are reserved.
+
+---
+
+<div align="center">
+<br />
+<strong>If InsightX is useful or interesting to you, consider giving it a star.</strong>
+<br /><br />
+<a href="https://github.com/anchalrajput25/InsightX/stargazers"><img src="https://img.shields.io/github/stars/anchalrajput25/InsightX?style=for-the-badge&logo=github&color=181717" alt="Stars" /></a>
+<br /><br />
+Built by <a href="https://github.com/anchalrajput25">Anchal Rajput</a>
+</div>
