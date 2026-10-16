@@ -1,0 +1,25 @@
+# Free online backend for InsightX on Render (render.com).
+# Render reads this file when you click "New > Blueprint" and pick this repo.
+# The website itself runs on Vercel (folder insightx-ui) and forwards /api
+# calls here, so API keys stay on this server and never reach the browser.
+services:
+  - type: web
+    name: insightx-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r deploy/render/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT --timeout-keep-alive 75
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: INSIGHTX_AUTH_SECRET
+        generateValue: true
+      - key: INSIGHTX_USER_DAILY_QUESTIONS
+        value: "20"
