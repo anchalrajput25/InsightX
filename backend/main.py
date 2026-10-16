@@ -1275,3 +1275,7 @@ alerting_service.start_scheduler()
 from backend.llmops import api as llmops_api  # noqa: E402
 app.include_router(llmops_api.router)
 llmops_api.install(app)
+
+# "Try the demo database" for the online app (backend/demo_database.py).
+from backend import demo_database  # noqa: E402
+app.include_router(demo_database.router)
