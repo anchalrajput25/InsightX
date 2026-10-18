@@ -13,6 +13,12 @@
 
 <br />
 
+<a href="https://insight-x-pied.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-insight--x--pied.vercel.app-6366F1?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+
+<sub>Free hosting: the first request after a quiet period can take about a minute while the backend wakes up.</sub>
+
+<br />
+
 <a href="#visual-demo">Demo</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#key-features">Features</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#system-architecture">Architecture</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#evaluation--benchmarks">Benchmarks</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#installation--quick-start">Quick Start</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#engineering-highlights">Engineering</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#limitations">Limitations</a>
 
 </div>
