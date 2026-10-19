@@ -13,13 +13,37 @@
 
 <br />
 
+<img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" alt="LangChain" />&nbsp;
+<img src="https://img.shields.io/badge/LiteLLM-4B5563?style=for-the-badge&logo=python&logoColor=white" alt="LiteLLM" />&nbsp;
+<img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />&nbsp;
+<img src="https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white" alt="Groq" />&nbsp;
+<img src="https://img.shields.io/badge/OpenRouter-6467F2?style=for-the-badge&logo=openrouter&logoColor=white" alt="OpenRouter" />&nbsp;
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />&nbsp;
+<img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />&nbsp;
+<img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />&nbsp;
+<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />&nbsp;
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />&nbsp;
+<img src="https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" alt="SQL Server" />&nbsp;
+<img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />&nbsp;
+<img src="https://img.shields.io/badge/DuckDB-FFF000?style=for-the-badge&logo=duckdb&logoColor=black" alt="DuckDB" />&nbsp;
+<img src="https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy" />&nbsp;
+<img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="pandas" />&nbsp;
+<img src="https://img.shields.io/badge/Pydantic-E92063?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic" />&nbsp;
+<img src="https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="pytest" />&nbsp;
+<img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />&nbsp;
+<img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />&nbsp;
+<img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Render" />&nbsp;
+<img src="https://img.shields.io/badge/Neon_Postgres-00E599?style=for-the-badge&logo=postgresql&logoColor=black" alt="Neon Postgres" />
+
+<br />
+
 <a href="https://insight-x-pied.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-insight--x--pied.vercel.app-6366F1?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
 
 <sub>Free hosting: the first request after a quiet period can take about a minute while the backend wakes up.</sub>
 
 <br />
 
-<a href="#visual-demo">Demo</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#key-features">Features</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#system-architecture">Architecture</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#evaluation--benchmarks">Benchmarks</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#installation--quick-start">Quick Start</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#engineering-highlights">Engineering</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#limitations">Limitations</a>
+<a href="#visual-demo">Demo</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#why-insightx">Why InsightX</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#key-features">Features</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#system-architecture">Architecture</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#evaluation--benchmarks">Benchmarks</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#installation--quick-start">Quick Start</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#engineering-highlights">Engineering</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;<a href="#limitations">Limitations</a>
 
 </div>
 
@@ -42,6 +66,37 @@
 <sub>Ask a question &rarr; investigate a change &rarr; watch the pipeline &rarr; check for hallucinations &rarr; read the trace</sub>
 
 </div>
+
+---
+
+## Why InsightX
+
+### Why I chose this project
+
+Every company stores its most important numbers in databases, but most people who need those numbers cannot write SQL. They wait for an analyst, and a simple question like "why did sales drop last month?" can take days. AI chatbots can write SQL, but they often guess, make up numbers, or run unsafe queries, so nobody can fully trust them. I wanted to build something that real teams could actually rely on: an AI analyst that is fast, safe, explains its reasoning, and proves every answer.
+
+### Why InsightX
+
+- **Ask in plain English.** No SQL knowledge needed. Type a question and get the answer, the SQL and a chart.
+- **Trust you can see.** Every number in the answer is checked against the real data and given a trust score.
+- **Safe by design.** Only read-only `SELECT` queries can run, so your data can never be changed or deleted.
+- **Answers "why", not only "what".** It finds the real reason a metric went up or down, with evidence.
+- **Measures itself.** Built-in evals, monitoring and hallucination checks show when quality drops.
+- **Free to run.** Works fully on free AI models, with automatic fallback when one hits its limit.
+
+### Without InsightX vs with InsightX
+
+| | Without InsightX | With InsightX |
+|:---|:---|:---|
+| **Getting an answer** | Write SQL yourself or wait for an analyst | Ask in plain English and get the answer in seconds |
+| **Trusting the number** | No way to check if the AI made it up | Every number is checked against the real rows, with a 0 to 100 trust score |
+| **Data safety** | A wrong prompt could change or delete data | Only one read-only `SELECT` can run, with a time limit |
+| **Understanding a change** | "Revenue fell 7.9%" and nothing more | The real reason, broken down by region, product, time and more |
+| **Unclear questions** | The AI guesses and may answer the wrong thing | It asks a clear follow-up question instead of guessing |
+| **Seeing the work** | A black box | Every step, SQL query, AI call and timing is shown in the trace |
+| **Charts and reports** | Export to Excel and build them by hand | Charts and a whole-database dashboard are made automatically |
+| **Knowing quality over time** | Problems are found by users, late | Evals, quality gates and alerts catch problems early |
+| **Cost** | Paid AI APIs | Free AI models only, with smart routing and fallback |
 
 ---
 
@@ -134,6 +189,10 @@ See each of the 13 steps behind an answer: how the question was rewritten, which
 </table>
 
 **Also included:** auto charts &bull; whole-database dashboard &bull; "make a chart of X by Y" &bull; anomaly alerts with back-testing (Slack, Discord, Teams, email) &bull; accounts with private chats and history &bull; PostgreSQL, MySQL, SQL Server, SQLite and CSV/Excel upload &bull; Docker
+
+### More capabilities
+
+Beyond the main features, InsightX remembers each conversation, so follow-up questions like "and last year?" understand what you asked before. A similar-question cache returns repeat answers instantly without new AI calls. After each answer it suggests the next useful questions to ask, and a History page keeps every past question with its SQL and result. It reads large CSV and Excel files quickly with DuckDB, understands your schema with table-and-column search plus a relationship graph (GraphRAG), and writes several SQL candidates in parallel before picking the one whose result is most consistent. Saved database passwords are encrypted, each user has a private workspace and a daily question limit, and every AI call goes through one gateway that tracks free limits and switches models automatically when one is busy. It is deployed live on Vercel, Render and Neon, and can also run on your own machine with Docker.
 
 ---
 
