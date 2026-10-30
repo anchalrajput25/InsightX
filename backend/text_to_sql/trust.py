@@ -342,6 +342,12 @@ def assess_trust(state: Dict[str, Any]) -> Dict[str, Any]:
     for warning in sanity.get("warnings") or []:
         note("result", -10, warning)
 
+    # A result where every value is empty (no rows matched, e.g. a period
+    # with no data) cannot support any answer, however well it is worded.
+    rows = [row for row in (state.get("execution_result") or {}).get("rows") or [] if isinstance(row, dict) and row]
+    if rows and all(value is None for row in rows for value in row.values()):
+        note("result", -45, "Every value in the result is empty, so the answer is not backed by any data.")
+
     selection = state.get("sql_selection") or {}
     executed = selection.get("executed_ok") or 0
     if executed > 1:

@@ -19,6 +19,7 @@ from backend.config import query_settings
 from backend.text_to_sql.schema_focus import build_schema_focus, prioritize_schema
 from backend.text_to_sql.schema_verifier import render_linked_schema, verify_linking
 from backend.text_to_sql.sql_candidates import run_parallel, select_candidate
+from backend.text_to_sql import time_anchor
 from backend.text_to_sql.trust import assess_trust, check_result_sanity, verify_claims
 from backend.text_to_sql.query_rewriter import rewrite_query_variants
 from backend.text_to_sql.query_decomposer import decompose_query
@@ -1194,7 +1195,7 @@ def build_text_to_sql_graph(engine: Engine, checkpointer=None):
         "decompose": decomposition_node,
         "retrieve": retrieval_node,
         "schema_link": schema_linking_node,
-        "generate_sql": sql_generation_node,
+        "generate_sql": lambda state: sql_generation_node(time_anchor.with_time_note(state, engine)),
         "select_sql": lambda state: candidate_selection_node(state, engine),
         "clarification": clarification_node,
         "safety": sql_safety_node,
