@@ -46,7 +46,7 @@ CHANGE_RE = re.compile(
 # "How can I improve sales?" asks what to do about a metric: the same
 # investigation (latest period vs the one before) answers it.
 IMPROVE_RE = re.compile(
-    r"\b(?:how\s+(?:can|could|do|should|to|would)\b.{0,40}?\b(?:improve|increase|boost|grow|raise|reduce|fix|recover)"
+    r"\b(?:how\s+(?:can|could|do|should|to|would)\b.{0,40}?\b(?:improve|increase|boost|grow|raise|reduce|fix|recover|encourage|promote|motivate|attract|get\s+more)"
     r"|ways?\s+to\s+(?:improve|increase|boost|grow|raise|reduce)"
     r"|kaise\s+(?:badh|sudhar|improve|increase)\w*"
     r"|(?:improve|increase|boost)\w*\s+(?:my\s+|our\s+|the\s+)?(?:sales|revenue|orders|profit|customers)\b)",
