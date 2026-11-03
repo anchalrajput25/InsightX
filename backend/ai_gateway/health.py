@@ -102,6 +102,25 @@ class Health:
                 waits.append(_next_daily_reset(now) - now)
             return max(waits)
 
+    def try_reserve(self, route: Route) -> Optional[str]:
+        """Check and count in one step, so concurrent requests cannot overshoot a free limit.
+
+        Returns None when the request was counted (send it now), else why the route is unavailable.
+        """
+        now = self._clock()
+        with self._lock:
+            state = self._state(route)
+            self._refresh(state, now)
+            if state.cooldown_until > now:
+                return f"{state.cooldown_reason} (retry in {int(state.cooldown_until - now) + 1}s)"
+            if route.rpm and len(state.minute) >= route.rpm:
+                return "per-minute free limit reached"
+            if route.rpd and state.day_count >= route.rpd:
+                return "daily free limit reached"
+            state.minute.append(now)
+            state.day_count += 1
+        return None
+
     def reserve(self, route: Route) -> None:
         """Count a request against the route's free limits (before sending it)."""
         now = self._clock()

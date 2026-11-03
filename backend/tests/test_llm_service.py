@@ -58,6 +58,7 @@ def env(monkeypatch, tmp_path):
     settings = Settings()
     settings.cache_enabled = True
     settings.user_daily_questions = 3
+    settings.queue_seconds = 0  # these tests check failing at once; test_gateway_queue.py covers waiting
     gateway = Gateway(
         routes={"light": [GEMINI, GROQ], "sql": [GROQ, ROUTER], "heavy": [ROUTER, GROQ]},
         settings=settings, health=Health(clock=clock), sender=send, store_getter=lambda: store,

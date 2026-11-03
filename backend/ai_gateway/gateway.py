@@ -13,12 +13,18 @@
 #      the search.
 #   5. Ledger: every call, cache hit and failure is written to the usage
 #      store with user, job, route, tokens, cost and latency.
+#   6. Queue: when every route is only at its per-minute limit (many
+#      people asking at once), the call waits for the next free slot
+#      (INSIGHTX_LLM_QUEUE_SECONDS, 90 s by default) instead of failing.
+#      Checking and counting a route's limit is one locked step, so
+#      concurrent requests never send more than the free limit.
 #
 # When nothing can answer, AIUnavailableError says why per provider and
 # when to try again, so users see a clear message instead of a stack
 # trace.
 
 import os
+import random
 import threading
 import time
 from typing import Any, Dict, List, Optional, Tuple
@@ -51,6 +57,10 @@ def _number(name: str, default: float) -> float:
 class Settings:
     def __init__(self):
         self.timeout = _number("LLM_TIMEOUT", 120)
+        # When every free model is at its per-minute limit, wait for the next free slot
+        # (up to this long per AI call) instead of failing; daily quotas still fail at once.
+        self.queue_seconds = _number("INSIGHTX_LLM_QUEUE_SECONDS", 90)
+        self.max_wait_per_retry = 65.0
         self.cache_enabled = _flag("INSIGHTX_LLM_CACHE", "true")
         self.cache_ttl_s = _number("INSIGHTX_LLM_CACHE_TTL_HOURS", 24) * 3600
         self.user_daily_questions = int(_number("INSIGHTX_USER_DAILY_QUESTIONS", 100))
@@ -64,7 +74,7 @@ PROVIDER_NAMES = {"gemini": "Google Gemini", "groq": "Groq", "openrouter": "Open
 
 class Gateway:
     def __init__(self, routes: Optional[Dict[str, List[Route]]] = None, settings: Optional[Settings] = None,
-                 health: Optional[Health] = None, sender=None, store_getter=get_store):
+                 health: Optional[Health] = None, sender=None, store_getter=get_store, sleep=time.sleep):
         self.routes = routes or load_routes()
         # tiers pinned to one model (benchmark variants): no fallback to other tiers
         self.pinned: set = set()
@@ -72,6 +82,7 @@ class Gateway:
         self.health = health or Health()
         self._send = sender or self._litellm_send
         self._store = store_getter
+        self._sleep = sleep
         self._seeded = False
         self._seed_lock = threading.Lock()
 
@@ -228,18 +239,35 @@ class Gateway:
                 telemetry.record_cache_hit(job)
                 return cached
 
+        deadline = time.monotonic() + self.settings.queue_seconds
+        while True:
+            try:
+                return self._try_routes(routes, prompt, job, tier, temperature, max_tokens, key)
+            except AIUnavailableError as exc:
+                # Free per-minute limits refill within seconds: with many people asking at
+                # once, wait for the next free slot instead of failing everyone's question.
+                wait = exc.wait_seconds
+                left = deadline - time.monotonic()
+                if wait is None or wait > self.settings.max_wait_per_retry or wait > left:
+                    raise
+                pause = min(left, wait + random.uniform(0.2, 1.5))
+                logger.info("All routes for %s busy; waiting %.1fs for a free slot", job, pause)
+                self._sleep(pause)
+                telemetry.record_stage("ai_queue_wait", pause)
+
+    def _try_routes(self, routes: List[Route], prompt: str, job: str, tier: str, temperature: float,
+                    max_tokens: int, key: Optional[str]) -> str:
         attempts: List[Tuple[Route, str]] = []
         last_rejection = None
         for route in routes:
             if not self.key_configured(route):
                 attempts.append((route, f"no {PROVIDER_KEYS[route.provider]} in .env"))
                 continue
-            blocked = self.health.why_unavailable(route)
+            blocked = self.health.try_reserve(route)
             if blocked:
                 attempts.append((route, blocked))
                 continue
 
-            self.health.reserve(route)
             logger.info("LLM request | job=%s | tier=%s | route=%s", job, tier, route.id)
             started = time.perf_counter()
             try:

@@ -177,6 +177,7 @@ def build_agent_schema(profile: Dict[str, Any]) -> Dict[str, Any]:
 
 _SCHEMA_CACHE: Dict[str, Dict[str, Any]] = {}
 _CACHE_LOCK = threading.Lock()
+_PROFILE_LOCKS: Dict[str, threading.Lock] = {}
 
 
 def _cache_key(engine: Engine) -> str:
@@ -206,11 +207,21 @@ def get_agent_schema(engine: Engine) -> Dict[str, Any]:
 
     with _CACHE_LOCK:
         cached = _SCHEMA_CACHE.get(key)
+        profiling = _PROFILE_LOCKS.setdefault(key, threading.Lock())
 
     if cached is not None:
         return copy.deepcopy(cached)
 
-    # Imported here: schema_profiler imports this module.
-    from backend.schema_profiler import get_database_schema
+    # One request profiles; others asking about the same database at the
+    # same moment (e.g. everyone after a restart) wait and reuse its result
+    # instead of each profiling it and exhausting the connection pool.
+    with profiling:
+        with _CACHE_LOCK:
+            cached = _SCHEMA_CACHE.get(key)
+        if cached is not None:
+            return copy.deepcopy(cached)
 
-    return cache_schema_from_profile(engine, get_database_schema(engine))
+        # Imported here: schema_profiler imports this module.
+        from backend.schema_profiler import get_database_schema
+
+        return cache_schema_from_profile(engine, get_database_schema(engine))
