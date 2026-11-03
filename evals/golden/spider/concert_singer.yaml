@@ -1,0 +1,120 @@
+name: spider_concert_singer
+description: 'Spider dev set, database concert_singer: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: concert_singer_0002
+  difficulty: medium
+  question: Show name, country, age for all singers ordered by age from the oldest to the youngest.
+  expected_sql: SELECT name ,  country ,  age FROM singer ORDER BY age DESC
+  order_matters: true
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0010
+  difficulty: medium
+  question: Show all countries and the number of singers in each country.
+  expected_sql: SELECT country ,  count(*) FROM singer GROUP BY country
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0012
+  difficulty: hard
+  question: List all song names by singers above the average age.
+  expected_sql: SELECT song_name FROM singer WHERE age  >  (SELECT avg(age) FROM singer)
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0017
+  difficulty: medium
+  question: What is the average and maximum capacities for all stadiums ?
+  expected_sql: select avg(capacity) ,  max(capacity) from stadium
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0018
+  difficulty: medium
+  question: What is the name and capacity for the stadium with highest average attendance?
+  expected_sql: SELECT name ,  capacity FROM stadium ORDER BY average DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0020
+  difficulty: medium
+  question: How many concerts are there in year 2014 or 2015?
+  expected_sql: SELECT count(*) FROM concert WHERE YEAR  =  2014 OR YEAR  =  2015
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0022
+  difficulty: medium
+  question: Show the stadium name and the number of concerts in each stadium.
+  expected_sql: SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0026
+  difficulty: hard
+  question: Which year has most number of concerts?
+  expected_sql: SELECT YEAR FROM concert GROUP BY YEAR ORDER BY count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0028
+  difficulty: hard
+  question: Show the stadium names without any concert.
+  expected_sql: SELECT name FROM stadium WHERE stadium_id NOT IN (SELECT stadium_id FROM concert)
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0030
+  difficulty: hard
+  question: Show countries where a singer above age 40 and a singer below 30 are from.
+  expected_sql: SELECT country FROM singer WHERE age  >  40 INTERSECT SELECT country FROM singer WHERE age  <  30
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0031
+  difficulty: hard
+  question: Show names for all stadiums except for stadiums having a concert in year 2014.
+  expected_sql: SELECT name FROM stadium EXCEPT SELECT T2.name FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  =  2014
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0033
+  difficulty: medium
+  question: Show the name and theme for all concerts and the number of singers in each concert.
+  expected_sql: SELECT T2.concert_name ,  T2.theme ,  count(*) FROM singer_in_concert AS T1 JOIN concert AS T2 ON T1.concert_id  =  T2.concert_id GROUP BY T2.concert_id
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true
+- id: concert_singer_0037
+  difficulty: hard
+  question: List all singer names in concerts in year 2014.
+  expected_sql: SELECT T2.name FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id JOIN concert AS T3 ON T1.concert_id  =  T3.concert_id WHERE T3.year  =  2014
+  order_matters: false
+  tags:
+  - spider
+  - concert_singer
+  verified: true

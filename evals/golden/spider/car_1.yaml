@@ -1,0 +1,120 @@
+name: spider_car_1
+description: 'Spider dev set, database car_1: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: car_1_0087
+  difficulty: easy
+  question: How many continents are there?
+  expected_sql: SELECT count(*) FROM CONTINENTS
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0089
+  difficulty: medium
+  question: How many countries does each continent have? List the continent id, continent name and the number of countries.
+  expected_sql: SELECT T1.ContId ,  T1.Continent ,  count(*) FROM CONTINENTS AS T1 JOIN COUNTRIES AS T2 ON T1.ContId  =  T2.Continent GROUP BY T1.ContId
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0105
+  difficulty: hard
+  question: How many car makers are there in each continents? List the continent name and the count.
+  expected_sql: SELECT T1.Continent ,  count(*) FROM CONTINENTS AS T1 JOIN COUNTRIES AS T2 ON T1.ContId  =  T2.continent JOIN car_makers AS T3 ON T2.CountryId  =  T3.Country GROUP BY T1.Continent
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0107
+  difficulty: extra
+  question: Which of the countries has the most car makers? List the country name.
+  expected_sql: SELECT T2.CountryName FROM CAR_MAKERS AS T1 JOIN COUNTRIES AS T2 ON T1.Country  =  T2.CountryId GROUP BY T1.Country ORDER BY Count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0111
+  difficulty: medium
+  question: What is the accelerate of the car make amc hornet sportabout (sw)?
+  expected_sql: SELECT T1.Accelerate FROM CARS_DATA AS T1 JOIN CAR_NAMES AS T2 ON T1.Id  =  T2.MakeId WHERE T2.Make  =  'amc hornet sportabout (sw)'
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0115
+  difficulty: hard
+  question: How many car models are produced in the usa?
+  expected_sql: SELECT count(*) FROM MODEL_LIST AS T1 JOIN CAR_MAKERS AS T2 ON T1.Maker  =  T2.Id JOIN COUNTRIES AS T3 ON T2.Country  =  T3.CountryId WHERE T3.CountryName  =  'usa'
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0123
+  difficulty: medium
+  question: What are the countries having at least one car maker? List name and id.
+  expected_sql: SELECT T1.CountryName ,  T1.CountryId FROM COUNTRIES AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.CountryId HAVING count(*)  >=  1
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0127
+  difficulty: medium
+  question: What is the average weight of cars each year?
+  expected_sql: SELECT avg(Weight) ,  YEAR FROM CARS_DATA GROUP BY YEAR
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0137
+  difficulty: medium
+  question: What is the average edispl of the cars of model volvo?
+  expected_sql: SELECT avg(T2.edispl) FROM CAR_NAMES AS T1 JOIN CARS_DATA AS T2 ON T1.MakeId  =  T2.Id WHERE T1.Model  =  'volvo'
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0141
+  difficulty: hard
+  question: Which model has the most version(make) of cars?
+  expected_sql: SELECT Model FROM CAR_NAMES GROUP BY Model ORDER BY count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0143
+  difficulty: easy
+  question: How many cars have more than 4 cylinders?
+  expected_sql: SELECT count(*) FROM CARS_DATA WHERE Cylinders  >  4
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0151
+  difficulty: extra
+  question: Which distinctive models are produced by maker with the full name General Motors or weighing more than 3500?
+  expected_sql: SELECT DISTINCT T2.Model FROM CAR_NAMES AS T1 JOIN MODEL_LIST AS T2 ON T1.Model  =  T2.Model JOIN CAR_MAKERS AS T3 ON T2.Maker  =  T3.Id JOIN CARS_DATA AS T4 ON T1.MakeId  =  T4.Id WHERE T3.FullName  =  'General Motors' OR T4.weight  >  3500
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true
+- id: car_1_0161
+  difficulty: medium
+  question: How many countries has more than 2 car makers ?
+  expected_sql: select count(*) from countries as t1 join car_makers as t2 on t1.countryid  =  t2.country group by t1.countryid having count(*)  >  2
+  order_matters: false
+  tags:
+  - spider
+  - car_1
+  verified: true

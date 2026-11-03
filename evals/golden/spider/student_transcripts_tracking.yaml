@@ -1,0 +1,120 @@
+name: spider_student_transcripts_tracking
+description: 'Spider dev set, database student_transcripts_tracking: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: student_transcripts_tracking_0517
+  difficulty: easy
+  question: How many departments offer any degree?
+  expected_sql: SELECT count(DISTINCT department_id) FROM Degree_Programs
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0519
+  difficulty: easy
+  question: How many different degree names are offered?
+  expected_sql: SELECT count(DISTINCT degree_summary_name) FROM Degree_Programs
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0523
+  difficulty: medium
+  question: What are the names and descriptions of all the sections?
+  expected_sql: SELECT section_name ,  section_description FROM Sections
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0533
+  difficulty: medium
+  question: Who are enrolled in 2 degree programs in one semester? List the first name, middle name and last name and the id.
+  expected_sql: SELECT T1.first_name ,  T1.middle_name ,  T1.last_name ,  T1.student_id FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id GROUP BY T1.student_id HAVING count(*)  =  2
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0535
+  difficulty: hard
+  question: Who is enrolled in a Bachelor degree program? List the first name, middle name, last name.
+  expected_sql: SELECT DISTINCT T1.first_name ,  T1.middle_name ,  T1.last_name FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id JOIN Degree_Programs AS T3 ON T2.degree_program_id  =  T3.degree_program_id WHERE T3.degree_summary_name  =  'Bachelor'
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0541
+  difficulty: extra
+  question: Which student has enrolled for the most times in any program? List the id, first name, middle name, last name, the number of enrollments and student id.
+  expected_sql: SELECT T1.student_id ,  T1.first_name ,  T1.middle_name ,  T1.last_name ,  count(*) ,  T1.student_id FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id GROUP BY T1.student_id ORDER BY count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0549
+  difficulty: extra
+  question: Find the last name of the students who currently live in the state of North Carolina but have not registered in any degree program.
+  expected_sql: SELECT T1.last_name FROM Students AS T1 JOIN Addresses AS T2 ON T1.current_address_id  =  T2.address_id WHERE T2.state_province_county  =  'NorthCarolina' EXCEPT SELECT DISTINCT T3.last_name FROM Students AS T3 JOIN Student_Enrolment AS T4 ON T3.student_id  =  T4.student_id
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0551
+  difficulty: medium
+  question: Show the date and id of the transcript with at least 2 course results.
+  expected_sql: SELECT T2.transcript_date ,  T1.transcript_id FROM Transcript_Contents AS T1 JOIN Transcripts AS T2 ON T1.transcript_id  =  T2.transcript_id GROUP BY T1.transcript_id HAVING count(*)  >=  2
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0555
+  difficulty: medium
+  question: Who is the first student to register? List the first name, middle name and last name.
+  expected_sql: SELECT first_name ,  middle_name ,  last_name FROM Students ORDER BY date_first_registered ASC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0561
+  difficulty: extra
+  question: Which address holds the most number of students currently? List the address id and all lines.
+  expected_sql: SELECT T1.address_id ,  T1.line_1 ,  T1.line_2 FROM Addresses AS T1 JOIN Students AS T2 ON T1.address_id  =  T2.current_address_id GROUP BY T1.address_id ORDER BY count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0563
+  difficulty: easy
+  question: On average, when were the transcripts printed?
+  expected_sql: SELECT avg(transcript_date) FROM Transcripts
+  order_matters: false
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0565
+  difficulty: medium
+  question: When is the first transcript released? List the date and details.
+  expected_sql: SELECT transcript_date ,  other_details FROM Transcripts ORDER BY transcript_date ASC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true
+- id: student_transcripts_tracking_0579
+  difficulty: easy
+  question: List all the student details in reversed lexicographical order.
+  expected_sql: SELECT other_student_details FROM Students ORDER BY other_student_details DESC
+  order_matters: true
+  tags:
+  - spider
+  - student_transcripts_tracking
+  verified: true

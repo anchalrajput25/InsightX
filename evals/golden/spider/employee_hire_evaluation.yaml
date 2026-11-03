@@ -1,0 +1,120 @@
+name: spider_employee_hire_evaluation
+description: 'Spider dev set, database employee_hire_evaluation: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: employee_hire_evaluation_0261
+  difficulty: easy
+  question: Sort employee names by their age in ascending order.
+  expected_sql: SELECT name FROM employee ORDER BY age
+  order_matters: true
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0263
+  difficulty: medium
+  question: What is the number of employees from each city?
+  expected_sql: SELECT count(*) ,  city FROM employee GROUP BY city
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0267
+  difficulty: medium
+  question: Find the number of shops in each location.
+  expected_sql: SELECT count(*) ,  LOCATION FROM shop GROUP BY LOCATION
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0269
+  difficulty: medium
+  question: Find the manager name and district of the shop whose number of products is the largest.
+  expected_sql: SELECT manager_name ,  district FROM shop ORDER BY number_products DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0271
+  difficulty: medium
+  question: find the minimum and maximum number of products of all stores.
+  expected_sql: SELECT min(Number_products) ,  max(Number_products) FROM shop
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0273
+  difficulty: medium
+  question: Return the name, location and district of all shops in descending order of number of products.
+  expected_sql: SELECT name ,  LOCATION ,  district FROM shop ORDER BY number_products DESC
+  order_matters: true
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0277
+  difficulty: extra
+  question: find the name of employee who was awarded the most times in the evaluation.
+  expected_sql: SELECT t1.name FROM employee AS t1 JOIN evaluation AS t2 ON t1.Employee_ID  =  t2.Employee_ID GROUP BY t2.Employee_ID ORDER BY count(*) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0281
+  difficulty: hard
+  question: Find the names of employees who never won any award in the evaluation.
+  expected_sql: SELECT name FROM employee WHERE Employee_ID NOT IN (SELECT Employee_ID FROM evaluation)
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0285
+  difficulty: hard
+  question: Find the name of the shops that do not hire any employee.
+  expected_sql: SELECT name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM hiring)
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0287
+  difficulty: medium
+  question: Find the number of employees hired in each shop; show the shop name as well.
+  expected_sql: SELECT count(*) ,  t2.name FROM hiring AS t1 JOIN shop AS t2 ON t1.shop_id  =  t2.shop_id GROUP BY t2.name
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0289
+  difficulty: easy
+  question: What is total bonus given in all evaluations?
+  expected_sql: SELECT sum(bonus) FROM evaluation
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0291
+  difficulty: easy
+  question: Give me all the information about hiring.
+  expected_sql: SELECT * FROM hiring
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true
+- id: employee_hire_evaluation_0295
+  difficulty: easy
+  question: How many different store locations are there?
+  expected_sql: SELECT count(DISTINCT LOCATION) FROM shop
+  order_matters: false
+  tags:
+  - spider
+  - employee_hire_evaluation
+  verified: true

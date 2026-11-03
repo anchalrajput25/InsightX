@@ -1,0 +1,120 @@
+name: spider_dog_kennels
+description: 'Spider dev set, database dog_kennels: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: dog_kennels_0932
+  difficulty: medium
+  question: Which professionals have done at least two treatments? List the professional's id, role, and first name.
+  expected_sql: SELECT T1.professional_id ,  T1.role_code ,  T1.first_name FROM Professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id GROUP BY T1.professional_id HAVING count(*)  >=  2
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0938
+  difficulty: extra
+  question: What is the description of the treatment type that costs the least money in total?
+  expected_sql: SELECT T1.treatment_type_description FROM Treatment_types AS T1 JOIN Treatments AS T2 ON T1.treatment_type_code  =  T2.treatment_type_code GROUP BY T1.treatment_type_code ORDER BY sum(cost_of_treatment) ASC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0940
+  difficulty: extra
+  question: Which owner has paid the largest amount of money in total for their dogs? Show the owner id and zip code.
+  expected_sql: SELECT T1.owner_id ,  T1.zip_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id JOIN Treatments AS T3 ON T2.dog_id  =  T3.dog_id GROUP BY T1.owner_id ORDER BY sum(T3.cost_of_treatment) DESC LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0950
+  difficulty: medium
+  question: List each owner's first name, last name, and the size of his for her dog.
+  expected_sql: SELECT T1.first_name ,  T1.last_name ,  T2.size_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0952
+  difficulty: medium
+  question: List pairs of the owner's first name and the dogs's name.
+  expected_sql: SELECT T1.first_name ,  T2.name FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0954
+  difficulty: extra
+  question: List the names of the dogs of the rarest breed and the treatment dates of them.
+  expected_sql: SELECT T1.name ,  T2.date_of_treatment FROM Dogs AS T1 JOIN Treatments AS T2 ON T1.dog_id  =  T2.dog_id WHERE T1.breed_code  =  ( SELECT breed_code FROM Dogs GROUP BY breed_code ORDER BY count(*) ASC LIMIT 1 )
+  order_matters: true
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0956
+  difficulty: medium
+  question: Which dogs are owned by someone who lives in Virginia? List the owner's first name and the dog's name.
+  expected_sql: SELECT T1.first_name ,  T2.name FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id WHERE T1.state  =  'Virginia'
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0958
+  difficulty: medium
+  question: What are the arriving date and the departing date of the dogs who have gone through a treatment?
+  expected_sql: SELECT DISTINCT T1.date_arrived ,  T1.date_departed FROM Dogs AS T1 JOIN Treatments AS T2 ON T1.dog_id  =  T2.dog_id
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0960
+  difficulty: extra
+  question: List the last name of the owner owning the youngest dog.
+  expected_sql: SELECT T1.last_name FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id WHERE T2.age  =  ( SELECT max(age) FROM Dogs )
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0964
+  difficulty: medium
+  question: What are the arriving date and the departing date of all the dogs?
+  expected_sql: SELECT date_arrived ,  date_departed FROM Dogs
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0966
+  difficulty: easy
+  question: How many dogs went through any treatments?
+  expected_sql: SELECT count(DISTINCT dog_id) FROM Treatments
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0970
+  difficulty: medium
+  question: Which professionals live in a city containing the substring 'West'? List his or her role, street, city and state.
+  expected_sql: SELECT role_code ,  street ,  city ,  state FROM professionals WHERE city LIKE '%West%'
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true
+- id: dog_kennels_0994
+  difficulty: medium
+  question: List the email, cell phone and home phone of all the professionals.
+  expected_sql: SELECT email_address ,  cell_number ,  home_phone FROM professionals
+  order_matters: false
+  tags:
+  - spider
+  - dog_kennels
+  verified: true

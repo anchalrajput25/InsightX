@@ -1,0 +1,5 @@
+# Spider download (about 200 MB, public data, re-downloaded by prepare_spider.py)
+spider_data/
+
+# Resume state of unfinished runs and per-database reports (summaries are kept)
+results/**/*.partial.jsonl
