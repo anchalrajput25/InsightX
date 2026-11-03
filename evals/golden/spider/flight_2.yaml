@@ -1,0 +1,120 @@
+name: spider_flight_2
+description: 'Spider dev set, database flight_2: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: flight_2_0179
+  difficulty: easy
+  question: Which country does Airline "JetBlue Airways" belong to?
+  expected_sql: SELECT Country FROM AIRLINES WHERE Airline  =  "JetBlue Airways"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0181
+  difficulty: easy
+  question: What is the abbreviation of Airline "JetBlue Airways"?
+  expected_sql: SELECT Abbreviation FROM AIRLINES WHERE Airline  =  "JetBlue Airways"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0183
+  difficulty: medium
+  question: List all airline names and their abbreviations in "USA".
+  expected_sql: SELECT Airline ,  Abbreviation FROM AIRLINES WHERE Country  =  "USA"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0189
+  difficulty: easy
+  question: How many airports do we have?
+  expected_sql: SELECT count(*) FROM AIRPORTS
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0191
+  difficulty: easy
+  question: How many flights do we have?
+  expected_sql: SELECT count(*) FROM FLIGHTS
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0199
+  difficulty: easy
+  question: What is the airport name for airport 'AKO'?
+  expected_sql: SELECT AirportName FROM AIRPORTS WHERE AirportCode  =  "AKO"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0203
+  difficulty: easy
+  question: How many flights depart from 'APG'?
+  expected_sql: SELECT count(*) FROM FLIGHTS WHERE SourceAirport  =  "APG"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0207
+  difficulty: medium
+  question: How many flights depart from City Aberdeen?
+  expected_sql: SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.SourceAirport  =  T2.AirportCode WHERE T2.City  =  "Aberdeen"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0209
+  difficulty: medium
+  question: How many flights arriving in Aberdeen city?
+  expected_sql: SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.DestAirport  =  T2.AirportCode WHERE T2.City  =  "Aberdeen"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0217
+  difficulty: medium
+  question: How many 'United Airlines' flights depart from Airport 'AHD'?
+  expected_sql: SELECT count(*) FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T2.Airline  =  T1.uid WHERE T1.Airline  =  "United Airlines" AND T2.SourceAirport  =  "AHD"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0231
+  difficulty: extra
+  question: Find the abbreviation and country of the airline that has fewest number of flights?
+  expected_sql: SELECT T1.Abbreviation ,  T1.Country FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline ORDER BY count(*) LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0243
+  difficulty: medium
+  question: Find all airlines that have fewer than 200 flights.
+  expected_sql: SELECT T1.Airline FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline HAVING count(*)  <  200
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true
+- id: flight_2_0245
+  difficulty: medium
+  question: What are flight numbers of Airline "United Airlines"?
+  expected_sql: SELECT T1.FlightNo FROM FLIGHTS AS T1 JOIN AIRLINES AS T2 ON T2.uid  =  T1.Airline WHERE T2.Airline  =  "United Airlines"
+  order_matters: false
+  tags:
+  - spider
+  - flight_2
+  verified: true

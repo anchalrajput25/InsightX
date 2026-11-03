@@ -1,0 +1,204 @@
+name: own_shop
+description: >
+  Own gold set on sample_datasets/shop.sqlite (40 tables from three
+  public sample databases: Chinook music store, Sakila DVD rental,
+  Northwind trading). Questions written in plain business English;
+  every expected SQL was run and checked against the data.
+cases:
+  # ---------------- music store (Chinook) ----------------
+  - id: music_track_count
+    difficulty: easy
+    question: How many tracks are in the music store?
+    expected_sql: SELECT COUNT(*) FROM music_track
+    tags: [own, music]
+
+  - id: music_brazil_customers
+    difficulty: easy
+    question: How many music store customers are from Brazil?
+    expected_sql: SELECT COUNT(*) FROM music_customer WHERE country = 'Brazil'
+    tags: [own, music]
+
+  - id: music_top_genre
+    difficulty: medium
+    question: Which music genre has the most tracks?
+    expected_sql: |
+      SELECT g.name FROM music_genre g
+      JOIN music_track t ON t.genre_id = g.genre_id
+      GROUP BY g.genre_id, g.name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, music]
+
+  - id: music_top_artist_albums
+    difficulty: medium
+    question: Which artist has released the most albums?
+    expected_sql: |
+      SELECT ar.name FROM music_artist ar
+      JOIN music_album al ON al.artist_id = ar.artist_id
+      GROUP BY ar.artist_id, ar.name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, music]
+
+  - id: music_top5_countries_sales
+    difficulty: medium
+    question: What are the top 5 billing countries by total music sales?
+    expected_sql: |
+      SELECT billing_country, SUM(total) FROM music_invoice
+      GROUP BY billing_country ORDER BY SUM(total) DESC LIMIT 5
+    order_matters: true
+    tags: [own, music]
+
+  - id: music_rep_most_customers
+    difficulty: hard
+    question: Which support employee looks after the most music customers? Give first and last name.
+    expected_sql: |
+      SELECT e.first_name, e.last_name FROM music_employee e
+      JOIN music_customer c ON c.support_rep_id = e.employee_id
+      GROUP BY e.employee_id, e.first_name, e.last_name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, music]
+
+  - id: music_genre_revenue_top3
+    difficulty: extra
+    question: Which 3 genres earned the most money from track sales?
+    expected_sql: |
+      SELECT g.name FROM music_invoice_line il
+      JOIN music_track t ON t.track_id = il.track_id
+      JOIN music_genre g ON g.genre_id = t.genre_id
+      GROUP BY g.genre_id, g.name ORDER BY SUM(il.unit_price * il.quantity) DESC LIMIT 3
+    tags: [own, music]
+
+  - id: music_avg_invoice
+    difficulty: easy
+    question: What is the average invoice total in the music store?
+    expected_sql: SELECT AVG(total) FROM music_invoice
+    tags: [own, music]
+
+  # ---------------- DVD rental (Sakila) ----------------
+  - id: dvd_pg13_films
+    difficulty: easy
+    question: How many films are rated PG-13?
+    expected_sql: SELECT COUNT(*) FROM dvd_film WHERE rating = 'PG-13'
+    tags: [own, dvd]
+
+  - id: dvd_top_category
+    difficulty: medium
+    question: Which film category has the most films?
+    expected_sql: |
+      SELECT c.name FROM dvd_category c
+      JOIN dvd_film_category fc ON fc.category_id = c.category_id
+      GROUP BY c.category_id, c.name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, dvd]
+
+  - id: dvd_avg_rate_by_rating
+    difficulty: medium
+    question: What is the average rental rate for each film rating?
+    expected_sql: SELECT rating, AVG(rental_rate) FROM dvd_film GROUP BY rating
+    tags: [own, dvd]
+
+  - id: dvd_unreturned
+    difficulty: easy
+    question: How many rentals have not been returned yet?
+    expected_sql: SELECT COUNT(*) FROM dvd_rental WHERE return_date IS NULL
+    tags: [own, dvd]
+
+  - id: dvd_top_actor
+    difficulty: hard
+    question: Which actor has acted in the most films? Give first and last name.
+    expected_sql: |
+      SELECT a.first_name, a.last_name FROM dvd_actor a
+      JOIN dvd_film_actor fa ON fa.actor_id = a.actor_id
+      GROUP BY a.actor_id, a.first_name, a.last_name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, dvd]
+
+  - id: dvd_top5_customers_paid
+    difficulty: extra
+    question: Who are the top 5 customers by total amount paid? Show first name, last name and total.
+    expected_sql: |
+      SELECT c.first_name, c.last_name, SUM(p.amount) FROM dvd_customer c
+      JOIN dvd_payment p ON p.customer_id = c.customer_id
+      GROUP BY c.customer_id, c.first_name, c.last_name ORDER BY SUM(p.amount) DESC LIMIT 5
+    notes: 4th and 5th place are tied, so row order is not checked
+    tags: [own, dvd]
+
+  - id: dvd_films_not_in_stock
+    difficulty: hard
+    question: How many films have no copies in the inventory?
+    expected_sql: |
+      SELECT COUNT(*) FROM dvd_film
+      WHERE film_id NOT IN (SELECT film_id FROM dvd_inventory)
+    tags: [own, dvd]
+
+  - id: dvd_revenue_per_store
+    difficulty: extra
+    question: What is the total payment revenue for each store?
+    expected_sql: |
+      SELECT s.store_id, SUM(p.amount) FROM dvd_payment p
+      JOIN dvd_staff s ON s.staff_id = p.staff_id
+      GROUP BY s.store_id
+    tags: [own, dvd]
+
+  # ---------------- trading company (Northwind) ----------------
+  - id: nw_country_most_customers
+    difficulty: medium
+    question: Which country has the most Northwind customers?
+    expected_sql: |
+      SELECT country FROM nw_customers
+      GROUP BY country ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, northwind]
+
+  - id: nw_discontinued
+    difficulty: easy
+    question: How many Northwind products are discontinued?
+    expected_sql: SELECT COUNT(*) FROM nw_products WHERE discontinued = 1
+    tags: [own, northwind]
+
+  - id: nw_top_employee_orders
+    difficulty: hard
+    question: Which Northwind employee handled the most orders? Give first and last name.
+    expected_sql: |
+      SELECT e.first_name, e.last_name FROM nw_employees e
+      JOIN nw_orders o ON o.employee_id = e.employee_id
+      GROUP BY e.employee_id, e.first_name, e.last_name ORDER BY COUNT(*) DESC LIMIT 1
+    tags: [own, northwind]
+
+  - id: nw_avg_freight_shipper
+    difficulty: medium
+    question: What is the average freight cost for each shipping company?
+    expected_sql: |
+      SELECT s.company_name, AVG(o.freight) FROM nw_orders o
+      JOIN nw_shippers s ON s.shipper_id = o.ship_via
+      GROUP BY s.shipper_id, s.company_name
+    tags: [own, northwind]
+
+  - id: nw_top3_products_revenue
+    difficulty: extra
+    question: What are the top 3 products by sales revenue after discount?
+    expected_sql: |
+      SELECT p.product_name FROM nw_order_details d
+      JOIN nw_products p ON p.product_id = d.product_id
+      GROUP BY p.product_id, p.product_name
+      ORDER BY SUM(d.unit_price * d.quantity * (1 - d.discount)) DESC LIMIT 3
+    order_matters: true
+    tags: [own, northwind]
+
+  - id: nw_customers_no_orders
+    difficulty: hard
+    question: How many Northwind customers have never placed an order?
+    expected_sql: |
+      SELECT COUNT(*) FROM nw_customers
+      WHERE customer_id NOT IN (SELECT customer_id FROM nw_orders WHERE customer_id IS NOT NULL)
+    tags: [own, northwind]
+
+  - id: nw_suppliers_usa
+    difficulty: easy
+    question: How many Northwind suppliers are based in the USA?
+    expected_sql: SELECT COUNT(*) FROM nw_suppliers WHERE country = 'USA'
+    tags: [own, northwind]
+
+  - id: nw_top_category_revenue
+    difficulty: extra
+    question: Which product category has the highest sales revenue after discount?
+    expected_sql: |
+      SELECT c.category_name FROM nw_order_details d
+      JOIN nw_products p ON p.product_id = d.product_id
+      JOIN nw_categories c ON c.category_id = p.category_id
+      GROUP BY c.category_id, c.category_name
+      ORDER BY SUM(d.unit_price * d.quantity * (1 - d.discount)) DESC LIMIT 1
+    tags: [own, northwind]

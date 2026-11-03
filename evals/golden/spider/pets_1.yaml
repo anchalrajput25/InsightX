@@ -1,0 +1,120 @@
+name: spider_pets_1
+description: 'Spider dev set, database pets_1: 13 questions with the official gold SQL (fixed sample, seed 42). Difficulty by Spider rules.'
+cases:
+- id: pets_1_0047
+  difficulty: medium
+  question: Find the weight of the youngest dog.
+  expected_sql: SELECT weight FROM pets ORDER BY pet_age LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0049
+  difficulty: medium
+  question: Find the maximum weight for each type of pet. List the maximum weight and pet type.
+  expected_sql: SELECT max(weight) ,  petType FROM pets GROUP BY petType
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0051
+  difficulty: medium
+  question: Find number of pets owned by students who are older than 20.
+  expected_sql: SELECT count(*) FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid WHERE T1.age  >  20
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0057
+  difficulty: extra
+  question: Find the first name of students who have cat or dog pet.
+  expected_sql: SELECT DISTINCT T1.Fname FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'cat' OR T3.pettype  =  'dog'
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0063
+  difficulty: hard
+  question: Find the id of students who do not have a cat pet.
+  expected_sql: SELECT stuid FROM student EXCEPT SELECT T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pettype  =  'cat'
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0067
+  difficulty: medium
+  question: Find the type and weight of the youngest pet.
+  expected_sql: SELECT pettype ,  weight FROM pets ORDER BY pet_age LIMIT 1
+  order_matters: true
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0069
+  difficulty: medium
+  question: Find the id and weight of all pets whose age is older than 1.
+  expected_sql: SELECT petid ,  weight FROM pets WHERE pet_age  >  1
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0073
+  difficulty: medium
+  question: Find the average weight for each pet type.
+  expected_sql: SELECT avg(weight) ,  pettype FROM pets GROUP BY pettype
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0075
+  difficulty: medium
+  question: Find the first name and age of students who have a pet.
+  expected_sql: SELECT DISTINCT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0077
+  difficulty: medium
+  question: Find the id of the pet owned by student whose last name is ‘Smith’.
+  expected_sql: SELECT T2.petid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid WHERE T1.Lname  =  'Smith'
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0079
+  difficulty: medium
+  question: Find the number of pets for each student who has any pet and student id.
+  expected_sql: SELECT count(*) ,  T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid GROUP BY T1.stuid
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0083
+  difficulty: hard
+  question: Find the last name of the student who has a cat that is age 3.
+  expected_sql: SELECT T1.lname FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid JOIN pets AS T3 ON T3.petid  =  T2.petid WHERE T3.pet_age  =  3 AND T3.pettype  =  'cat'
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
+- id: pets_1_0085
+  difficulty: hard
+  question: Find the average age of students who do not have any pet .
+  expected_sql: select avg(age) from student where stuid not in (select stuid from has_pet)
+  order_matters: false
+  tags:
+  - spider
+  - pets_1
+  verified: true
