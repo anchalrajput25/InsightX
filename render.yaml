@@ -21,5 +21,9 @@ services:
         sync: false
       - key: INSIGHTX_AUTH_SECRET
         generateValue: true
+      # Free Neon PostgreSQL for accounts, chats and history, so they survive
+      # restarts (Render's free disk is wiped). Use the host WITHOUT "-pooler".
+      - key: INSIGHTX_APP_DB_URL
+        sync: false
       - key: INSIGHTX_USER_DAILY_QUESTIONS
         value: "20"

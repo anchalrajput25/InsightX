@@ -11,6 +11,7 @@
 # browser runs without the AI, so it does not count.
 
 import logging
+from contextlib import nullcontext
 from typing import Any, Callable, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -66,7 +67,8 @@ def _run(caller: Caller, question: str, needs_ai: bool, kind: str, work: Callabl
     user_id = _start_question(caller) if needs_ai else caller.user_id
     with telemetry.collect() as stats:
         try:
-            with ai_request(user_id=user_id):
+            # Work without the AI (an edited spec) does not wait in the question queue.
+            with ai_request(user_id=user_id) if needs_ai else nullcontext():
                 report = work()
         except Exception as exc:
             tracing.save(stats, user_id, question, kind=kind, error=f"{type(exc).__name__}: {exc}")

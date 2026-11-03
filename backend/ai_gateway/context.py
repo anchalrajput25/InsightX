@@ -25,15 +25,22 @@ def clean_user_id(value: Optional[str]) -> str:
 
 @contextmanager
 def ai_request(user_id: Optional[str] = None, request_id: Optional[str] = None) -> Iterator[str]:
-    """Bind a user and a fresh request id for the duration of one question."""
+    """Bind a user and a fresh request id for the duration of one question.
+
+    The question also takes its turn in the fair queue (slots.py), so many
+    people asking at once are answered in arrival order.
+    """
+    from backend.ai_gateway.slots import get_slots
+
     rid = request_id or uuid.uuid4().hex
-    user_token = _user.set(clean_user_id(user_id))
-    request_token = _request.set(rid)
-    try:
-        yield rid
-    finally:
-        _request.reset(request_token)
-        _user.reset(user_token)
+    with get_slots().hold():
+        user_token = _user.set(clean_user_id(user_id))
+        request_token = _request.set(rid)
+        try:
+            yield rid
+        finally:
+            _request.reset(request_token)
+            _user.reset(user_token)
 
 
 def current_user() -> str:
