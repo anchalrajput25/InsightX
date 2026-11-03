@@ -1279,3 +1279,7 @@ llmops_api.install(app)
 # "Try the demo database" for the online app (backend/demo_database.py).
 from backend import demo_database  # noqa: E402
 app.include_router(demo_database.router)
+
+# What-if page (backend/whatif/): scenarios, sensitivity sweeps and forecasts.
+from backend.whatif import api as whatif_api  # noqa: E402
+app.include_router(whatif_api.router)

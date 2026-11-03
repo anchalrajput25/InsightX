@@ -48,6 +48,8 @@ JOB_TIER: Dict[str, str] = {
     # investigation mode
     "investigation_plan": "heavy",
     "investigation_narrative": "heavy",
+    # what-if scenarios
+    "whatif_plan": "heavy",
     # benchmark question generation (offline tool)
     "benchmark_generate": "heavy",
 }

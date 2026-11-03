@@ -4,6 +4,7 @@ import {
   FlaskConical,
   Gauge,
   ScanSearch,
+  SlidersHorizontal,
   Split,
   ThumbsUp,
   Cpu,
@@ -28,6 +29,7 @@ export interface NavItem {
 export const NAV_MAIN: NavItem[] = [
   { href: "/ask", label: "Ask", icon: MessageSquareText, description: "Ask questions and investigate changes", needsDatabase: true },
   { href: "/pipeline", label: "Pipeline", icon: Workflow, description: "See every step behind an answer" },
+  { href: "/whatif", label: "What-if", icon: SlidersHorizontal, description: "Test a change and forecast its effect", needsDatabase: true },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, description: "Overview of the whole database", needsDatabase: true },
   { href: "/alerts", label: "Alerts", icon: BellRing, description: "Watch metrics and get told when they move" },
   { href: "/history", label: "History", icon: History, description: "Every question you asked" },
