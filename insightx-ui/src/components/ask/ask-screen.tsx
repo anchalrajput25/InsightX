@@ -141,7 +141,7 @@ function Welcome({ tables, onAsk }: { tables: string[]; onAsk: (question: string
   const ideas: { text: string; icon: typeof MessageSquareText; kind?: "investigation" }[] = first
     ? [
         { text: `How many rows does ${first} have per month?`, icon: MessageSquareText },
-        { text: `Show the top 10 ${second} by count`, icon: MessageSquareText },
+        { text: `Show 10 sample rows from ${second}`, icon: MessageSquareText },
         { text: "Which tables have the most data?", icon: Database },
         { text: `Why did ${first} change last month?`, icon: Compass, kind: "investigation" },
       ]

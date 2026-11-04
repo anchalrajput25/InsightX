@@ -108,8 +108,8 @@ function Shell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onOpenMenu={() => setMobileOpen(true)} onOpenSearch={() => setSearchOpen(true)} />
         <main id="main" className="relative isolate flex min-w-0 flex-1 flex-col">
-          <GridPattern variant="dots" className="h-[420px]" />
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[360px] bg-[radial-gradient(ellipse_60%_100%_at_50%_-30%,var(--glow),transparent_70%)] opacity-70" />
+          <GridPattern variant="dots" className="hidden h-[420px] dark:block" />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[360px] bg-[radial-gradient(ellipse_60%_100%_at_50%_-30%,var(--glow),transparent_70%)] opacity-70 dark:block" />
           <React.Suspense fallback={null}>
             <div key={pathname} className="fx-enter flex min-w-0 flex-1 flex-col">
               {children}

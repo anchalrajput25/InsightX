@@ -85,7 +85,7 @@ export function DataTable({
 
   return (
     <div className={cn("overflow-hidden rounded-lg border", className)}>
-      <Table>
+      <Table className="fx-rows">
         <TableHeader>
           <TableRow className="bg-surface hover:bg-surface">
             {cols.map((column) => (
