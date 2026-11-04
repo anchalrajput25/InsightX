@@ -3,8 +3,10 @@
 # PostgreSQL / MySQL / SQL Server / SQLite engine creation, connection
 # testing and user-facing classification of connection errors.
 
+import hashlib
 import math
 import sqlite3
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,6 +15,10 @@ from sqlalchemy.engine import URL, Engine
 
 from backend import dialects
 from backend.config import database_settings, query_settings
+
+# One engine per server database + login (see create_database_engine).
+_SHARED_ENGINES: dict = {}
+_SHARED_ENGINES_LOCK = threading.Lock()
 
 
 class DatabaseConnectionError(Exception):
@@ -195,6 +201,30 @@ def create_database_engine(
     """Engine for a PostgreSQL, MySQL or SQL Server server, or a SQLite file (database = its path)."""
     if dialects.kind(db_type or dialects.POSTGRES) == dialects.SQLITE:
         return create_sqlite_engine(database)
+    # People connecting the same server database with the same login share one
+    # engine (one pool of at most 15 connections) instead of one pool each, so
+    # 20 visitors of the demo database cannot exhaust a free server's connection
+    # limit. Different credentials never share. Disconnecting disposes only the
+    # idle connections; a shared engine keeps working for the others.
+    key = hashlib.sha256(repr((dialects.kind(db_type or dialects.POSTGRES), host, int(port or 0), database,
+                               username, password)).encode()).hexdigest()
+    with _SHARED_ENGINES_LOCK:
+        engine = _SHARED_ENGINES.get(key)
+        if engine is None:
+            engine = _new_server_engine(db_type, host, port, database, username, password)
+            _SHARED_ENGINES[key] = engine
+        return engine
+
+
+def forget_engine(engine: Engine) -> None:
+    """Drop a shared engine that failed to connect (wrong password, bad host)."""
+    with _SHARED_ENGINES_LOCK:
+        for key, shared in list(_SHARED_ENGINES.items()):
+            if shared is engine:
+                del _SHARED_ENGINES[key]
+
+
+def _new_server_engine(db_type: str, host: str, port: int, database: str, username: str, password: str) -> Engine:
     if dialects.kind(db_type or dialects.POSTGRES) == dialects.MSSQL:
         return create_mssql_engine(host, port, database, username, password)
     if dialects.kind(db_type or dialects.POSTGRES) == dialects.MYSQL:

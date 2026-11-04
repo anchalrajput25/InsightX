@@ -33,6 +33,7 @@ from backend.config import ingestion_settings
 from backend.database import (
     DatabaseConnectionError,
     create_database_engine,
+    forget_engine,
     test_postgres_connection,
 )
 
@@ -420,6 +421,7 @@ def open_verified_engine(
         test_postgres_connection(engine)
     except DatabaseConnectionError as exc:
         engine.dispose()
+        forget_engine(engine)
         logger.warning(
             "%s connection to %s:%s/%s as %s failed (%s)",
             dialects.label(db_type), host, port, database, username, exc.status_code,
