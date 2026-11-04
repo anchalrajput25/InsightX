@@ -5,53 +5,55 @@
 
 /*
  * InsightX Studio design tokens.
- * Neutral surfaces, one cool accent, and colour used only for meaning
- * (good / warning / critical / up / down). Dark is the default theme.
+ * Light (the default): a calm, warm workspace. Off-white page, white cards
+ * with thin warm-grey borders, one violet accent with a lavender tint for
+ * active states, and colour used only for meaning (good / warning /
+ * critical). Dark keeps the original look.
  */
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
-  --background: oklch(0.985 0.002 260);
-  --foreground: oklch(0.2 0.006 265);
-  --surface: oklch(0.97 0.003 260);
+  --background: oklch(0.972 0.004 85);
+  --foreground: oklch(0.22 0.008 285);
+  --surface: oklch(0.982 0.003 85);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.006 265);
+  --card-foreground: oklch(0.22 0.008 285);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.006 265);
-  --primary: oklch(0.52 0.16 262);
+  --popover-foreground: oklch(0.22 0.008 285);
+  --primary: oklch(0.54 0.2 292);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.955 0.004 260);
-  --secondary-foreground: oklch(0.25 0.006 265);
-  --muted: oklch(0.955 0.004 260);
-  --muted-foreground: oklch(0.5 0.012 265);
-  --accent: oklch(0.945 0.008 262);
-  --accent-foreground: oklch(0.22 0.01 265);
+  --secondary: oklch(0.958 0.004 85);
+  --secondary-foreground: oklch(0.26 0.008 285);
+  --muted: oklch(0.958 0.004 85);
+  --muted-foreground: oklch(0.56 0.012 285);
+  --accent: oklch(0.95 0.025 295);
+  --accent-foreground: oklch(0.44 0.19 292);
   --destructive: oklch(0.58 0.2 25);
-  --border: oklch(0.91 0.004 260);
-  --input: oklch(0.9 0.004 260);
-  --ring: oklch(0.52 0.16 262 / 0.45);
+  --border: oklch(0.925 0.005 85);
+  --input: oklch(0.91 0.005 85);
+  --ring: oklch(0.54 0.2 292 / 0.4);
 
-  --success: oklch(0.6 0.14 155);
-  --warning: oklch(0.72 0.15 75);
+  --success: oklch(0.6 0.14 152);
+  --warning: oklch(0.68 0.15 62);
   --critical: oklch(0.6 0.2 25);
   --info: oklch(0.6 0.13 245);
 
-  --chart-1: oklch(0.58 0.16 262);
-  --chart-2: oklch(0.65 0.12 190);
-  --chart-3: oklch(0.72 0.14 75);
-  --chart-4: oklch(0.62 0.16 320);
-  --chart-5: oklch(0.6 0.13 150);
-  --chart-grid: oklch(0.92 0.004 260);
-  --chart-axis: oklch(0.55 0.01 265);
+  --chart-1: oklch(0.56 0.19 292);
+  --chart-2: oklch(0.72 0.12 50);
+  --chart-3: oklch(0.65 0.13 152);
+  --chart-4: oklch(0.72 0.13 330);
+  --chart-5: oklch(0.62 0.12 230);
+  --chart-grid: oklch(0.93 0.005 85);
+  --chart-axis: oklch(0.58 0.01 285);
 
-  --sidebar: oklch(0.975 0.003 260);
-  --sidebar-foreground: oklch(0.3 0.008 265);
-  --sidebar-border: oklch(0.92 0.004 260);
-  --sidebar-active: oklch(0.93 0.008 262);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.32 0.01 285);
+  --sidebar-border: oklch(0.925 0.005 85);
+  --sidebar-active: oklch(0.955 0.022 295);
 
-  --glow: oklch(0.52 0.16 262 / 0.22);
-  --glow-2: oklch(0.65 0.12 190 / 0.18);
-  --edge: oklch(1 0 0 / 0.7);
+  --glow: oklch(0.54 0.2 292 / 0.12);
+  --glow-2: oklch(0.72 0.12 50 / 0.12);
+  --edge: oklch(1 0 0 / 0.9);
 }
 
 .dark {
@@ -191,8 +193,8 @@
 @keyframes fx-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
-    filter: blur(4px);
+    transform: translateY(10px);
+    filter: blur(10px);
   }
   to {
     opacity: 1;
@@ -234,20 +236,23 @@
 }
 
 @layer utilities {
-  /* Blur fade: content rises in softly. Use --d for a delay. */
+  /* Blur fade: content comes into focus as it rises. Use --d for a delay. */
   .fx-enter {
-    animation: fx-enter 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: fx-enter 0.7s cubic-bezier(0.22, 0.8, 0.24, 1) both;
     animation-delay: var(--d, 0ms);
   }
-  .fx-stagger > * {
-    animation: fx-enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  /* Children (cards, grid items) and table rows come into focus one by one. */
+  .fx-stagger > *,
+  .fx-rows tbody > tr {
+    animation: fx-enter 0.6s cubic-bezier(0.22, 0.8, 0.24, 1) both;
   }
-  .fx-stagger > *:nth-child(2) { animation-delay: 50ms; }
-  .fx-stagger > *:nth-child(3) { animation-delay: 100ms; }
-  .fx-stagger > *:nth-child(4) { animation-delay: 150ms; }
-  .fx-stagger > *:nth-child(5) { animation-delay: 200ms; }
-  .fx-stagger > *:nth-child(6) { animation-delay: 250ms; }
-  .fx-stagger > *:nth-child(n + 7) { animation-delay: 300ms; }
+  .fx-stagger > *:nth-child(2), .fx-rows tbody > tr:nth-child(2) { animation-delay: 70ms; }
+  .fx-stagger > *:nth-child(3), .fx-rows tbody > tr:nth-child(3) { animation-delay: 140ms; }
+  .fx-stagger > *:nth-child(4), .fx-rows tbody > tr:nth-child(4) { animation-delay: 210ms; }
+  .fx-stagger > *:nth-child(5), .fx-rows tbody > tr:nth-child(5) { animation-delay: 280ms; }
+  .fx-stagger > *:nth-child(6), .fx-rows tbody > tr:nth-child(6) { animation-delay: 350ms; }
+  .fx-stagger > *:nth-child(7), .fx-rows tbody > tr:nth-child(7) { animation-delay: 420ms; }
+  .fx-stagger > *:nth-child(n + 8), .fx-rows tbody > tr:nth-child(n + 8) { animation-delay: 480ms; }
 
   /* Headline text with a soft vertical fade. */
   .fx-title {

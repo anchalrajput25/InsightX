@@ -25,11 +25,12 @@ function NavLink({ item, collapsed, onNavigate, badge }: { item: NavItem; collap
       className={cn(
         "group relative flex h-8 items-center gap-2.5 rounded-md text-[13px] font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-active hover:text-foreground",
         collapsed ? "w-9 justify-center" : "px-2.5",
-        active && "bg-[linear-gradient(90deg,color-mix(in_oklch,var(--primary)_16%,transparent),transparent)] text-foreground shadow-[inset_0_1px_0_var(--edge)]",
+        active &&
+          "bg-sidebar-active text-accent-foreground dark:bg-[linear-gradient(90deg,color-mix(in_oklch,var(--primary)_16%,transparent),transparent)] dark:text-foreground dark:shadow-[inset_0_1px_0_var(--edge)]",
       )}
     >
-      {active && <span aria-hidden className="absolute -left-2 top-1.5 bottom-1.5 w-0.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />}
-      <Icon className={cn("size-4 shrink-0 transition-colors", active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+      {active && <span aria-hidden className="absolute -left-2 top-1.5 bottom-1.5 hidden w-0.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)] dark:block" />}
+      <Icon className={cn("size-4 shrink-0 transition-colors", active ? "text-primary" : "text-primary/55 group-hover:text-primary dark:text-muted-foreground dark:group-hover:text-foreground")} />
       {!collapsed && <span className="truncate">{item.label}</span>}
       {badge ? (
         <span
