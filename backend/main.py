@@ -17,6 +17,7 @@ from backend.ai_gateway.report import openrouter_key_status, usage_summary
 from backend.auth.deps import Caller, auth_required, current_caller
 from backend.auth.routes import router as auth_router
 from backend.auth.password_reset import router as password_reset_router
+from backend.auth.email_check import router as email_check_router
 from backend.auth.store import get_user_store
 from fastapi import (
     Depends,
@@ -105,6 +106,7 @@ app = FastAPI(
 # takes `caller: Caller = Depends(current_caller)`; a test checks that.
 app.include_router(auth_router)
 app.include_router(password_reset_router)  # forgot password / reset link
+app.include_router(email_check_router)  # is reset email working? (no secrets shown)
 
 
 # ============================================================
