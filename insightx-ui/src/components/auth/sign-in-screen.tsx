@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,6 +91,9 @@ function SignInForm({ onDone }: { onDone: () => void }) {
       <Field id="password" label="Password" error={errors.password?.message}>
         <PasswordInput id="password" autoComplete="current-password" invalid={!!errors.password} {...form.register("password")} />
       </Field>
+      <Link href="/forgot-password" className="-mt-2 block text-right text-xs text-muted-foreground hover:text-foreground">
+        Forgot password?
+      </Link>
       {serverError && (
         <p role="alert" className="rounded-md border border-critical/30 bg-critical/10 px-3 py-2 text-[13px] text-critical">
           {serverError}

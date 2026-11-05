@@ -16,6 +16,7 @@ from backend.ai_gateway import AIUnavailableError, UsageLimitError, ai_request, 
 from backend.ai_gateway.report import openrouter_key_status, usage_summary
 from backend.auth.deps import Caller, auth_required, current_caller
 from backend.auth.routes import router as auth_router
+from backend.auth.password_reset import router as password_reset_router
 from backend.auth.store import get_user_store
 from fastapi import (
     Depends,
@@ -103,6 +104,7 @@ app = FastAPI(
 # Sign-up / sign-in. Every other endpoint (except the health check)
 # takes `caller: Caller = Depends(current_caller)`; a test checks that.
 app.include_router(auth_router)
+app.include_router(password_reset_router)  # forgot password / reset link
 
 
 # ============================================================
