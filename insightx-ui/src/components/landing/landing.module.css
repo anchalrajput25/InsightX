@@ -1,0 +1,63 @@
+/* Landing page: scroll-linked reveals and the thin "instrument" frame. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(10px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 0.8, 0.24, 1),
+    transform 0.9s cubic-bezier(0.22, 0.8, 0.24, 1),
+    filter 0.9s cubic-bezier(0.22, 0.8, 0.24, 1);
+  transition-delay: var(--delay, 0ms);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.grid {
+  background-image:
+    linear-gradient(var(--grid-line, rgb(255 255 255 / 0.045)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line, rgb(255 255 255 / 0.045)) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black, transparent 85%);
+}
+
+.cross::before,
+.cross::after {
+  content: "";
+  position: absolute;
+  background: var(--cross, rgb(255 255 255 / 0.55));
+}
+.cross::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+.cross::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: translateY(-50%);
+}
+
+/* Fine film grain over the whole page (inline SVG noise, no download). */
+.grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
