@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager, nullcontext
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from backend import chat_list, connections, dialects, history, telemetry, tracing
+from backend import chat_list, connections, dialects, history, schema_store, telemetry, tracing
 from backend.text_to_sql import question_cache
 from backend.ai_gateway import AIUnavailableError, UsageLimitError, ai_request, get_gateway
 from backend.ai_gateway.report import openrouter_key_status, usage_summary
@@ -451,14 +451,25 @@ def warm_retrieval_index(agent_schema: Dict[str, Any]) -> None:
 
 def profile_database(engine: Engine) -> Dict[str, Any]:
     """Profile the database and cache it as the agent schema."""
-    try:
-        schema = get_database_schema(engine)
-    except Exception as exc:
-        logger.exception("Schema inspection failed")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Schema inspection failed: {_first_line(exc)}",
-        ) from exc
+    stored = schema_store.load(engine)
+    if stored is not None:
+        # Profiled before (saved across restarts): connect at once, and refresh
+        # in the background so tables added since then still show up.
+        schema = stored[0]
+        schema_store.refresh_in_background(
+            engine, get_database_schema,
+            lambda target, fresh: warm_retrieval_index(cache_schema_from_profile(target, fresh)),
+        )
+    else:
+        try:
+            schema = get_database_schema(engine)
+        except Exception as exc:
+            logger.exception("Schema inspection failed")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Schema inspection failed: {_first_line(exc)}",
+            ) from exc
+        schema_store.save(engine, schema)
 
     # Reuse this profile (incl. inferred relationships) as the agent
     # schema so /query does not re-inspect every turn.

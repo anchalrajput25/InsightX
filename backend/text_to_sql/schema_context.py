@@ -193,8 +193,11 @@ def cache_schema_from_profile(engine: Engine, profile: Dict[str, Any]) -> Dict[s
 
 
 def invalidate_schema_cache(engine: Engine) -> None:
+    from backend import schema_store
+
     with _CACHE_LOCK:
         _SCHEMA_CACHE.pop(_cache_key(engine), None)
+    schema_store.forget(engine)
 
 
 def get_agent_schema(engine: Engine) -> Dict[str, Any]:
@@ -222,6 +225,18 @@ def get_agent_schema(engine: Engine) -> Dict[str, Any]:
             return copy.deepcopy(cached)
 
         # Imported here: schema_profiler imports this module.
+        from backend import schema_store
         from backend.schema_profiler import get_database_schema
 
-        return cache_schema_from_profile(engine, get_database_schema(engine))
+        # After a restart: the profile saved last time instead of scanning
+        # every table again (refreshed in the background once it is old).
+        stored = schema_store.load(engine)
+        if stored is not None:
+            profile, age = stored
+            if age > schema_store.MAX_AGE_SECONDS:
+                schema_store.refresh_in_background(engine, get_database_schema, cache_schema_from_profile)
+            return cache_schema_from_profile(engine, profile)
+
+        profile = get_database_schema(engine)
+        schema_store.save(engine, profile)
+        return cache_schema_from_profile(engine, profile)
