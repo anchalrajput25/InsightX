@@ -1,0 +1,12 @@
+name: Keep live server awake
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping backend
+        run: curl -fsS -m 90 --retry 2 --retry-delay 10 https://insightx-api-qzgl.onrender.com/ -o /dev/null && echo awake || echo "ping failed (server may be waking)"
