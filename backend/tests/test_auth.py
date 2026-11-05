@@ -13,7 +13,7 @@ from backend.auth.store import get_user_store
 
 PASSWORD = "good pass 123"
 PUBLIC_PATHS = {"/", "/test", "/auth/status", "/auth/signup", "/auth/login",
-                "/auth/forgot-password", "/auth/reset-password"}
+                "/auth/forgot-password", "/auth/reset-password", "/auth/email-check"}
 
 
 @pytest.fixture

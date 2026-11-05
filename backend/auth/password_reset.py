@@ -129,7 +129,9 @@ def _deliver(address: str, token: str) -> None:
     try:
         send_reset_email(address, link)
     except Exception as exc:  # never tell the caller; never log the token
-        log.warning("Could not send the password reset email: %s", type(exc).__name__)
+        from backend.auth.email_check import _clean
+
+        log.warning("Could not send the password reset email: %s", _clean(exc))
 
 
 # ------------------------------------------------------------ the flow
