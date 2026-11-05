@@ -31,6 +31,7 @@ export interface SchemaTable {
   row_count?: number;
   column_count?: number;
   description?: string;
+  columns?: { column_name: string; data_type?: string }[];
 }
 export interface ConnectResponse {
   status: string;
@@ -63,7 +64,7 @@ export interface Connection {
   kind: string;
   connectedAt: number;
   /** A small summary of the schema seen when connecting (for display only). */
-  tables?: { name: string; rows?: number; columns?: number }[];
+  tables?: { name: string; rows?: number; columns?: number; /** Has a date or time column. */ dated?: boolean }[];
   links?: number;
 }
 

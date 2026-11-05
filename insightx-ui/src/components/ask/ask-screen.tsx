@@ -135,15 +135,27 @@ function TurnView({
   );
 }
 
-function Welcome({ tables, onAsk }: { tables: string[]; onAsk: (question: string, kind?: "answer" | "investigation") => void }) {
+function Welcome({
+  tables,
+  dated,
+  onAsk,
+}: {
+  tables: string[];
+  /** Tables with a date column: the only ones a "per month" or "why did it change" question fits. */
+  dated: string[];
+  onAsk: (question: string, kind?: "answer" | "investigation") => void;
+}) {
   const first = tables[0];
   const second = tables[1] ?? tables[0];
+  const timed = dated[0];
   const ideas: { text: string; icon: typeof MessageSquareText; kind?: "investigation" }[] = first
     ? [
-        { text: `How many rows does ${first} have per month?`, icon: MessageSquareText },
+        timed
+          ? { text: `How many rows does ${timed} have per month?`, icon: MessageSquareText }
+          : { text: `How many rows does ${first} have?`, icon: MessageSquareText },
         { text: `Show 10 sample rows from ${second}`, icon: MessageSquareText },
         { text: "Which tables have the most data?", icon: Database },
-        { text: `Why did ${first} change last month?`, icon: Compass, kind: "investigation" },
+        ...(timed ? [{ text: `Why did ${timed} change last month?`, icon: Compass, kind: "investigation" as const }] : []),
       ]
     : [];
   return (
@@ -347,7 +359,9 @@ export function AskScreen() {
     );
   }
 
-  const tableNames = (connection.tables ?? []).filter((table) => !table.name.startsWith("insightx_")).map((table) => table.name);
+  const userTables = (connection.tables ?? []).filter((table) => !table.name.startsWith("insightx_"));
+  const tableNames = userTables.map((table) => table.name);
+  const datedTables = userTables.filter((table) => table.dated).map((table) => table.name);
   const retry = (turn: Turn) => {
     updateTurns(threadId, (current) => current.filter((item) => item.id !== turn.id));
     void send(turn.question, turn.state === "error" ? turn.kind : undefined);
@@ -384,7 +398,7 @@ export function AskScreen() {
             <EmptyState icon={History} title="This chat could not be opened" description={loadError} action={<Button variant="outline" onClick={() => router.push("/ask")}>Start a new chat</Button>} />
           </div>
         ) : (
-          <Welcome tables={tableNames} onAsk={(question, kind) => void send(question, kind)} />
+          <Welcome tables={tableNames} dated={datedTables} onAsk={(question, kind) => void send(question, kind)} />
         )
       ) : (
         <div className="mx-auto w-full max-w-3xl flex-1 space-y-10 px-4 pb-8 pt-8 sm:px-6">

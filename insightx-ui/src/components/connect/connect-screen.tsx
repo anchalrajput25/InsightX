@@ -70,6 +70,7 @@ function toConnection(response: ConnectResponse, name: string): Connection {
     name: table.table_name,
     rows: table.row_count,
     columns: table.column_count,
+    dated: (table.columns ?? []).some((column) => /date|time/i.test(column.data_type ?? "")),
   }));
   return {
     id: response.connection_id,
