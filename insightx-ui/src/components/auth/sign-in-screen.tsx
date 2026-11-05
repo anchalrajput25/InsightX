@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ArrowRight, BrainCircuit, Eye, EyeOff, Loader2, SearchCheck, ShieldCheck } from "lucide-react";
 import { LogoMark } from "@/components/common/logo";
-import { AuroraBackground } from "@/components/fx/aurora-background";
+import { CrystalBackdrop } from "@/components/landing/crystal-backdrop";
 import { GridPattern } from "@/components/fx/grid-pattern";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,9 +163,10 @@ export function SignInScreen() {
   }, [state.phase, router, target]);
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      <section className="relative isolate hidden overflow-hidden border-r bg-sidebar lg:flex lg:flex-col lg:justify-between lg:p-12">
-        <AuroraBackground className="[mask-image:none]" />
+    <div className="dark grid min-h-dvh bg-[#06070a] text-foreground lg:grid-cols-[1.05fr_1fr]">
+      <section className="relative isolate hidden overflow-hidden border-r border-white/[0.06] bg-[#08090d] lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_55%,rgb(124_58_237/0.18),transparent_70%)]" />
+        <CrystalBackdrop soft className="absolute inset-0 -z-10 opacity-55" />
         <GridPattern className="[mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_70%)]" />
         <div className="relative flex items-center gap-2.5">
           <LogoMark />
