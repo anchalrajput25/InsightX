@@ -45,7 +45,11 @@ def isolated_usage_store(tmp_path):
     chat_list.set_store(chat_list.ChatListStore(f"sqlite:///{(tmp_path / 'chats.db').as_posix()}"))
 
     connections.set_store(connections.ConnectionStore(f"sqlite:///{(tmp_path / 'connections.db').as_posix()}"))
+    from backend import schema_store
+
+    schema_store.set_store(schema_store.SchemaStore(f"sqlite:///{(tmp_path / 'schema_store.db').as_posix()}"))
     yield
+    schema_store.set_store(None)
     history.set_store(None)
     connections.set_store(None)
     chat_list.set_store(None)
