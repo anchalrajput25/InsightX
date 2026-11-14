@@ -66,7 +66,7 @@ export function ChartCard({
         ) : rows.length === 0 ? (
           <p className="flex h-full min-h-24 items-center justify-center rounded-lg border border-dashed text-xs text-muted-foreground">No rows to show.</p>
         ) : (
-          <AutoChart columns={columns} rows={rows} preferred={kind || undefined} height={height} />
+          <AutoChart columns={columns} rows={rows} preferred={kind || undefined} height={height} question={title} title={title} showTitle={false} />
         )}
       </div>
 
@@ -86,7 +86,7 @@ export function ChartCard({
                 </TabsTrigger>
               )}
             </TabsList>
-            <TabsContent value="chart">{rows.length ? <AutoChart columns={columns} rows={rows} preferred={kind || undefined} height={360} /> : null}</TabsContent>
+            <TabsContent value="chart">{rows.length ? <AutoChart columns={columns} rows={rows} preferred={kind || undefined} height={360} question={title} title={title} showTitle={false} /> : null}</TabsContent>
             <TabsContent value="data">
               <DataTable columns={columns} rows={rows} pageSize={10} exportName={`${title.slice(0, 40)}.csv`} />
             </TabsContent>

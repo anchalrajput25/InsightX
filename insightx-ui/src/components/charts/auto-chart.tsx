@@ -25,6 +25,8 @@ import { formatNumber, humanize } from "@/lib/format";
 import type { Row } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { axisProps, ChartTooltip, gridProps, Legend, SERIES, shortDate, shortLabel } from "@/components/charts/chart-kit";
+import { SmartChart } from "@/components/charts/smart/smart-chart";
+import { recommendChart } from "@/lib/chart-intel/recommend";
 
 const KIND_ICONS: Partial<Record<ChartKind, typeof BarChart3>> = {
   bar: BarChart3,
@@ -74,7 +76,8 @@ function Metrics({ plan, row }: { plan: ChartPlan; row: Row }) {
   );
 }
 
-export function AutoChart({
+/** The earlier Recharts version, kept for reference and fallback. */
+export function ClassicAutoChart({
   columns,
   rows,
   preferred,
@@ -219,5 +222,24 @@ export function AutoChart({
 }
 
 export function canChart(columns: string[], rows: Row[]): boolean {
-  return planChart(columns, rows) !== null;
+  return planChart(columns, rows) !== null || recommendChart(columns, rows) !== null;
+}
+
+/**
+ * Every chart in the app goes through here. It now draws with SmartChart
+ * (Apache ECharts + chart intelligence); same props as before.
+ */
+export function AutoChart(props: {
+  columns: string[];
+  rows: Row[];
+  preferred?: string;
+  height?: number;
+  highlight?: string;
+  className?: string;
+  showSwitch?: boolean;
+  question?: string;
+  title?: string;
+  showTitle?: boolean;
+}) {
+  return <SmartChart {...props} />;
 }

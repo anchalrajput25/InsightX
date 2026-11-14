@@ -8,6 +8,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { ArrowUp, Database, LayoutDashboard, Link2, Loader2, RefreshCw, Rows3, Sparkles, Table2 } from "lucide-react";
 import { axisProps, ChartTooltip, gridProps, shortLabel } from "@/components/charts/chart-kit";
 import { ChartCard } from "@/components/common/chart-card";
+import { ChartLinkProvider } from "@/components/charts/smart/chart-links";
 import { PageHeader, SectionTitle } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
 import { CardsSkeleton, EmptyState, ErrorState } from "@/components/common/states";
@@ -141,6 +142,7 @@ export function DashboardScreen() {
   const data = overview.data;
   const saved = charts.data?.charts ?? [];
   return (
+    <ChartLinkProvider>
     <div className="mx-auto w-full max-w-7xl space-y-8 px-4 py-8 sm:px-8">
       <PageHeader
         title="Dashboard"
@@ -234,5 +236,6 @@ export function DashboardScreen() {
         )}
       </div>
     </div>
+    </ChartLinkProvider>
   );
 }
