@@ -5,6 +5,8 @@ import { ArrowUp, Compass, Loader2, MessageSquareText, Wand2 } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/tooltip";
 import type { Mode } from "@/components/ask/turns";
+import { MicButton, useVoiceErrorToast } from "@/components/voice/voice-buttons";
+import { useSpeechInput } from "@/lib/speech";
 import { cn } from "@/lib/utils";
 
 const MODES: { value: Mode; label: string; icon: typeof Wand2; hint: string }[] = [
@@ -21,7 +23,7 @@ export function Composer({
   onModeChange,
   autoFocus,
 }: {
-  onSend: (question: string) => void;
+  onSend: (question: string, options?: { voice?: boolean }) => void;
   busy: boolean;
   disabled?: boolean;
   mode: Mode;
@@ -30,13 +32,25 @@ export function Composer({
 }) {
   const [text, setText] = React.useState("");
   const ref = React.useRef<HTMLTextAreaElement>(null);
+  const voice = useSpeechInput({
+    onFinal: (spoken) => {
+      if (busy || disabled) {
+        setText(spoken);
+        return;
+      }
+      onSend(spoken, { voice: true });
+      setText("");
+    },
+  });
+  useVoiceErrorToast(voice.error);
+  const shown = voice.listening ? voice.interim || text : text;
 
   React.useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
     element.style.height = "0px";
     element.style.height = `${Math.min(element.scrollHeight, 200)}px`;
-  }, [text]);
+  }, [shown]);
 
   const send = () => {
     const question = text.trim();
@@ -63,7 +77,8 @@ export function Composer({
         id="question"
         ref={ref}
         rows={1}
-        value={text}
+        value={shown}
+        readOnly={voice.listening}
         autoFocus={autoFocus}
         disabled={disabled}
         onChange={(event) => setText(event.target.value)}
@@ -73,7 +88,7 @@ export function Composer({
             send();
           }
         }}
-        placeholder={mode === "investigate" ? "Why did revenue drop last month?" : "Ask anything about your data…"}
+        placeholder={voice.listening ? "Listening… speak now" : mode === "investigate" ? "Why did revenue drop last month?" : "Ask anything about your data…"}
         className="scrollbar-thin block max-h-[200px] min-h-[52px] w-full resize-none bg-transparent px-4 pt-3.5 pb-1 text-[15px] leading-relaxed placeholder:text-muted-foreground/70 focus:outline-none disabled:cursor-not-allowed"
       />
       <div className="flex items-center justify-between gap-2 px-2.5 pb-2.5 pt-1">
@@ -101,6 +116,7 @@ export function Composer({
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden text-[11px] text-muted-foreground md:inline">Enter to send, Shift+Enter for a new line</span>
+          <MicButton listening={voice.listening} supported={voice.supported} disabled={disabled || (busy && !voice.listening)} onClick={voice.toggle} />
           <Button type="submit" size="icon-sm" className="rounded-lg cursor-pointer" disabled={!text.trim() || busy || disabled} aria-label="Send question">
             {busy ? <Loader2 className="animate-spin" /> : <ArrowUp />}
           </Button>

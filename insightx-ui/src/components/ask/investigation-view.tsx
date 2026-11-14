@@ -39,6 +39,7 @@ import { TrustBadge } from "@/components/ask/trust-badge";
 import { formatNumber, formatPercent, formatSeconds, humanize, stripEmoji } from "@/lib/format";
 import type { Driver, InvestigationReport, Reason } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/voice/voice-buttons";
 
 function Panel({ icon: Icon, title, aside, children, className }: { icon: typeof Target; title: string; aside?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
@@ -293,6 +294,7 @@ export function InvestigationView({ report, onAsk, busy }: { report: Investigati
           <Compass /> Investigation
         </Badge>
         <TrustBadge trust={report.trust} />
+        <ListenButton text={stripEmoji([narrative.real_reason, narrative.summary].filter(Boolean).join(". "))} />
         <span className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Database className="size-3.5" /> {report.plan.fact_table}

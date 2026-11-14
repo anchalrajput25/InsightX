@@ -5,15 +5,15 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, ArrowRight, Compass, Database, History, Loader2, MessageSquareText, RefreshCw, RotateCcw, Unplug } from "lucide-react";
+import { AlertTriangle, Database, History, Loader2, RefreshCw, RotateCcw, Unplug } from "lucide-react";
 import { LogoMark } from "@/components/common/logo";
-import { AuroraBackground } from "@/components/fx/aurora-background";
 import { EmptyState } from "@/components/common/states";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerCard, RichText } from "@/components/ask/answer-card";
 import { Composer } from "@/components/ask/composer";
+import { HomeHub } from "@/components/home/home-hub";
 import { InvestigationView } from "@/components/ask/investigation-view";
 import { loadTurns, saveTurns, turnsFromHistory, type Mode, type Turn } from "@/components/ask/turns";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -23,6 +23,7 @@ import { ApiError, errorMessage } from "@/lib/api/client";
 import { questionsApi } from "@/lib/api/questions";
 import { initials, stripEmoji } from "@/lib/format";
 import { newThreadId, readPref, writePref } from "@/lib/ui-prefs";
+import { speak, stopSpeaking } from "@/lib/speech";
 
 function Elapsed({ since }: { since: number }) {
   const [now, setNow] = React.useState(() => Date.now());
@@ -135,66 +136,6 @@ function TurnView({
   );
 }
 
-function Welcome({
-  tables,
-  dated,
-  onAsk,
-}: {
-  tables: string[];
-  /** Tables with a date column: the only ones a "per month" or "why did it change" question fits. */
-  dated: string[];
-  onAsk: (question: string, kind?: "answer" | "investigation") => void;
-}) {
-  const first = tables[0];
-  const second = tables[1] ?? tables[0];
-  const timed = dated[0];
-  const ideas: { text: string; icon: typeof MessageSquareText; kind?: "investigation" }[] = first
-    ? [
-        timed
-          ? { text: `How many rows does ${timed} have per month?`, icon: MessageSquareText }
-          : { text: `How many rows does ${first} have?`, icon: MessageSquareText },
-        { text: `Show 10 sample rows from ${second}`, icon: MessageSquareText },
-        { text: "Which tables have the most data?", icon: Database },
-        ...(timed ? [{ text: `Why did ${timed} change last month?`, icon: Compass, kind: "investigation" as const }] : []),
-      ]
-    : [];
-  return (
-    <div className="relative isolate mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 py-10 text-center">
-      <AuroraBackground intensity={0.75} />
-      <div className="fx-enter relative">
-        <div aria-hidden className="absolute inset-0 -z-10 scale-[2.6] rounded-full bg-[var(--glow)] blur-2xl" />
-        <LogoMark className="size-12" />
-      </div>
-      <h1 className="fx-enter mt-6 text-3xl font-semibold tracking-tight sm:text-4xl" style={{ ["--d" as string]: "80ms" }}>
-        <span className="fx-title">What do you </span>
-        <span className="fx-gradient-text">want to know?</span>
-      </h1>
-      <p className="fx-enter mt-2.5 max-w-md text-sm text-muted-foreground" style={{ ["--d" as string]: "140ms" }}>Ask in plain English. Use Investigate to find out why a number changed.</p>
-      {ideas.length > 0 && (
-        <div className="fx-stagger mt-8 grid w-full gap-2.5 sm:grid-cols-2">
-          {ideas.map((idea) => (
-            <button
-              key={idea.text}
-              type="button"
-              onClick={() => onAsk(idea.text, idea.kind)}
-              className="fx-spotlight fx-surface group flex cursor-pointer items-start gap-3 rounded-xl border bg-card/60 p-3.5 text-left text-[13px] backdrop-blur-sm transition-colors duration-200 hover:border-primary/40 hover:bg-card"
-              onPointerMove={(event) => {
-                const rect = event.currentTarget.getBoundingClientRect();
-                event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-                event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
-              }}
-            >
-              <idea.icon className="mt-0.5 size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
-              <span className="flex-1">{idea.text}</span>
-              <ArrowRight className="mt-0.5 size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function AskScreen() {
   const params = useSearchParams();
   const router = useRouter();
@@ -282,11 +223,12 @@ export function AskScreen() {
   }, [turns.length, lastState]);
 
   const send = React.useCallback(
-    async (question: string, forced?: "answer" | "investigation") => {
+    async (question: string, forced?: "answer" | "investigation", voice?: boolean) => {
       if (!connection) {
         toast.error("Connect a database first");
         return;
       }
+      stopSpeaking();
       let thread = threadId;
       if (!thread) {
         thread = newThreadId();
@@ -312,9 +254,11 @@ export function AskScreen() {
         if (kind === "investigation") {
           const result = await questionsApi.investigate(connection.id, question, thread);
           updateTurns(thread, (current) => current.map((turn) => (turn.id === id ? { id, question, state: "done", kind: "investigation", result } : turn)));
+          if (voice) speak(stripEmoji([result.narrative?.real_reason, result.narrative?.summary].filter(Boolean).join(". ")));
         } else {
           const result = await questionsApi.ask(connection.id, question, thread);
           updateTurns(thread, (current) => current.map((turn) => (turn.id === id ? { id, question, state: "done", kind: "answer", result } : turn)));
+          if (voice) speak(stripEmoji(result.clarification || result.answer || ""));
         }
         touch(thread, question).catch(() => undefined);
         void queryClient.invalidateQueries({ queryKey: ["history"] });
@@ -325,6 +269,7 @@ export function AskScreen() {
           current.map((turn) => (turn.id === id ? { id, question, state: "error", kind, error: errorMessage(error), lostConnection: lost } : turn)),
         );
         if (lost) setConnection(null);
+        if (voice) speak("Sorry, I could not answer that. Please try again.");
       }
     },
     [connection, threadId, mode, router, updateTurns, touch, queryClient, setConnection],
@@ -398,7 +343,13 @@ export function AskScreen() {
             <EmptyState icon={History} title="This chat could not be opened" description={loadError} action={<Button variant="outline" onClick={() => router.push("/ask")}>Start a new chat</Button>} />
           </div>
         ) : (
-          <Welcome tables={tableNames} dated={datedTables} onAsk={(question, kind) => void send(question, kind)} />
+          <HomeHub
+            tables={tableNames}
+            dated={datedTables}
+            connectionLabel={connection.label}
+            busy={busy}
+            onAsk={(question, kind, voice) => void send(question, kind, voice)}
+          />
         )
       ) : (
         <div className="mx-auto w-full max-w-3xl flex-1 space-y-10 px-4 pb-8 pt-8 sm:px-6">
@@ -424,7 +375,7 @@ export function AskScreen() {
 
       <div className="sticky bottom-0 z-10 bg-gradient-to-t from-background via-background to-background/0 px-4 pb-4 pt-6 sm:px-6">
         <div className="mx-auto w-full max-w-3xl">
-          <Composer onSend={(question) => void send(question)} busy={busy} mode={mode} onModeChange={setMode} autoFocus />
+          <Composer onSend={(question, options) => void send(question, undefined, options?.voice)} busy={busy} mode={mode} onModeChange={setMode} autoFocus />
           <p className="mt-2 text-center text-[11px] text-muted-foreground">
             Answers come from {connection.label}. Check the SQL and trust score before acting on them.
           </p>

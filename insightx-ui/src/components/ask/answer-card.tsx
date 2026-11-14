@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrustBadge, TrustReasons } from "@/components/ask/trust-badge";
 import { formatNumber, formatSeconds, stripEmoji } from "@/lib/format";
 import type { QueryResponse } from "@/lib/types";
+import { ListenButton } from "@/components/voice/voice-buttons";
 
 /** Plain text with paragraphs and simple "- " bullet lines. */
 export function RichText({ text, className }: { text: string; className?: string }) {
@@ -170,6 +171,7 @@ export function AnswerCard({
         <RichText text={result.answer || "Done. See the result below."} className="text-[15px] leading-relaxed" />
         <div className="flex flex-wrap items-center gap-3">
           <TrustBadge trust={result.trust} />
+          <ListenButton text={stripEmoji(result.answer || "")} />
           <Meta result={result} />
         </div>
       </div>
@@ -206,7 +208,7 @@ export function AnswerCard({
             </div>
             {chartable && (
               <TabsContent value="chart" className="p-4">
-                <AutoChart columns={columns} rows={rows} preferred={result.chart_data?.kind} />
+                <AutoChart columns={columns} rows={rows} preferred={result.chart_data?.kind} {...({ question: result.question } as object)} />
               </TabsContent>
             )}
             {rows.length > 0 && (
