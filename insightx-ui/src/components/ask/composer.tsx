@@ -9,6 +9,9 @@ import { MicButton, useVoiceErrorToast } from "@/components/voice/voice-buttons"
 import { useSpeechInput } from "@/lib/speech";
 import { cn } from "@/lib/utils";
 
+/** Text to put in the box from outside (e.g. the big mic on the home screen). */
+export type ComposerDraft = { text: string; id: number; voice?: boolean };
+
 const MODES: { value: Mode; label: string; icon: typeof Wand2; hint: string }[] = [
   { value: "auto", label: "Auto", icon: Wand2, hint: "Picks Ask or Investigate from your question" },
   { value: "ask", label: "Ask", icon: MessageSquareText, hint: "Get an answer with SQL, a table and a chart" },
@@ -22,6 +25,7 @@ export function Composer({
   mode,
   onModeChange,
   autoFocus,
+  draft,
 }: {
   onSend: (question: string, options?: { voice?: boolean }) => void;
   busy: boolean;
@@ -29,19 +33,29 @@ export function Composer({
   mode: Mode;
   onModeChange: (mode: Mode) => void;
   autoFocus?: boolean;
+  draft?: ComposerDraft | null;
 }) {
   const [text, setText] = React.useState("");
   const ref = React.useRef<HTMLTextAreaElement>(null);
-  const voice = useSpeechInput({
-    onFinal: (spoken) => {
-      if (busy || disabled) {
-        setText(spoken);
-        return;
-      }
-      onSend(spoken, { voice: true });
-      setText("");
-    },
-  });
+  const [spoken, setSpoken] = React.useState(false);
+  // Spoken words only go into the box. The person checks or edits them, then presses send.
+  const fill = React.useCallback((words: string, fromVoice: boolean) => {
+    setText((current) => (current.trim() ? `${current.trim()} ${words}` : words));
+    setSpoken(fromVoice);
+    window.requestAnimationFrame(() => {
+      const element = ref.current;
+      if (!element) return;
+      element.focus();
+      element.setSelectionRange(element.value.length, element.value.length);
+    });
+  }, []);
+  const voice = useSpeechInput({ onFinal: (words) => fill(words, true) });
+  const draftId = draft?.id;
+  React.useEffect(() => {
+    if (draft && draftId) fill(draft.text, Boolean(draft.voice));
+    // only when a new draft arrives
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftId]);
   useVoiceErrorToast(voice.error);
   const shown = voice.listening ? voice.interim || text : text;
 
@@ -55,8 +69,9 @@ export function Composer({
   const send = () => {
     const question = text.trim();
     if (!question || busy || disabled) return;
-    onSend(question);
+    onSend(question, { voice: spoken });
     setText("");
+    setSpoken(false);
   };
 
   return (
@@ -88,7 +103,7 @@ export function Composer({
             send();
           }
         }}
-        placeholder={voice.listening ? "Listening… speak now" : mode === "investigate" ? "Why did revenue drop last month?" : "Ask anything about your data…"}
+        placeholder={voice.listening ? "Listening… speak now. Your words will appear here." : mode === "investigate" ? "Why did revenue drop last month?" : "Ask anything about your data…"}
         className="scrollbar-thin block max-h-[200px] min-h-[52px] w-full resize-none bg-transparent px-4 pt-3.5 pb-1 text-[15px] leading-relaxed placeholder:text-muted-foreground/70 focus:outline-none disabled:cursor-not-allowed"
       />
       <div className="flex items-center justify-between gap-2 px-2.5 pb-2.5 pt-1">

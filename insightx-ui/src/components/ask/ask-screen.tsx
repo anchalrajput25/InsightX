@@ -5,14 +5,15 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, Database, History, Loader2, RefreshCw, RotateCcw, Unplug } from "lucide-react";
+import { AlertTriangle, Database, History, RefreshCw, RotateCcw, Unplug } from "lucide-react";
 import { LogoMark } from "@/components/common/logo";
 import { EmptyState } from "@/components/common/states";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerCard, RichText } from "@/components/ask/answer-card";
-import { Composer } from "@/components/ask/composer";
+import { Composer, type ComposerDraft } from "@/components/ask/composer";
+import { ThinkingSteps } from "@/components/ask/live-bits";
 import { HomeHub } from "@/components/home/home-hub";
 import { InvestigationView } from "@/components/ask/investigation-view";
 import { loadTurns, saveTurns, turnsFromHistory, type Mode, type Turn } from "@/components/ask/turns";
@@ -25,20 +26,11 @@ import { initials, stripEmoji } from "@/lib/format";
 import { newThreadId, readPref, writePref } from "@/lib/ui-prefs";
 import { speak, stopSpeaking } from "@/lib/speech";
 
-function Elapsed({ since }: { since: number }) {
-  const [now, setNow] = React.useState(() => Date.now());
-  React.useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 500);
-    return () => window.clearInterval(timer);
-  }, []);
-  return <span className="tabular">{Math.max(0, Math.floor((now - since) / 1000))}s</span>;
-}
-
 function Question({ text }: { text: string }) {
   const { displayName } = useAuth();
   return (
     <div className="flex justify-end gap-3">
-      <div className="fx-enter max-w-[85%] rounded-2xl rounded-tr-md border border-primary/20 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_18%,var(--secondary)),var(--secondary))] px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-wrap shadow-[inset_0_1px_0_var(--edge)]">{stripEmoji(text)}</div>
+      <div className="max-w-[85%] rounded-2xl rounded-tr-md animate-in fade-in slide-in-from-right-4 duration-500 border border-primary/20 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_18%,var(--secondary)),var(--secondary))] px-4 py-2.5 text-[15px] leading-relaxed whitespace-pre-wrap shadow-[inset_0_1px_0_var(--edge)]">{stripEmoji(text)}</div>
       <Avatar className="mt-0.5 size-7 shrink-0">
         <AvatarFallback className="text-[10px] font-semibold">{initials(displayName)}</AvatarFallback>
       </Avatar>
@@ -72,20 +64,7 @@ function TurnView({
     <div className="space-y-4">
       <Question text={turn.question} />
       <AnswerShell>
-        {turn.state === "pending" && (
-          <div className="space-y-3" role="status" aria-live="polite">
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin text-primary" />
-              {turn.kind === "investigation" ? "Investigating: comparing periods and testing causes" : "Writing and checking the SQL"}
-              <span className="text-muted-foreground/70">
-                · <Elapsed since={turn.startedAt} />
-              </span>
-            </p>
-            <Skeleton className="h-4 w-4/5" />
-            <Skeleton className="h-4 w-3/5" />
-            <Skeleton className="h-40 w-full rounded-xl" />
-          </div>
-        )}
+        {turn.state === "pending" && <ThinkingSteps kind={turn.kind} since={turn.startedAt} />}
         {turn.state === "error" && (
           <div className="rounded-xl border border-critical/25 bg-critical/[0.05] p-4">
             <div className="flex gap-3">
@@ -113,7 +92,7 @@ function TurnView({
           </div>
         )}
         {turn.state === "done" && turn.kind === "answer" && <AnswerCard result={turn.result} onAsk={onAsk} onInvestigate={onInvestigate} busy={busy} />}
-        {turn.state === "done" && turn.kind === "investigation" && <InvestigationView report={turn.result} onAsk={onAsk} busy={busy} />}
+        {turn.state === "done" && turn.kind === "investigation" && <div className="animate-in fade-in slide-in-from-bottom-3 duration-500"><InvestigationView report={turn.result} onAsk={onAsk} busy={busy} /></div>}
         {turn.state === "text" && (
           <div className="space-y-2">
             {turn.answer ? (
@@ -151,6 +130,7 @@ export function AskScreen() {
   const [loadingChat, setLoadingChat] = React.useState(false);
   const [loadError, setLoadError] = React.useState<string>("");
   const [mode, setModeState] = React.useState<Mode>("auto");
+  const [draft, setDraft] = React.useState<ComposerDraft | null>(null);
   const createdHere = React.useRef<string | null>(null);
   const handledQueued = React.useRef<string | null>(null);
   const bottomRef = React.useRef<HTMLDivElement>(null);
@@ -349,6 +329,7 @@ export function AskScreen() {
             connectionLabel={connection.label}
             busy={busy}
             onAsk={(question, kind, voice) => void send(question, kind, voice)}
+            onVoiceText={(text) => setDraft({ text, id: Date.now(), voice: true })}
           />
         )
       ) : (
@@ -375,7 +356,7 @@ export function AskScreen() {
 
       <div className="sticky bottom-0 z-10 bg-gradient-to-t from-background via-background to-background/0 px-4 pb-4 pt-6 sm:px-6">
         <div className="mx-auto w-full max-w-3xl">
-          <Composer onSend={(question, options) => void send(question, undefined, options?.voice)} busy={busy} mode={mode} onModeChange={setMode} autoFocus />
+          <Composer draft={draft} onSend={(question, options) => void send(question, undefined, options?.voice)} busy={busy} mode={mode} onModeChange={setMode} autoFocus />
           <p className="mt-2 text-center text-[11px] text-muted-foreground">
             Answers come from {connection.label}. Check the SQL and trust score before acting on them.
           </p>

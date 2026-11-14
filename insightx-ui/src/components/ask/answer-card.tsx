@@ -26,6 +26,7 @@ import { TrustBadge, TrustReasons } from "@/components/ask/trust-badge";
 import { formatNumber, formatSeconds, stripEmoji } from "@/lib/format";
 import type { QueryResponse } from "@/lib/types";
 import { ListenButton } from "@/components/voice/voice-buttons";
+import { AnswerFrame, HeadlineNumbers } from "@/components/ask/live-bits";
 
 /** Plain text with paragraphs and simple "- " bullet lines. */
 export function RichText({ text, className }: { text: string; className?: string }) {
@@ -167,17 +168,20 @@ export function AnswerCard({
 
   return (
     <div className="space-y-4">
+      <AnswerFrame>
       <div className="space-y-3">
-        <RichText text={result.answer || "Done. See the result below."} className="text-[15px] leading-relaxed" />
+        <RichText text={result.answer || "Done. See the result below."} className="text-[15px] leading-relaxed animate-in fade-in slide-in-from-bottom-1 duration-700 fill-mode-both" />
+        {!chartable && <HeadlineNumbers result={result} />}
         <div className="flex flex-wrap items-center gap-3">
           <TrustBadge trust={result.trust} />
           <ListenButton text={stripEmoji(result.answer || "")} />
           <Meta result={result} />
         </div>
       </div>
+      </AnswerFrame>
 
       {(rows.length > 0 || result.sql) && (
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-2xl border bg-card shadow-[0_12px_40px_-24px_var(--glow)] animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both [animation-delay:150ms]">
           <Tabs value={tab} onValueChange={setTab}>
             <div className="flex items-center justify-between gap-2 border-b px-3">
               <TabsList className="h-10 border-0">

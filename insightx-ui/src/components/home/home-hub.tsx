@@ -88,10 +88,22 @@ function buildGroups(tables: string[], dated: string[]): Group[] {
   return groups;
 }
 
-function VoiceOrb({ onAsk, busy }: { onAsk: (question: string) => void; busy?: boolean }) {
-  const voice = useSpeechInput({ onFinal: (text) => onAsk(text) });
+function VoiceOrb({ onText, busy }: { onText: (text: string) => void; busy?: boolean }) {
+  const [heard, setHeard] = React.useState(false);
+  const voice = useSpeechInput({
+    onFinal: (text) => {
+      setHeard(true);
+      onText(text);
+    },
+  });
   useVoiceErrorToast(voice.error);
-  const caption = voice.listening ? voice.interim || "Listening… ask your question" : voice.supported ? "Tap the mic and ask out loud" : "Voice works in Chrome or Edge";
+  const caption = voice.listening
+    ? voice.interim || "Listening… ask your question"
+    : !voice.supported
+      ? "Voice works in Chrome or Edge"
+      : heard
+        ? "Your question is in the box below. Edit it if needed, then press send."
+        : "Tap the mic and ask out loud";
 
   return (
     <div className="fx-enter flex flex-col items-center" style={{ ["--d" as string]: "180ms" }}>
@@ -128,12 +140,15 @@ export function HomeHub({
   connectionLabel,
   busy,
   onAsk,
+  onVoiceText,
 }: {
   tables: string[];
   dated: string[];
   connectionLabel: string;
   busy?: boolean;
   onAsk: (question: string, kind?: Kind, voice?: boolean) => void;
+  /** Spoken words go into the question box, not straight to an answer. */
+  onVoiceText: (text: string) => void;
 }) {
   const { displayName } = useAuth();
   const name = firstName(displayName);
@@ -172,7 +187,7 @@ export function HomeHub({
       </div>
 
       <div className="mt-8">
-        <VoiceOrb busy={busy} onAsk={(question) => onAsk(question, undefined, true)} />
+        <VoiceOrb busy={busy} onText={onVoiceText} />
       </div>
 
       {/* Starter questions */}
