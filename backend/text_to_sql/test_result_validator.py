@@ -6,9 +6,7 @@ print("RESULT VALIDATOR TEST")
 print("=" * 70)
 
 
-# ---------------------------------------------------------
-# TEST 1: VALID RESULT
-# ---------------------------------------------------------
+# Test 1: Valid result
 
 valid_result = {
     "success": True,
@@ -48,9 +46,7 @@ print("REASON :", result["reason"])
 print("DETAILS:", result["details"])
 
 
-# ---------------------------------------------------------
-# TEST 2: EMPTY RESULT
-# ---------------------------------------------------------
+# Test 2: Empty result
 
 empty_result = {
     "success": True,
@@ -85,9 +81,7 @@ if result["errors"]:
         print(" -", error)
 
 
-# ---------------------------------------------------------
-# TEST 3: MISSING EXPECTED COLUMN
-# ---------------------------------------------------------
+# Test 3: Missing expected column
 
 missing_column_result = {
     "success": True,
@@ -125,9 +119,7 @@ if result["errors"]:
         print(" -", error)
 
 
-# ---------------------------------------------------------
-# TEST 4: NULL VALUES
-# ---------------------------------------------------------
+# Test 4: Null values
 
 null_result = {
     "success": True,
@@ -173,9 +165,7 @@ if result["warnings"]:
 print("NULL COUNTS:", result["details"]["null_counts"])
 
 
-# ---------------------------------------------------------
-# TEST 5: DUPLICATE ROWS
-# ---------------------------------------------------------
+# Test 5: Duplicate rows
 
 duplicate_result = {
     "success": True,
@@ -224,9 +214,7 @@ print(
 )
 
 
-# ---------------------------------------------------------
-# TEST 6: EXECUTION FAILURE
-# ---------------------------------------------------------
+# Test 6: Execution failure
 
 failed_result = {
     "success": False,

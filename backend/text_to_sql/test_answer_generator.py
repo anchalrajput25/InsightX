@@ -6,9 +6,7 @@ print("ANSWER GENERATOR TEST")
 print("=" * 70)
 
 
-# ---------------------------------------------------------
-# TEST 1: VALID RESULT
-# ---------------------------------------------------------
+# Test 1: Valid result
 
 valid_result = {
     "success": True,
@@ -52,9 +50,7 @@ if result["error"]:
     print("ERROR  :", result["error"])
 
 
-# ---------------------------------------------------------
-# TEST 2: EMPTY RESULT
-# ---------------------------------------------------------
+# Test 2: Empty result
 
 empty_result = {
     "success": True,
@@ -85,9 +81,7 @@ if result["error"]:
     print("ERROR  :", result["error"])
 
 
-# ---------------------------------------------------------
-# TEST 3: QUERY EXECUTION FAILURE
-# ---------------------------------------------------------
+# Test 3: Query execution failure
 
 failed_result = {
     "success": False,

@@ -54,9 +54,7 @@ class UploadTooLargeError(IngestionError):
     """The uploaded file exceeds the configured size limit."""
 
 
-# ============================================================
-# UPLOAD NAMES
-# ============================================================
+# Upload names
 
 def safe_upload_name(filename: Optional[str], default: str = "upload.zip") -> str:
     """
@@ -96,9 +94,7 @@ def save_upload(
     return written
 
 
-# ============================================================
-# ZIP EXTRACTION
-# ============================================================
+# ZIP extraction
 
 def _is_ignored_member(path: PurePosixPath) -> bool:
     """macOS resource forks, hidden files and folders are not data."""
@@ -174,9 +170,7 @@ def find_data_files(directory: Path) -> List[Path]:
     )
 
 
-# ============================================================
-# IDENTIFIERS
-# ============================================================
+# Identifiers
 
 _CAMEL_BOUNDARY_RE = re.compile(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
 
@@ -220,9 +214,7 @@ def sanitize_table_name(filename: str) -> str:
     return normalize_identifier(Path(filename).stem, "table")
 
 
-# ============================================================
-# TYPE INFERENCE
-# ============================================================
+# Type inference
 
 _INTEGER_RE = re.compile(r"^[+-]?\d+$")
 _LEADING_ZERO_RE = re.compile(r"^[+-]?0\d")
@@ -277,9 +269,7 @@ def infer_sql_type(values: pd.Series) -> str:
     return "TEXT"
 
 
-# ============================================================
-# READING FILES
-# ============================================================
+# Reading files
 
 def read_data_file(path: Path) -> Tuple[pd.DataFrame, List[str]]:
     """
@@ -342,9 +332,7 @@ def read_data_file(path: Path) -> Tuple[pd.DataFrame, List[str]]:
     raise IngestionError(f"Unsupported file type: {suffix}")
 
 
-# ============================================================
-# INSPECTION
-# ============================================================
+# Inspection
 
 @dataclass
 class ColumnSpec:
@@ -471,9 +459,7 @@ def inspect_files(data_files: List[Path], base_directory: Path) -> List[Dict[str
     ]
 
 
-# ============================================================
-# IMPORT
-# ============================================================
+# Import
 
 def _quote(identifier: str) -> str:
     return '"' + identifier.replace('"', '""') + '"'

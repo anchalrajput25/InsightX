@@ -1,6 +1,6 @@
 # trace_view.py
 #
-# "🔍 Traces" page: what happened inside each question, step by step.
+# "Traces" page: what happened inside each question, step by step.
 # Shows where the time went (a timeline), which AI models were called,
 # which database queries ran, and which step failed. Reads the backend's
 # /traces endpoints; never calls an AI model itself.
@@ -80,9 +80,7 @@ def status_mark(status: str, cache: str = "") -> str:
     return "❌ Failed"
 
 
-# ------------------------------------------------------------
 # Builders
-# ------------------------------------------------------------
 
 def list_rows(traces: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [
@@ -221,9 +219,7 @@ def db_rows(events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     ]
 
 
-# ------------------------------------------------------------
 # Page
-# ------------------------------------------------------------
 
 def _get(backend_url: str, path: str, params: Optional[Dict[str, Any]] = None,
          headers: Optional[Dict[str, str]] = None):

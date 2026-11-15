@@ -52,7 +52,7 @@ _mode_cache: Dict[str, Any] = {"at": 0.0, "value": "off"}
 _original: Dict[str, Any] = {"gateway": None}
 
 
-# ------------------------------------------------------------- settings
+# Settings
 def get_mode(fresh: bool = False) -> str:
     if not fresh and time.time() - _mode_cache["at"] < MODE_TTL:
         return _mode_cache["value"]
@@ -78,7 +78,7 @@ def set_mode(mode: str) -> str:
     return mode
 
 
-# ---------------------------------------------------------------- stats
+# Stats
 def route_stats(fresh: bool = False) -> Dict[str, Dict[str, Any]]:
     """Per-route success and latency over 7 days from the usage ledger (cached)."""
     if not fresh and time.time() - _stats_cache["at"] < STATS_TTL:
@@ -162,7 +162,7 @@ def score_routes(gateway: Gateway, routes: List[Route], level: str) -> List[Dict
     return scored
 
 
-# ---------------------------------------------------------------- gateway
+# Gateway
 class SmartGateway(Gateway):
     """The existing gateway with a scored chain(). Shares all its state."""
 

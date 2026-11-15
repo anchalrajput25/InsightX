@@ -3,9 +3,7 @@ from typing import Dict, List, Optional
 from backend.llm_service import get_llm
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
+# Configuration
 
 # Number of latest messages kept directly in the prompt.
 MAX_RECENT_MESSAGES = 6
@@ -26,9 +24,7 @@ MAX_CONTEXT_CHARS = 12000
 llm = get_llm(job="context")
 
 
-# ============================================================
-# FORMAT MESSAGES
-# ============================================================
+# Format messages
 
 def _format_messages(
     messages: List[Dict[str, str]],
@@ -74,9 +70,7 @@ def _format_messages(
     return "\n\n".join(lines)
 
 
-# ============================================================
-# COMPACT OLD HISTORY
-# ============================================================
+# Compact old history
 
 def compact_conversation(
     old_messages: List[Dict[str, str]],
@@ -181,9 +175,7 @@ Return ONLY a concise factual memory.
         return existing_summary.strip()
 
 
-# ============================================================
-# BUILD CONTEXT FOR QUERY REWRITER
-# ============================================================
+# Build context for query rewriter
 
 def build_relevant_context(
     conversation_history: Optional[
@@ -228,9 +220,7 @@ RECENT CONVERSATION:
     ]
 
 
-# ============================================================
-# CONTEXT MANAGER
-# ============================================================
+# Context manager
 
 def prepare_context(
     conversation_history: Optional[
@@ -244,9 +234,7 @@ def prepare_context(
 
     total_messages = len(history)
 
-    # --------------------------------------------------------
     # No history
-    # --------------------------------------------------------
 
     if total_messages == 0:
 
@@ -262,18 +250,14 @@ def prepare_context(
             ),
         }
 
-    # --------------------------------------------------------
     # How many messages are currently NOT compacted?
-    # --------------------------------------------------------
 
     uncompacted_count = (
         total_messages
         - context_compacted_message_count
     )
 
-    # --------------------------------------------------------
     # Compaction not needed yet
-    # --------------------------------------------------------
 
     if (
         uncompacted_count
@@ -293,11 +277,9 @@ def prepare_context(
             ),
         }
 
-    # --------------------------------------------------------
     # Keep latest messages directly available.
     #
     # Everything before the recent window can be compacted.
-    # --------------------------------------------------------
 
     target_compaction_end = max(
         0,
@@ -310,11 +292,9 @@ def prepare_context(
         context_compacted_message_count,
     )
 
-    # --------------------------------------------------------
     # Only compact NEW messages.
     #
     # This is the important production fix.
-    # --------------------------------------------------------
 
     if (
         target_compaction_end
@@ -339,26 +319,20 @@ def prepare_context(
         target_compaction_end
     ]
 
-    # --------------------------------------------------------
     # Update compact memory
-    # --------------------------------------------------------
 
     new_summary = compact_conversation(
         old_messages=new_messages_to_compact,
         existing_summary=context_summary,
     )
 
-    # --------------------------------------------------------
     # Mark these messages as compacted.
-    # --------------------------------------------------------
 
     new_compacted_count = (
         target_compaction_end
     )
 
-    # --------------------------------------------------------
     # Build context for Query Rewriter
-    # --------------------------------------------------------
 
     relevant_context = build_relevant_context(
         conversation_history=history,

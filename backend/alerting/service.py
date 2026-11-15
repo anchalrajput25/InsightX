@@ -92,9 +92,7 @@ def _raise(alert: Dict[str, Any], result: Dict[str, Any], store: AlertStore, sen
     store.add_event(alert, result, "; ".join(lines) or ("snoozed, not sent" if snoozed else ""))
 
 
-# ------------------------------------------------------------
 # the background checker
-# ------------------------------------------------------------
 
 def _open_engine(alert: Dict[str, Any], store: AlertStore) -> Engine:
     """The alert's database: its own connection, or another live one to the same database."""

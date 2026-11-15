@@ -31,9 +31,7 @@ from backend import dialects
 logger = logging.getLogger("insightx.candidates")
 
 
-# ============================================================
-# PARALLEL CALLS
-# ============================================================
+# Parallel calls
 
 def run_parallel(calls: Sequence[Callable[[], Any]], wait_s: Optional[float] = None) -> List[Any]:
     """
@@ -61,9 +59,7 @@ def run_parallel(calls: Sequence[Callable[[], Any]], wait_s: Optional[float] = N
     return results
 
 
-# ============================================================
-# EVALUATION
-# ============================================================
+# Evaluation
 
 def normalize_sql(sql: str) -> str:
     """Canonical text, so trivially different spellings count as one SQL."""

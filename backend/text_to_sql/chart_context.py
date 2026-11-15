@@ -131,9 +131,7 @@ def _add_missing_columns(query: exp.Select) -> None:
         query.set("expressions", added_keys + list(query.expressions) + ([measure] if measure is not None else []))
 
 
-# ------------------------------------------------------------
 # Single totals -> trend or split
-# ------------------------------------------------------------
 
 def _single_total(sql: str) -> Optional[Tuple[exp.Select, List[exp.Table]]]:
     """The parsed query if it is one plain total over real tables."""

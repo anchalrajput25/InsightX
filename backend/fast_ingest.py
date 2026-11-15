@@ -79,9 +79,19 @@ def _source(path: Path) -> str:
     )
 
 
+# DuckDB reads with one thread per CPU, and each thread holds its own read
+# buffers: on a 12-thread PC a 3-million-row CSV took ~360 MB. Four threads
+# and a memory cap keep it under ~190 MB (measured in benchmarks/), so a big
+# upload cannot push a small server (512 MB on Render's free plan) over.
+THREADS = max(1, int(os.getenv("INSIGHTX_DUCKDB_THREADS", "4")))
+MEMORY_LIMIT_MB = max(64, int(os.getenv("INSIGHTX_DUCKDB_MEMORY_MB", "256")))
+
+
 def _connect():
     connection = duckdb.connect(database=":memory:")
     connection.execute("SET preserve_insertion_order = true")
+    connection.execute(f"SET threads = {THREADS}")
+    connection.execute(f"SET memory_limit = '{MEMORY_LIMIT_MB}MB'")
     return connection
 
 

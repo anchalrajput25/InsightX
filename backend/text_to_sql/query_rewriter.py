@@ -26,10 +26,7 @@ DEFAULT_ALTERNATIVE_COUNT = 4
 NO_CONTEXT = "No previous conversation."
 
 
-# ============================================================
-# PROMPTS
-# ============================================================
-#
+# Prompts
 # The examples below are abstract patterns with <placeholders>.
 # They illustrate the transformation; they are not rules for
 # specific questions or domains.
@@ -170,9 +167,7 @@ _PROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-# ============================================================
-# CONTEXT
-# ============================================================
+# Context
 
 def _normalize_for_compare(text: str) -> str:
     """Case-, punctuation- and whitespace-insensitive form."""
@@ -263,9 +258,7 @@ def _build_context(
     return context
 
 
-# ============================================================
-# RESPONSE PARSING
-# ============================================================
+# Response parsing
 
 def _message_text(response: Any) -> str:
     """
@@ -446,9 +439,7 @@ def _is_echo(text: str, question: str) -> bool:
     return _normalize_for_compare(text) == _normalize_for_compare(question)
 
 
-# ============================================================
-# MAIN FUNCTION
-# ============================================================
+# Main function
 
 def rewrite_query_variants(
     question: str,

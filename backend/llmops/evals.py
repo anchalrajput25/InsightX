@@ -76,7 +76,7 @@ def own_dir(user_id: str, kind: str) -> Path:
     return path
 
 
-# ---------------------------------------------------------------- reports
+# Reports
 def _report_files(user_id: str) -> List[Dict[str, Any]]:
     files = []
     for scope, folder in (("shared", SHARED_REPORTS), ("mine", own_dir(user_id, "evals"))):
@@ -145,7 +145,7 @@ def read_report(user_id: str, report_id: str) -> Dict[str, Any]:
     return data
 
 
-# ------------------------------------------------------------ quality gate
+# Quality gate
 def get_gate() -> Dict[str, float]:
     from backend.llmops.store import get_store
 
@@ -180,7 +180,7 @@ def check_gate(summary: Dict[str, Any], gate: Dict[str, float]) -> Dict[str, Any
     return {"passed": bool(known) and all(c["passed"] for c in known), "checks": checks}
 
 
-# ----------------------------------------------------------------- compare
+# Compare
 def compare(user_id: str, base_id: str, other_id: str) -> Dict[str, Any]:
     base, other = read_report(user_id, base_id), read_report(user_id, other_id)
     sa, sb = base.get("summary") or {}, other.get("summary") or {}
@@ -222,7 +222,7 @@ def compare(user_id: str, base_id: str, other_id: str) -> Dict[str, Any]:
     }
 
 
-# ------------------------------------------------------- model accuracy
+# Model accuracy
 _accuracy_cache: Dict[str, Any] = {"at": 0.0, "value": {}}
 
 
@@ -254,7 +254,7 @@ def route_accuracy(max_reports: int = 20) -> Dict[str, Dict[str, float]]:
     return value
 
 
-# ------------------------------------------------------------ golden sets
+# Golden sets
 def list_golden(user_id: str) -> List[Dict[str, Any]]:
     from backend.evaluation.golden import GoldenSetError, load_golden_set
 
@@ -332,7 +332,7 @@ def add_feedback_case(user_id: str, database_label: str, question: str, sql: str
     return {"golden_id": f"mine:{path.name}", "case_id": case_id, "updated": False}
 
 
-# ------------------------------------------------------------------- runs
+# Runs
 _jobs: Dict[str, Dict[str, Any]] = {}
 _jobs_lock = threading.Lock()
 RUNNABLE_DIALECTS = ("postgresql", "mysql")

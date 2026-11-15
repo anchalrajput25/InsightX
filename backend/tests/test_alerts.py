@@ -21,7 +21,7 @@ def daily(days=120, seed=1, monday_boost=30.0, noise=5.0):
              + random.gauss(0, noise)} for i in range(days)]
 
 
-# ---------------- detect ----------------
+# Detect
 
 def test_smart_learns_trend_and_weekday_habits():
     points = daily()
@@ -76,7 +76,7 @@ def test_unfinished_period_and_gaps():
     assert [p["v"] for p in filled] == [3.0, 0.0, 0.0, 2.0]
 
 
-# ---------------- metrics ----------------
+# Metrics
 
 def test_query_results_become_points():
     rows = [{"day": "2024-01-02", "orders": 5}, {"day": "2024-01-01", "orders": "3"}]
@@ -88,7 +88,7 @@ def test_query_results_become_points():
         metrics.to_points(["state", "orders"], [{"state": "SP", "orders": 1}, {"state": "RJ", "orders": 2}])
 
 
-# ---------------- endpoints + background checker ----------------
+# Endpoints + background checker
 
 TABLE = "itest_alert_orders"
 

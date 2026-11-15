@@ -101,7 +101,7 @@ function reportLabel(report: ReportItem): string {
   return `${report.golden_set} · ${report.run_at ? formatDateTime(report.run_at) : report.name}${report.scope === "mine" ? " (yours)" : ""}`;
 }
 
-// ------------------------------------------------------------------ report
+// Report
 function ReportDetail({ id }: { id: string }) {
   const [onlyFailed, setOnlyFailed] = React.useState(true);
   const report = useQuery({
@@ -373,7 +373,7 @@ function ReportDetail({ id }: { id: string }) {
   );
 }
 
-// ----------------------------------------------------------------- compare
+// Compare
 function CompareView({ reports }: { reports: ReportItem[] }) {
   const [base, setBase] = React.useState(reports[1]?.id ?? "");
   const [other, setOther] = React.useState(reports[0]?.id ?? "");
@@ -532,7 +532,7 @@ function CompareView({ reports }: { reports: ReportItem[] }) {
   );
 }
 
-// --------------------------------------------------------------------- run
+// Run
 function JobCard({ job, onStop }: { job: EvalJob; onStop: () => void }) {
   const { total, done, passed } = job.progress;
   const share = total ? done / total : 0;
@@ -888,7 +888,7 @@ function RunView() {
   );
 }
 
-// -------------------------------------------------------------------- gate
+// Gate
 function GateEditor({
   gate,
   onSaved,
@@ -950,7 +950,7 @@ function GateEditor({
   );
 }
 
-// ------------------------------------------------------------------ screen
+// Screen
 export function EvalsScreen() {
   const queryClient = useQueryClient();
   const reports = useQuery({

@@ -1,6 +1,6 @@
 # dashboard_view.py
 #
-# "📈 Dashboard": a basic picture of the whole connected database
+# "Dashboard": a basic picture of the whole connected database
 # (backend/dashboard.py builds it from the schema, no AI), and a box to
 # ask for any chart in your own words. Asked-for charts are kept and
 # re-run on the current data each time the page opens.
@@ -101,7 +101,7 @@ def render_dashboard_page(st, backend_url: str, connection_id: Optional[str],
         st.info("Connect a database on the 💬 page first, then come back here.")
         return
 
-    # ---------------- make a chart ----------------
+    # Make a chart
     st.markdown("#### ✨ Make a chart")
     with st.form("dash_make_chart", clear_on_submit=True):
         wanted = st.text_input("What should the chart show?", placeholder=EXAMPLES)
@@ -149,7 +149,7 @@ def render_dashboard_page(st, backend_url: str, connection_id: Optional[str],
                         _call("DELETE", backend_url, f"/dashboard/charts/{chart['id']}", headers)
                         st.rerun()
 
-    # ---------------- whole database ----------------
+    # Whole database
     st.markdown("#### 🗄 Your database at a glance")
     try:
         with st.spinner("Looking at your database..."):

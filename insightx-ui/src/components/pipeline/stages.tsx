@@ -99,7 +99,7 @@ function Raw({ label, value }: { label: string; value: unknown }) {
   );
 }
 
-// ---------------------------------------------------------------- bodies
+// Bodies
 
 function CacheBody({ result }: { result: PipelineResult }) {
   const cache = result.cache ?? {};
@@ -511,7 +511,7 @@ function AnswerBody({ result }: { result: PipelineResult }) {
   );
 }
 
-// ---------------------------------------------------------------- stages
+// Stages
 
 export const STAGES: StageDef[] = [
   {

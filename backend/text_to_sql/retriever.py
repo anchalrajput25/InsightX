@@ -34,9 +34,7 @@ import numpy as np
 logger = logging.getLogger("insightx.retriever")
 
 
-# ---------------------------------------------------------
 # Embedding model
-# ---------------------------------------------------------
 
 _embedding_model = None
 _embedding_failed = False
@@ -54,10 +52,7 @@ def get_embedding_model():
     return _embedding_model
 
 
-# ---------------------------------------------------------
 # Document embedding cache
-# ---------------------------------------------------------
-#
 # Schema documents only change when the schema changes, but every
 # question (and every query variant) needs their embeddings. Vectors
 # are cached by the hash of the document text, so unchanged columns
@@ -120,9 +115,7 @@ def semantic_similarities(query: str, texts: Sequence[str]) -> Optional[np.ndarr
     return _cosine(query_vector, documents)
 
 
-# ---------------------------------------------------------
 # Tokenization
-# ---------------------------------------------------------
 
 STOPWORDS = frozenset("""
 a an the and or but if then else of to in on at by for from with without into onto
@@ -186,9 +179,7 @@ def normalize_text(text: str) -> str:
     return " ".join(split_words(text))
 
 
-# ---------------------------------------------------------
-# BM25
-# ---------------------------------------------------------
+# Bm25
 
 class BM25:
     def __init__(self, documents: Sequence[Sequence[str]], k1: float = 1.2, b: float = 0.75):
@@ -224,9 +215,7 @@ class BM25:
         return scores
 
 
-# ---------------------------------------------------------
 # Schema index
-# ---------------------------------------------------------
 
 COLUMN_NAME_WEIGHT = 3
 TABLE_NAME_WEIGHT = 3
@@ -509,9 +498,7 @@ def score_query(index: SchemaIndex, query: str) -> List[Dict[str, Any]]:
     return results
 
 
-# ---------------------------------------------------------
 # Public API
-# ---------------------------------------------------------
 
 def build_schema_documents(schema: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Table-level documents (kept for compatibility and debugging)."""

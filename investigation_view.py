@@ -135,9 +135,7 @@ def column_name(dimension: str) -> str:
     return dimension.split(".", 1)[-1]
 
 
-# ============================================================
-# CHARTS
-# ============================================================
+# Charts
 
 def trend_chart(report: Dict[str, Any], t: Theme = LIGHT):
     """Metric over time; normal range around the baseline; compared periods marked."""
@@ -380,9 +378,7 @@ def signals_chart(report: Dict[str, Any], kind: str = "average", t: Theme = LIGH
     return _style(alt.layer(zero, link, dots), t, max(120, 36 * len(order) + 60), title, subtitle)
 
 
-# ============================================================
-# HTML BLOCKS
-# ============================================================
+# Html blocks
 
 def hero_html(report: Dict[str, Any], t: Theme = LIGHT) -> str:
     h = report["headline"]
@@ -519,9 +515,7 @@ def reasons_html(report: Dict[str, Any], t: Theme = LIGHT) -> str:
             f'{"".join(cards)}{ruled_html}</div>')
 
 
-# ============================================================
-# STREAMLIT VIEW
-# ============================================================
+# Streamlit view
 
 def render_investigation(st, report: Dict[str, Any], ask=None) -> None:
     """ask(question): optional; makes the next questions clickable."""

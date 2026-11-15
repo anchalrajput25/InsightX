@@ -1,17 +1,17 @@
 # alerts_view.py
 #
-# "🚨 Alerts" page: InsightX watches numbers in your database and warns
+# "Alerts" page: InsightX watches numbers in your database and warns
 # you when something unusual happens (backend/alerting/ does the work).
 #
-#   🚨 Alert feed   what was raised: acknowledge, resolve, snooze, and
+#   Alert feed   what was raised: acknowledge, resolve, snooze, and
 #                   "Find out why" (opens an investigation on the Ask page)
-#   📋 My alerts    each alert with its live chart, normal-range band and
+#   My alerts    each alert with its live chart, normal-range band and
 #                   past alerts; check now, pause, snooze, edit, delete
-#   ➕ New alert    pick or describe a number, choose when to be warned,
+#   New alert    pick or describe a number, choose when to be warned,
 #                   preview it on the current data (with a back-test of how
 #                   often it would have fired), then create it
 #
-# render_alert_badge() is the small "🚨 2 open alerts" line in the sidebar.
+# render_alert_badge() is the small "2 open alerts" line in the sidebar.
 
 import html
 import time
@@ -52,9 +52,7 @@ STATE = {
 EXAMPLES = ("e.g. number of orders per day · total payment value per week · orders not delivered yet")
 
 
-# ------------------------------------------------------------
 # small helpers
-# ------------------------------------------------------------
 
 def _call(method: str, backend_url: str, path: str, headers: Optional[Dict[str, str]] = None,
           params: Optional[Dict[str, Any]] = None, body: Optional[Dict[str, Any]] = None, timeout: int = 120):
@@ -133,9 +131,7 @@ def why_question(event: Dict[str, Any]) -> str:
     return f"Why did {name} {'drop' if went_down else 'go up'}{when}?"
 
 
-# ------------------------------------------------------------
 # chart: value, normal-range band, expected line, past alerts
-# ------------------------------------------------------------
 
 def series_frame(backtest: Dict[str, Any]) -> pd.DataFrame:
     frame = pd.DataFrame(backtest.get("series") or [])
@@ -249,9 +245,7 @@ def tiles_html(summary: Dict[str, Any], checker: bool, t: Theme = LIGHT) -> str:
     return f'<div style="font-family:{FONT_HTML};display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 12px">{"".join(tiles)}</div>'
 
 
-# ------------------------------------------------------------
 # sidebar badge
-# ------------------------------------------------------------
 
 def render_alert_badge(st, backend_url: str, connection_id: Optional[str] = None,
                        headers: Optional[Dict[str, str]] = None) -> None:
@@ -274,9 +268,7 @@ def render_alert_badge(st, backend_url: str, connection_id: Optional[str] = None
         st.sidebar.markdown(f"🚨 **{count} open alert{'s' if count != 1 else ''}**{extra}: see the 🚨 Alerts page")
 
 
-# ------------------------------------------------------------
 # the page
-# ------------------------------------------------------------
 
 def render_alerts_page(st, backend_url: str, connection_id: Optional[str],
                        headers: Optional[Dict[str, str]] = None,

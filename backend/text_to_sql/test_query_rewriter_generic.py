@@ -28,10 +28,7 @@ from langchain_core.messages import AIMessage, HumanMessage  # noqa: E402
 import backend.text_to_sql.query_rewriter as qr  # noqa: E402
 
 
-# ============================================================
-# QUERY CATEGORIES
-# ============================================================
-#
+# Query categories
 # Each case: category, latest question, optional history, and
 # generic expectations used by the live tests:
 #   include_any: list of groups; each group needs one match
@@ -149,9 +146,7 @@ CASES = [
 ]
 
 
-# ============================================================
-# FAKE LLM
-# ============================================================
+# Fake LLM
 
 class ScriptedLLM:
     """Returns scripted outputs in order and records every call."""
@@ -177,9 +172,7 @@ def human_text(messages):
     return "\n".join(str(m.content) for m in messages if isinstance(m, HumanMessage))
 
 
-# ============================================================
-# OFFLINE TESTS
-# ============================================================
+# Offline tests
 
 class RewriteFlowTests(unittest.TestCase):
 
@@ -360,9 +353,7 @@ class PromptTests(unittest.TestCase):
         self.assertIn("Do NOT invent table or column names", qr.SYSTEM_PROMPT)
 
 
-# ============================================================
-# LIVE TESTS
-# ============================================================
+# Live tests
 
 def _numbers(text):
     return set(re.findall(r"\d+(?:[.,]\d+)*", text))

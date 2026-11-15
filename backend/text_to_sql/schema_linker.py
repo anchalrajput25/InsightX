@@ -17,16 +17,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from backend.llm_service import get_llm
 
 
-# ============================================================
 # LLM
-# ============================================================
 
 llm = get_llm(job="schema_link")
 
 
-# ============================================================
-# PROMPT
-# ============================================================
+# Prompt
 
 prompt = ChatPromptTemplate.from_messages([
     (
@@ -98,9 +94,7 @@ DATABASE SCHEMA:
 ])
 
 
-# ============================================================
-# HELPERS
-# ============================================================
+# Helpers
 
 MAX_SCHEMA_CHARS = 60_000
 
@@ -133,9 +127,7 @@ def parse_linking(raw: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-# ============================================================
-# MAIN FUNCTIONS
-# ============================================================
+# Main functions
 
 def link_schema(
     question: str,

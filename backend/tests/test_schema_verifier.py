@@ -42,9 +42,7 @@ def verify(parsed, context=None):
     return verify_linking(parsed, SCHEMA, context)
 
 
-# ============================================================
-# PARSING
-# ============================================================
+# Parsing
 
 def test_parse_linking_tolerates_reasoning_fences_and_prose():
     payload = {"tables": ["tickets"], "columns": []}
@@ -54,9 +52,7 @@ def test_parse_linking_tolerates_reasoning_fences_and_prose():
     assert parse_linking("Final Relevant Schema: tickets") is None
 
 
-# ============================================================
-# TABLES AND COLUMNS
-# ============================================================
+# Tables and columns
 
 def test_valid_mapping_is_kept_and_joins_marked_as_relationships():
     linked = verify({
@@ -96,9 +92,7 @@ def test_columns_are_moved_to_the_table_that_has_them_or_dropped():
     assert any("bonus" in text for text in linked["issues"])
 
 
-# ============================================================
-# JOINS
-# ============================================================
+# Joins
 
 def test_invalid_joins_are_dropped_and_unknown_ones_flagged():
     linked = verify({
@@ -125,9 +119,7 @@ def test_disconnected_tables_are_connected_through_the_relationship_graph():
     assert all(join["source"] == "relationship graph" for join in linked["joins"])
 
 
-# ============================================================
-# FILTERS AND METRICS
-# ============================================================
+# Filters and metrics
 
 def test_filter_values_are_corrected_to_the_stored_spelling():
     linked = verify({
@@ -160,9 +152,7 @@ def test_metrics_must_reference_existing_columns():
     assert any("broken" in text for text in linked["issues"])
 
 
-# ============================================================
-# FALLBACK AND RENDERING
-# ============================================================
+# Fallback and rendering
 
 def test_unusable_output_falls_back_to_retrieval():
     context = {"relevant_tables": ["employees", "departments"],

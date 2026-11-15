@@ -66,3 +66,13 @@ def test_declared_groups():
         {"child_table": "p", "parent_table": "q"},
     ])
     assert groups["x"] == groups["y"] == groups["z"] != groups["p"] == groups["q"]
+
+
+def test_dates_and_amounts_are_not_join_key_candidates():
+    from backend.schema_profiler import _can_be_join_key
+
+    for data_type in ("DATE", "TIMESTAMP WITHOUT TIME ZONE", "BOOLEAN", "DOUBLE PRECISION", "REAL",
+                      "NUMERIC", "NUMERIC(10, 2)", "DECIMAL(12,4)"):
+        assert not _can_be_join_key(data_type), data_type
+    for data_type in ("INTEGER", "BIGINT", "TEXT", "VARCHAR(20)", "UUID", "NUMERIC(10, 0)", "NUMERIC(18)"):
+        assert _can_be_join_key(data_type), data_type

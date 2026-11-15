@@ -165,9 +165,7 @@ def test_top_one_answer_is_highlighted_among_all_categories():
     assert "condition" in str(spec["encoding"]["color"])
 
 
-# ---------------------------------------------------------------
 # Chart context from the database (needs INSIGHTX_TEST_DATABASE_URL)
-# ---------------------------------------------------------------
 
 import pytest
 from fastapi.encoders import jsonable_encoder

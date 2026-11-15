@@ -41,7 +41,7 @@ def response(answer, rows=None, sql="SELECT seller, sales FROM sellers ORDER BY 
                                              "row_count": len(rows)}, **extra}
 
 
-# ---------------- hallucination ----------------
+# Hallucination
 
 def test_grounded_answer_has_no_findings():
     checks = hallucination.check_answer(response("The highest sales are from **alpha** with 900."))
@@ -90,7 +90,7 @@ def test_judge_reply_is_parsed_and_merged():
     assert "growth" not in hallucination.judge_prompt({"question": "q", "answer": "a", "preview": {}})
 
 
-# ---------------- difficulty ----------------
+# Difficulty
 
 def test_difficulty_levels():
     assert difficulty.level("How many customers are there?") == "easy"
@@ -99,7 +99,7 @@ def test_difficulty_levels():
                             "and exclude cancelled orders") == "hard"
 
 
-# ---------------- capture middleware ----------------
+# Capture middleware
 
 def wait_for(check, seconds=5.0):
     end = time.time() + seconds
@@ -150,7 +150,7 @@ def test_query_is_captured_without_changing_the_response(ops_store, shop, monkey
     assert len(ops_store.list_answers("ana")) == 1
 
 
-# ---------------- monitor ----------------
+# Monitor
 
 def test_monitor_kpis_slo_and_incidents():
     now = time.time()
@@ -192,7 +192,7 @@ def test_monitor_endpoint_reads_the_stores(ops_store):
     assert client.put("/llmops/slo", json={"p95_seconds": 12}).json()["p95_seconds"] == 12
 
 
-# ---------------- smart routing ----------------
+# Smart routing
 
 class FakeHealth:
     def why_unavailable(self, route):
@@ -237,7 +237,7 @@ def test_smart_routing_modes(ops_store, monkeypatch):
         set_gateway(None)
 
 
-# ---------------- evaluations ----------------
+# Evaluations
 
 def report(accuracy, cases):
     return {"golden_set": "shop", "run_at": "2026-10-10T10:00:00", "case_count": len(cases),
@@ -304,7 +304,7 @@ def test_eval_run_needs_a_server_database(tmp_path, monkeypatch):
         evals.start_run("ana", "sqlite:///x.db", "x", "builtin:olist.yaml")
 
 
-# ---------------- endpoints ----------------
+# Endpoints
 
 def test_feedback_judge_and_promote_endpoints(ops_store, shop, tmp_path, monkeypatch):
     from fastapi.testclient import TestClient

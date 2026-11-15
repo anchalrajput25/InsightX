@@ -35,9 +35,7 @@ PARTIAL_PERIOD_RATIO = 0.5
 MIN_HISTORY = 3
 
 
-# ============================================================
-# HELPERS
-# ============================================================
+# Helpers
 
 def _query(sql: str, engine: Engine, max_rows: int = 5000) -> List[Dict[str, Any]]:
     try:
@@ -77,9 +75,7 @@ def _totals(scenario: Scenario, expressions: Sequence[str], engine: Engine) -> D
             "rows": int(_num(row.get("n")) or 0), "sql": sql}
 
 
-# ============================================================
-# WHAT-IF
-# ============================================================
+# What-if
 
 def run_whatif(question: str = "", engine: Engine = None, spec: Optional[Dict[str, Any]] = None, model=None,
                schema: Optional[Dict[str, Any]] = None, sensitivity: bool = True) -> Dict[str, Any]:
@@ -170,9 +166,7 @@ def _breakdown(scenario: Scenario, expression: str, total_delta: Optional[float]
             "unchanged_segments": sum(1 for item in rows if not item["delta"]), "sql": sql}
 
 
-# ============================================================
-# SENSITIVITY
-# ============================================================
+# Sensitivity
 
 def _sweep_values(lever: Lever) -> List[float]:
     if lever.type in ("scale", "volume"):
@@ -229,9 +223,7 @@ def run_sweep(spec: Dict[str, Any], engine: Engine, lever_index: int = 0, values
         return report
 
 
-# ============================================================
-# FORECAST
-# ============================================================
+# Forecast
 
 def _as_datetime(value: Any) -> Optional[datetime]:
     if value is None:

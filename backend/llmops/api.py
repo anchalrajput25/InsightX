@@ -46,7 +46,7 @@ def _since(days: float) -> float:
     return time.time() - max(0.04, min(float(days), 90.0)) * DAY
 
 
-# ================================================================ monitor
+# Monitor
 @router.get("/monitor")
 def monitor_overview(window: str = "24h", caller: Caller = Depends(current_caller)):
     if window not in monitor.WINDOWS:
@@ -74,7 +74,7 @@ def put_slo(body: SloBody, caller: Caller = Depends(current_caller)):
     return saved
 
 
-# ================================================================ answers
+# Answers
 @router.get("/answers")
 def list_answers(only: str = "all", search: str = "", days: float = 30, limit: int = 200,
                  caller: Caller = Depends(current_caller)):
@@ -211,7 +211,7 @@ def promote(answer_id: str, body: PromoteBody, caller: Caller = Depends(current_
     return {**saved, "answer": jsonable_encoder(_answer(caller, row["id"]))}
 
 
-# ========================================================== hallucination
+# Hallucination
 @router.get("/hallucination")
 def hallucination_summary(days: float = 30, caller: Caller = Depends(current_caller)):
     rows = get_store().list_answers(caller.user_id, since=_since(days), limit=1000)
@@ -264,7 +264,7 @@ def hallucination_summary(days: float = 30, caller: Caller = Depends(current_cal
     })
 
 
-# ================================================================ quality
+# Quality
 SUGGESTIONS = {
     "unverified_number": "Answers state numbers that are not in the result. Ask follow-up questions that return "
                          "the figure directly, or check whether the answer step is computing extra numbers.",
@@ -342,7 +342,7 @@ def _quality(day: Dict[str, Any]) -> Optional[float]:
     return round(100 * sum(parts) / len(parts), 1)
 
 
-# ================================================================== evals
+# Evals
 @router.get("/evals/reports")
 def eval_reports(caller: Caller = Depends(current_caller)):
     return {"reports": jsonable_encoder(evals.list_reports(caller.user_id)), "gate": evals.get_gate()}
@@ -447,7 +447,7 @@ def stop_run(job_id: str, caller: Caller = Depends(current_caller)):
         raise HTTPException(status_code=404, detail="Run not found.") from exc
 
 
-# ================================================================ routing
+# Routing
 @router.get("/routing")
 def routing_overview(caller: Caller = Depends(current_caller)):
     stats = routing.route_stats()
@@ -482,7 +482,7 @@ def classify(question: str, caller: Caller = Depends(current_caller)):
     return run(question[:4000])
 
 
-# ================================================================ install
+# Install
 def install(app) -> None:
     """Add the capture middleware (watches /query; never changes it)."""
     app.add_middleware(CaptureMiddleware)

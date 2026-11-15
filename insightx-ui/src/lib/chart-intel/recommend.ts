@@ -158,7 +158,7 @@ export function recommendChart(
   if (n === 1 && measures.length >= 1 && measures.length <= 6 && !time) {
     plan = { ...blank, kind: "metric", options: ["metric"], ys: measures.map((m) => m.name), reason: "One row of numbers reads best as headline figures." };
   } else if (time && measures.length) {
-    // ---- over time ----
+    // Over time
     const split = dims.find((d) => d.distinct >= 2 && d.distinct <= 10) ?? null;
     const ys = measures.slice(0, split ? 1 : 3);
     const keys = split ? [time.name, split.name] : [time.name];
@@ -190,7 +190,7 @@ export function recommendChart(
             : "A date and a number make a trend over time.",
     };
   } else if (dims.length && measures.length) {
-    // ---- by category ----
+    // By category
     // The column the query listed first is the main category; a second
     // category with few values splits the bars into stacks.
     const ordered = [...dims].sort((a, b) => profile.columns.indexOf(a) - profile.columns.indexOf(b));
@@ -246,7 +246,7 @@ export function recommendChart(
               : "A group column and a number: bars compare the groups.",
     };
   } else if (measures.length >= 2) {
-    // ---- numbers only ----
+    // Numbers only
     const [a, b, c] = measures;
     const kinds: SmartKind[] = ["scatter"];
     if (c) kinds.push("bubble");

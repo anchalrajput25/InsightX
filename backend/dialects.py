@@ -171,9 +171,7 @@ def select_limited(body: str, rows: int, distinct: bool = False, engine_or_name:
     return f"{head} {body} LIMIT {int(rows)}"
 
 
-# ------------------------------------------------------------
 # Transactions, timeouts, EXPLAIN
-# ------------------------------------------------------------
 
 def start_read_only(connection, statement_timeout_ms: int, lock_timeout_ms: Optional[int] = None) -> None:
     """
@@ -313,9 +311,7 @@ def prepare_sql(sql: str) -> str:
     return tree.sql(dialect="tsql")
 
 
-# ------------------------------------------------------------
 # SQL snippets that InsightX writes itself (charts, investigations)
-# ------------------------------------------------------------
 
 _GRAINS = ("day", "week", "month", "quarter", "year")
 
@@ -385,9 +381,7 @@ def seconds_between(later: str, earlier: str, engine_or_name: Any = None) -> str
     return f"EXTRACT(EPOCH FROM ({later} - {earlier}))"
 
 
-# ------------------------------------------------------------
 # Rules for the AI
-# ------------------------------------------------------------
 
 MYSQL_RULES = """
 ============================================================

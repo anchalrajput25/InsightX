@@ -3,16 +3,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from backend.llm_service import get_llm
 
 
-# ============================================================
 # LLM
-# ============================================================
 
 llm = get_llm(job="decompose")
 
 
-# ============================================================
-# PROMPT
-# ============================================================
+# Prompt
 
 prompt = ChatPromptTemplate.from_messages([
     (
@@ -223,9 +219,7 @@ Advanced Query Analysis:
 ])
 
 
-# ============================================================
-# FUNCTION
-# ============================================================
+# Function
 
 def decompose_query(
     question: str,

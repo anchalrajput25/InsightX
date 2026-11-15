@@ -59,9 +59,7 @@ def clean_rule(rule: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     return out
 
 
-# ------------------------------------------------------------
 # time helpers
-# ------------------------------------------------------------
 
 def infer_grain(times: List[Optional[datetime]]) -> Optional[str]:
     """day / week / month / quarter / year from the usual gap between points."""
@@ -152,9 +150,7 @@ def drop_unfinished(points: List[Dict[str, Any]], grain: Optional[str], now: Opt
     return points
 
 
-# ------------------------------------------------------------
 # numbers in words
-# ------------------------------------------------------------
 
 def fmt(value: Optional[float]) -> str:
     if value is None or (isinstance(value, float) and math.isnan(value)):
@@ -168,9 +164,7 @@ def fmt(value: Optional[float]) -> str:
     return f"{value:,.2f}" if size < 100 else f"{value:,.1f}"
 
 
-# ------------------------------------------------------------
 # the smart baseline
-# ------------------------------------------------------------
 
 def _theil_sen(ys: List[float]):
     slopes = [(ys[j] - ys[i]) / (j - i) for i in range(len(ys)) for j in range(i + 1, len(ys))]
@@ -237,9 +231,7 @@ def baseline(history: List[Dict[str, Any]], target: Optional[datetime], grain: O
     return {"expected": expected, "low": low, "high": high, "spread": spread, "slope": slope}
 
 
-# ------------------------------------------------------------
 # evaluate one rule on one series
-# ------------------------------------------------------------
 
 def _severity(rule: Dict[str, Any], intensity: float) -> str:
     if rule["severity"] != "auto":
@@ -405,9 +397,7 @@ def _stale(rule, points, name, grain, now):
                             f"{gap:,} {unit}{'s' if gap != 1 else ''} without any rows."))
 
 
-# ------------------------------------------------------------
 # back-test: how the rule would have behaved in the past
-# ------------------------------------------------------------
 
 def backtest(rule: Dict[str, Any], points: List[Dict[str, Any]], name: str = "This number",
              grain: Optional[str] = None, now: Optional[datetime] = None, last: int = 180) -> Dict[str, Any]:

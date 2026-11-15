@@ -99,9 +99,7 @@ on products in the last 6 months?
 """
 
 
-# ---------------------------------------------------------
 # Hybrid Retrieval
-# ---------------------------------------------------------
 
 retrieved = retrieve_relevant_schema(
     schema,
@@ -134,9 +132,7 @@ for item in retrieved:
     )
 
 
-# ---------------------------------------------------------
 # Graph Expansion
-# ---------------------------------------------------------
 
 initial_tables = [
     item["table"]
@@ -156,9 +152,7 @@ for table in expanded_tables:
     print(table)
 
 
-# ---------------------------------------------------------
 # Relationship Retrieval
-# ---------------------------------------------------------
 
 relationships = retrieve_relationships(
     schema,

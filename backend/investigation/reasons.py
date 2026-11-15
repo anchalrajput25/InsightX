@@ -51,7 +51,7 @@ def _regular(points: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             if not point["partial"] and point["value"] is not None and point["n"] >= 0.2 * typical_n]
 
 
-# ---------------- 1. was the earlier period unusual? ----------------
+# 1. was the earlier period unusual?
 def unusual_before(report: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
     h = report["headline"]
     points = report["trend"]
@@ -118,7 +118,7 @@ def unusual_before(report: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Op
     }, None
 
 
-# ---------------- 2. seasonality ----------------
+# 2. seasonality
 def _shift(period: str, grain: str) -> Optional[str]:
     try:
         day = date.fromisoformat(period[:10])
@@ -169,7 +169,7 @@ def seasonal(report: Dict[str, Any], grain: str) -> Tuple[Optional[Dict[str, Any
     }, None
 
 
-# ---------------- 3. what changed at the same time ----------------
+# 3. what changed at the same time
 def _signal_label(signal: Dict[str, Any]) -> str:
     name = signal["signal"]
     if signal["kind"] == "time_gap":
@@ -219,7 +219,7 @@ def changed_with(report: Dict[str, Any]) -> List[Dict[str, Any]]:
     return found
 
 
-# ---------------- 4. new vs returning customers ----------------
+# 4. new vs returning customers
 def customer_column(inv: Investigation) -> Optional[Tuple[str, str]]:
     """The column that best identifies a customer, among joinable tables."""
     best, best_rank = None, None
@@ -308,7 +308,7 @@ def customers(inv: Investigation, report: Dict[str, Any]) -> Tuple[Optional[Dict
     }, None
 
 
-# ---------------- all together ----------------
+# All together
 def find_reasons(inv: Investigation, report: Dict[str, Any]) -> Dict[str, Any]:
     reasons, ruled_out = [], []
     checks = [

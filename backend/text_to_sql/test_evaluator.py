@@ -15,9 +15,7 @@ print("TEXT-TO-SQL EVALUATOR TEST")
 print("=" * 70)
 
 
-# ---------------------------------------------------------
-# TEST 1: SQL EXACT MATCH
-# ---------------------------------------------------------
+# Test 1: SQL exact match
 
 predicted_sql = """
 SELECT customer_id
@@ -41,9 +39,7 @@ print("-" * 70)
 print("RESULT:", result)
 
 
-# ---------------------------------------------------------
-# TEST 2: EXECUTION ACCURACY
-# ---------------------------------------------------------
+# Test 2: Execution accuracy
 
 predicted_result = [
     {"customer_id": "C001", "customer_count": 10},
@@ -65,9 +61,7 @@ print("-" * 70)
 print("RESULT:", result)
 
 
-# ---------------------------------------------------------
-# TEST 3: SCHEMA LINKING ACCURACY
-# ---------------------------------------------------------
+# Test 3: Schema linking accuracy
 
 predicted_tables = [
     "customers",
@@ -90,9 +84,7 @@ print("-" * 70)
 print("RESULT:", result)
 
 
-# ---------------------------------------------------------
-# TEST 4: RETRIEVAL RECALL
-# ---------------------------------------------------------
+# Test 4: Retrieval recall
 
 retrieved_tables = [
     "customers",
@@ -115,9 +107,7 @@ print("-" * 70)
 print("RESULT:", result)
 
 
-# ---------------------------------------------------------
-# TEST 5: CORRECTION SUCCESS
-# ---------------------------------------------------------
+# Test 5: Correction success
 
 corrected_sql = """
 SELECT customer_id
@@ -140,9 +130,7 @@ print("-" * 70)
 print("RESULT:", result)
 
 
-# ---------------------------------------------------------
-# TEST 6: ANSWER FAITHFULNESS
-# ---------------------------------------------------------
+# Test 6: Answer faithfulness
 
 answer = (
     "C001 has 10 customers and C002 has 8 customers."
@@ -165,9 +153,7 @@ print("FAITHFUL:", result["faithful"])
 print("REASON:", result["reason"])
 
 
-# ---------------------------------------------------------
-# TEST 7: COMPLETE EVALUATION
-# ---------------------------------------------------------
+# Test 7: Complete evaluation
 
 evaluation = evaluate_text_to_sql(
     predicted_sql=predicted_sql,
@@ -194,9 +180,7 @@ for metric, value in evaluation["metrics"].items():
     print(f"{metric}: {value}")
 
 
-# ---------------------------------------------------------
-# TEST 8: EVALUATION SUMMARY
-# ---------------------------------------------------------
+# Test 8: Evaluation summary
 
 summary = evaluation_summary(
     evaluation

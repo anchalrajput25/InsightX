@@ -88,7 +88,7 @@ class LLMOpsStore:
         self._lock = threading.Lock()
         metadata.create_all(self.engine)
 
-    # ------------------------------------------------------- answers
+    # Answers
     def add_answer(self, row: Dict[str, Any]) -> str:
         now = float(row.get("ts") or time.time())
         values = {
@@ -155,7 +155,7 @@ class LLMOpsStore:
             total = connection.execute(select(func.count()).where(answers.c.user_id == user_id)).scalar() or 0
         return {"answers": int(total)}
 
-    # ------------------------------------------------------ settings
+    # Settings
     def get_setting(self, key: str, default: Any = None) -> Any:
         with self.engine.connect() as connection:
             value = connection.execute(select(settings.c.value).where(settings.c.key == key)).scalar()

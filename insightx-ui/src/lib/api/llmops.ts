@@ -6,7 +6,7 @@ import { api } from "@/lib/api/client";
 export type Risk = "none" | "low" | "medium" | "high";
 export type MonitorWindow = "1h" | "24h" | "7d" | "30d";
 
-// ---------------- monitor ----------------
+// Monitor
 export interface MonitorKpis {
   questions: number;
   success_rate: number | null;
@@ -96,7 +96,7 @@ export interface SloTargets {
   hallucination_rate: number;
 }
 
-// ---------------- answers ----------------
+// Answers
 export interface Finding {
   kind: string;
   weight: number;
@@ -193,7 +193,7 @@ export interface SqlTest {
   same_as_answer: boolean | null;
 }
 
-// ---------------- evals ----------------
+// Evals
 export interface GateCheck {
   metric: string;
   value: number | null;
@@ -335,7 +335,7 @@ export interface RunInput {
   max_cost?: number | null;
 }
 
-// ---------------- routing ----------------
+// Routing
 export type RoutingMode = "off" | "shadow" | "on";
 export type Level = "easy" | "medium" | "hard";
 

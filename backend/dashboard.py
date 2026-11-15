@@ -1,6 +1,6 @@
 # backend/dashboard.py
 #
-# "📈 Dashboard": a basic picture of the whole connected database, and
+# "Dashboard": a basic picture of the whole connected database, and
 # charts people ask for in their own words ("a graph of sales by state").
 #
 #   overview   built from the schema alone, no AI: the size of each
@@ -50,9 +50,7 @@ _NUMBER_TYPE = ("int", "numeric", "decimal", "double", "real", "float", "money")
 _DATE_TYPE = ("date", "time")
 
 
-# ============================================================
 # OVERVIEW (no AI)
-# ============================================================
 
 def _kind(column: Dict[str, Any]) -> str:
     data_type = str(column.get("data_type", "")).lower()
@@ -224,9 +222,7 @@ _overview_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
 _overview_lock = threading.Lock()
 
 
-# ============================================================
-# CHARTS PEOPLE ASK FOR
-# ============================================================
+# Charts people ask for
 
 def requested_kind(text: str) -> str:
     """'pie chart of ...' -> 'pie'; '' when the text names no chart type."""
@@ -313,9 +309,7 @@ def _live(chart: Dict[str, Any], engine: Engine) -> Dict[str, Any]:
     return {**chart, "columns": result.get("columns") or [], "rows": result.get("rows") or []}
 
 
-# ============================================================
 # API
-# ============================================================
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 

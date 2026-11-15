@@ -316,6 +316,12 @@ def infer_relationships(
                     if _type_family(child_info["data_type"]) != _type_family(parent_info["data_type"]):
                         continue
 
+                    # Dates, times, decimals and true/false are never join keys. Checking
+                    # them made every pair of tables with a created_at or amount column run
+                    # two queries (tens of thousands on a 100-table database).
+                    if not _can_be_join_key(child_info["data_type"]):
+                        continue
+
                     # Parent should behave like a candidate key
                     parent_is_unique = (
                         parent_info["non_null_count"] > 0
@@ -448,6 +454,20 @@ def _type_family(data_type) -> str:
     if any(word in lowered for word in ("char", "text", "uuid")):
         return "text"
     return lowered
+
+
+_NOT_KEY_TYPES = ("date", "time", "interval", "bool", "real", "double", "float")
+
+
+def _can_be_join_key(data_type) -> bool:
+    """False for column types no table links on (dates, times, decimals, booleans)."""
+    lowered = str(data_type).lower().replace(" ", "")
+    if any(word in lowered for word in _NOT_KEY_TYPES):
+        return False
+    if lowered.startswith(("numeric", "decimal")):
+        # Amounts and prices; NUMERIC(10,0) / NUMERIC(10) can still be an id.
+        return lowered.endswith(",0)") or ("(" in lowered and "," not in lowered)
+    return True
 
 
 def _single_key_column(parent_profile):

@@ -99,7 +99,7 @@ class AlertStore:
         self._lock = threading.Lock()
         metadata.create_all(self.engine)
 
-    # ---------------- alerts ----------------
+    # Alerts
 
     def count(self, owner: str, database: str) -> int:
         with self.engine.connect() as connection:
@@ -165,7 +165,7 @@ class AlertStore:
                 alerts.c.id == alert_id, alerts.c.next_check == seen_next_check).values(next_check=new_next_check))
         return bool(result.rowcount)
 
-    # ---------------- readings of one-number alerts ----------------
+    # Readings of one-number alerts
 
     def add_reading(self, alert_id: str, value: float, ts: Optional[float] = None) -> None:
         with self._lock, self.engine.begin() as connection:
@@ -183,7 +183,7 @@ class AlertStore:
                                       .order_by(observations.c.ts)).fetchall()
         return [{"ts": row.ts, "value": row.value} for row in rows]
 
-    # ---------------- events ----------------
+    # Events
 
     def open_event(self, alert_id: str, period: Optional[str] = None) -> Optional[Dict[str, Any]]:
         query = select(events).where(events.c.alert_id == alert_id, events.c.status.in_(OPEN))

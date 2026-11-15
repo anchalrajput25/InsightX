@@ -23,9 +23,7 @@ from backend.text_to_sql.sql_safety import clean_sql
 logger = logging.getLogger("insightx.executor")
 
 
-# ============================================================
-# READ-ONLY TRANSACTION
-# ============================================================
+# Read-only transaction
 
 @contextmanager
 def read_only_connection(
@@ -65,9 +63,7 @@ def driver_sql(sql: str, engine: Engine) -> str:
     return sql
 
 
-# ============================================================
-# RESULT FORMAT
-# ============================================================
+# Result format
 
 def execution_result(
     success: bool,
@@ -95,9 +91,7 @@ def execution_result(
     }
 
 
-# ============================================================
-# EXECUTION
-# ============================================================
+# Execution
 
 def execute_query(
     sql: str,

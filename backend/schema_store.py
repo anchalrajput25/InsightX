@@ -92,7 +92,7 @@ def set_store(store: Optional[SchemaStore]) -> None:
         _store = store
 
 
-# ------------------------------------------------------------ safe helpers
+# Safe helpers
 # The store only ever speeds things up: every error is logged and ignored.
 
 def load(engine: Engine) -> Optional[Tuple[Dict[str, Any], float]]:

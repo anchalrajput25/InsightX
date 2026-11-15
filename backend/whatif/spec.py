@@ -59,9 +59,7 @@ _NUMERIC_TYPE = re.compile(r"int|real|double|float|numeric|decimal|money|number|
 _TEXT_TYPE = re.compile(r"char|text|string|clob|uuid|enum", re.I)
 
 
-# ============================================================
-# DATA
-# ============================================================
+# Data
 
 def _literal(value: Any) -> str:
     if isinstance(value, bool):
@@ -253,9 +251,7 @@ def _unquote(sql: str) -> str:
     return re.sub(r'[`"\[]([^`"\]]+)[`"\]]', r"\1", sql or "")
 
 
-# ============================================================
-# VERIFICATION
-# ============================================================
+# Verification
 
 def _number(value: Any, what: str, low: Optional[float] = None, high: Optional[float] = None) -> float:
     try:

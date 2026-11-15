@@ -72,9 +72,7 @@ STAGES = {
 }
 
 
-# ============================================================
-# REPORT ACCESS
-# ============================================================
+# Report access
 
 # A run's progress file counts as "running" while it was written to recently.
 RUNNING_WINDOW_S = 10 * 60
@@ -189,9 +187,7 @@ def _money(value: Optional[float]) -> str:
     return f"${value:.4f}" if value < 0.1 else f"${value:.2f}"
 
 
-# ============================================================
 # HTML: hero + tiles
-# ============================================================
 
 def _tile(label: str, value: str, sub: str, t: Theme, icon: str = "", icon_color: str = "") -> str:
     mark = (f'<span style="color:{icon_color};font-weight:700;margin-right:6px">{html.escape(icon)}</span>'
@@ -279,9 +275,7 @@ def stability_html(summary: Dict[str, Any], t: Theme = LIGHT) -> str:
     return (f'<div style="font-family:{FONT_HTML};display:flex;flex-wrap:wrap;gap:10px">{"".join(tiles)}</div>')
 
 
-# ============================================================
-# CHARTS
-# ============================================================
+# Charts
 
 def _interval_rows(groups: Dict[str, Dict[str, Any]], order: Optional[List[str]] = None,
                    labels: Optional[Dict[str, str]] = None) -> List[Dict[str, Any]]:
@@ -551,9 +545,7 @@ def tradeoff_chart(report: Dict[str, Any], t: Theme = LIGHT):
                   "Up and to the left is better: more accurate for less " + ("money." if use_cost else "time."))
 
 
-# ============================================================
-# STREAMLIT PAGE
-# ============================================================
+# Streamlit page
 
 def _comparison_rows(report: Dict[str, Any]) -> List[Dict[str, Any]]:
     rows = []

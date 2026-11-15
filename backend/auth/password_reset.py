@@ -70,7 +70,7 @@ def _hash(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
-# ------------------------------------------------------------ rate limits
+# Rate limits
 class _Limiter:
     def __init__(self):
         self.hits: Dict[str, Deque[float]] = defaultdict(deque)
@@ -94,7 +94,7 @@ class _Limiter:
 limiter = _Limiter()
 
 
-# ------------------------------------------------------------ email
+# Email
 def _production() -> bool:
     return os.getenv("INSIGHTX_ENV", "").strip().lower() in ("production", "prod")
 
@@ -134,7 +134,7 @@ def _deliver(address: str, token: str) -> None:
         log.warning("Could not send the password reset email: %s", _clean(exc))
 
 
-# ------------------------------------------------------------ the flow
+# The flow
 def request_reset(email: str, ip: str = "", now: Optional[float] = None) -> str:
     """Email a reset link when the account exists. Always returns the same text."""
     now = now or time.time()
@@ -184,7 +184,7 @@ def reset_password(token: str, new_password: str, now: Optional[float] = None) -
     service.lockout.succeeded(user["email"])  # a locked-out person can sign in right away
 
 
-# ------------------------------------------------------------ endpoints
+# Endpoints
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 

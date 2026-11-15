@@ -6,9 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 
-# ---------------------------------------------------------
-# LOG DIRECTORY
-# ---------------------------------------------------------
+# Log directory
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -18,9 +16,7 @@ LOG_DIR.mkdir(exist_ok=True)
 LOG_FILE = LOG_DIR / "text_to_sql.jsonl"
 
 
-# ---------------------------------------------------------
-# HELPERS
-# ---------------------------------------------------------
+# Helpers
 
 def generate_query_id() -> str:
     """Generate a unique ID for every Text-to-SQL request."""
@@ -59,9 +55,7 @@ def _safe_value(value: Any) -> Any:
     return str(value)
 
 
-# ---------------------------------------------------------
-# QUERY TRACE
-# ---------------------------------------------------------
+# Query trace
 
 class QueryTrace:
     """
@@ -99,9 +93,7 @@ class QueryTrace:
             "metadata": {},
         }
 
-    # -----------------------------------------------------
-    # STAGE RECORDING
-    # -----------------------------------------------------
+    # Stage recording
 
     def record_stage(
         self,
@@ -114,9 +106,7 @@ class QueryTrace:
 
         self.data[stage_name] = _safe_value(data)
 
-    # -----------------------------------------------------
-    # ERROR RECORDING
-    # -----------------------------------------------------
+    # Error recording
 
     def record_error(
         self,
@@ -132,9 +122,7 @@ class QueryTrace:
             }
         )
 
-    # -----------------------------------------------------
-    # METADATA
-    # -----------------------------------------------------
+    # Metadata
 
     def add_metadata(
         self,
@@ -144,9 +132,7 @@ class QueryTrace:
 
         self.data["metadata"][key] = _safe_value(value)
 
-    # -----------------------------------------------------
-    # FINALIZE
-    # -----------------------------------------------------
+    # Finalize
 
     def finalize(self) -> Dict[str, Any]:
         """
@@ -165,9 +151,7 @@ class QueryTrace:
         return self.data
 
 
-# ---------------------------------------------------------
-# FILE LOGGER
-# ---------------------------------------------------------
+# File logger
 
 def log_query_trace(
     trace: QueryTrace,
@@ -210,9 +194,7 @@ def log_query_trace(
         }
 
 
-# ---------------------------------------------------------
-# SIMPLE EVENT LOGGER
-# ---------------------------------------------------------
+# Simple event logger
 
 def log_event(
     event_name: str,

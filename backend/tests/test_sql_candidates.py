@@ -7,9 +7,7 @@ import pytest
 from backend.text_to_sql.sql_candidates import run_parallel, select_candidate
 
 
-# ============================================================
-# PARALLEL CALLS
-# ============================================================
+# Parallel calls
 
 def test_parallel_waits_for_primary_and_bounds_the_others():
     def primary():
@@ -32,9 +30,7 @@ def test_parallel_waits_for_primary_and_bounds_the_others():
     assert results[3] == "fast"
 
 
-# ============================================================
 # SELECTION (scripted evaluation, no database)
-# ============================================================
 
 def ok(columns, *rows):
     return {"status": "ok", "result": {
@@ -121,9 +117,7 @@ def test_failed_candidates_do_not_vote_and_none_ok_gives_no_winner():
     assert outcome["winner"] is None and outcome["execution"] is None
 
 
-# ============================================================
 # REAL EVALUATION (database)
-# ============================================================
 
 def test_real_candidates_pass_the_safety_gate_and_validation(engine):
     outcome = select_candidate(cands(

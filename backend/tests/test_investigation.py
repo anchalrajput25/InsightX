@@ -85,9 +85,7 @@ def test_period_labels():
     assert period_label("2024-01-01", "year") == "2024"
 
 
-# ============================================================
-# PLAN VERIFICATION
-# ============================================================
+# Plan verification
 
 def test_plan_is_verified_and_completed(engine, shop):
     plan = verify_plan(RAW_PLAN, shop, "why", engine)
@@ -117,9 +115,7 @@ def test_unknown_time_column_falls_back_to_a_real_one(engine, shop):
     assert plan.notes
 
 
-# ============================================================
-# ANALYSIS
-# ============================================================
+# Analysis
 
 @pytest.fixture(scope="module")
 def report(engine, shop):
@@ -195,9 +191,7 @@ def test_facts_summary_is_deterministic_text(report):
     assert any("'north' accounts for 100% of the change" in fact for fact in facts)
 
 
-# ============================================================
-# NARRATIVE AND SERVICE
-# ============================================================
+# Narrative and service
 
 class Scripted:
     def __init__(self, *responses):

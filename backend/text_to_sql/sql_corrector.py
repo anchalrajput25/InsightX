@@ -4,16 +4,12 @@ from typing import Any, Dict, Optional
 from backend.llm_service import get_llm
 
 
-# ============================================================
 # LLM
-# ============================================================
 
 llm = get_llm(job="sql_repair")
 
 
-# ============================================================
-# SQL CLEANING
-# ============================================================
+# SQL cleaning
 
 def clean_sql(sql: str) -> str:
     """
@@ -42,9 +38,7 @@ def clean_sql(sql: str) -> str:
     return sql.strip()
 
 
-# ============================================================
-# RESPONSE EXTRACTION
-# ============================================================
+# Response extraction
 
 def extract_sql(response: str) -> str:
     """
@@ -67,9 +61,7 @@ def extract_sql(response: str) -> str:
     return clean_sql(response)
 
 
-# ============================================================
-# SCHEMA COMPACTION
-# ============================================================
+# Schema compaction
 
 def compact_schema(schema: Any, max_chars: int = 12000) -> str:
     """
@@ -161,9 +153,7 @@ def compact_schema(schema: Any, max_chars: int = 12000) -> str:
     return text
 
 
-# ============================================================
-# PROMPT
-# ============================================================
+# Prompt
 
 def build_correction_prompt(
     question: str,
@@ -240,9 +230,7 @@ Return ONLY the corrected PostgreSQL SQL query.
     return prompt.strip()
 
 
-# ============================================================
-# SQL CORRECTION
-# ============================================================
+# SQL correction
 
 def correct_sql(
     question: str,
@@ -311,9 +299,7 @@ def correct_sql(
             "error": "LLM returned empty SQL.",
         }
 
-    # --------------------------------------------------------
-    # BASIC SAFETY CHECK
-    # --------------------------------------------------------
+    # Basic safety check
 
     # Safety is enforced by the sql_safety gate, which the agent runs
     # on every corrected query before validation and execution.
@@ -340,9 +326,7 @@ def correct_sql(
     }
 
 
-# ============================================================
-# SIMPLE HELPER
-# ============================================================
+# Simple helper
 
 def get_corrected_sql(
     question: str,
@@ -372,9 +356,7 @@ def get_corrected_sql(
     return result["sql"]
 
 
-# ============================================================
-# TEST
-# ============================================================
+# Test
 
 if __name__ == "__main__":
 

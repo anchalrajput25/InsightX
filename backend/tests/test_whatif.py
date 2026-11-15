@@ -80,7 +80,7 @@ def category(row):
     return {p: c for p, c, _ in PRODUCTS}[row[1]]
 
 
-# ------------------------------------------------------------ levers
+# Levers
 
 def test_a_scenario_without_changes_equals_the_baseline(shop):
     with dialects.using(shop):
@@ -187,7 +187,7 @@ def test_ratio_metrics_take_exclusions_but_not_volume(shop):
                                       "levers": [{"type": "volume", "percent": 10}]})
 
 
-# ------------------------------------------------------------ sensitivity
+# Sensitivity
 
 def test_sweep_matches_single_runs(shop):
     base = spec({"type": "scale", "column": "sales.price", "percent": 10})
@@ -199,7 +199,7 @@ def test_sweep_matches_single_runs(shop):
     assert len(report["sensitivity"]["points"]) >= 9
 
 
-# ------------------------------------------------------------ forecast
+# Forecast
 
 def test_holt_winters_learns_trend_and_season():
     season = [10, 12, 15, 20, 26, 30, 28, 24, 18, 14, 11, 9]
@@ -238,7 +238,7 @@ def test_a_question_asking_for_a_forecast_runs_one(shop):
     assert report["forecast"]["horizon"] == 3
 
 
-# ------------------------------------------------------------ safety
+# Safety
 
 def _row_count(engine) -> int:
     with engine.connect() as connection:
@@ -278,7 +278,7 @@ def test_generated_sql_passes_the_safety_gate(shop):
     assert check_sql_safety(sql)["safe"]
 
 
-# ------------------------------------------------------------ planner and API
+# Planner and API
 
 class Scripted:
     def __init__(self, reply):

@@ -1,9 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 
-# ---------------------------------------------------------
-# HELPER
-# ---------------------------------------------------------
+# Helper
 
 def normalize_sql(sql: str) -> str:
     """
@@ -110,9 +108,7 @@ def calculate_retrieval_recall(
     )
 
 
-# ---------------------------------------------------------
-# SQL CORRECTION EVALUATION
-# ---------------------------------------------------------
+# SQL correction evaluation
 
 def calculate_correction_success(
     corrected_sql: Optional[str],
@@ -130,9 +126,7 @@ def calculate_correction_success(
     )
 
 
-# ---------------------------------------------------------
-# ANSWER FAITHFULNESS
-# ---------------------------------------------------------
+# Answer faithfulness
 
 def calculate_answer_faithfulness(
     answer: str,
@@ -172,9 +166,7 @@ def calculate_answer_faithfulness(
     }
 
 
-# ---------------------------------------------------------
-# MAIN EVALUATION
-# ---------------------------------------------------------
+# Main evaluation
 
 def evaluate_text_to_sql(
     predicted_sql: str,
@@ -198,9 +190,7 @@ def evaluate_text_to_sql(
 
     metrics: Dict[str, Any] = {}
 
-    # -----------------------------------------------------
-    # SQL EXACT MATCH
-    # -----------------------------------------------------
+    # SQL exact match
 
     if expected_sql is not None:
         metrics["sql_exact_match"] = calculate_exact_match(
@@ -208,9 +198,7 @@ def evaluate_text_to_sql(
             expected_sql=expected_sql,
         )
 
-    # -----------------------------------------------------
-    # EXECUTION ACCURACY
-    # -----------------------------------------------------
+    # Execution accuracy
 
     if (
         predicted_result is not None
@@ -223,9 +211,7 @@ def evaluate_text_to_sql(
             )
         )
 
-    # -----------------------------------------------------
-    # SCHEMA LINKING ACCURACY
-    # -----------------------------------------------------
+    # Schema linking accuracy
 
     if (
         predicted_tables is not None
@@ -238,9 +224,7 @@ def evaluate_text_to_sql(
             )
         )
 
-    # -----------------------------------------------------
-    # RETRIEVAL RECALL
-    # -----------------------------------------------------
+    # Retrieval recall
 
     if (
         retrieved_tables is not None
@@ -253,9 +237,7 @@ def evaluate_text_to_sql(
             )
         )
 
-    # -----------------------------------------------------
-    # CORRECTION SUCCESS
-    # -----------------------------------------------------
+    # Correction success
 
     if correction_validation is not None:
         metrics["correction_success"] = (
@@ -265,9 +247,7 @@ def evaluate_text_to_sql(
             )
         )
 
-    # -----------------------------------------------------
-    # ANSWER FAITHFULNESS
-    # -----------------------------------------------------
+    # Answer faithfulness
 
     if answer is not None:
         faithfulness = calculate_answer_faithfulness(
@@ -277,9 +257,7 @@ def evaluate_text_to_sql(
 
         metrics["answer_faithfulness"] = faithfulness
 
-    # -----------------------------------------------------
-    # SUMMARY
-    # -----------------------------------------------------
+    # Summary
 
     return {
         "success": True,
@@ -287,9 +265,7 @@ def evaluate_text_to_sql(
     }
 
 
-# ---------------------------------------------------------
-# SIMPLE EVALUATION SUMMARY
-# ---------------------------------------------------------
+# Simple evaluation summary
 
 def evaluation_summary(
     evaluation: Dict[str, Any],

@@ -114,10 +114,7 @@ def expand_related_tables(
 
     return list(expanded_tables)
 
-# ============================================================
-# JOIN-PATH PLANNING
-# ============================================================
-#
+# Join-path planning
 # expand_related_tables() adds every table reachable through any
 # relationship, which on a connected database means the WHOLE schema.
 # plan_join_paths() instead connects only the tables retrieval chose

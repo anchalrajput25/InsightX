@@ -137,7 +137,7 @@ class _Verifier:
         if table not in self.tables:
             self.tables.append(table)
 
-    # ---------------- tables ----------------
+    # Tables
     def verify_tables(self, names: List[Any]) -> None:
         for name in names or []:
             table, corrected = self.catalog.resolve_table(name)
@@ -148,7 +148,7 @@ class _Verifier:
                 self.corrections.append(f"table {name!r} -> {table}")
             self.add_table(table)
 
-    # ---------------- columns ----------------
+    # Columns
     def locate_column(self, table_hint: Any, column_name: Any) -> Optional[Tuple[str, str]]:
         hinted_table, column_part = None, column_name
         if not table_hint and "." in str(column_name or ""):
@@ -187,7 +187,7 @@ class _Verifier:
             role = str(item.get("role") or "").lower()
             self.columns.setdefault((table, column), role if role in ROLES else "")
 
-    # ---------------- joins ----------------
+    # Joins
     def add_join(self, left: Tuple[str, str], right: Tuple[str, str], source: str) -> None:
         key = frozenset((left, right))
         if any(frozenset(((j["left_table"], j["left_column"]), (j["right_table"], j["right_column"]))) == key
@@ -274,7 +274,7 @@ class _Verifier:
     def _already_connected(self, a: str, b: str) -> bool:
         return any(a in group and b in group for group in self._components())
 
-    # ---------------- filters ----------------
+    # Filters
     def verify_filters(self, filters: List[Any]) -> None:
         for item in filters or []:
             if not isinstance(item, dict):

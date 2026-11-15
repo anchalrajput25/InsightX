@@ -12,9 +12,7 @@ contributed most to that growth?
 """
 
 
-# ============================================================
-# SAMPLE SCHEMA
-# ============================================================
+# Sample schema
 
 schema = {
     "tables": [
@@ -149,9 +147,7 @@ schema = {
 }
 
 
-# ============================================================
-# 1. QUERY REWRITING
-# ============================================================
+# 1. Query rewriting
 
 print("\nRunning Query Rewriter...")
 
@@ -163,9 +159,7 @@ print("=" * 80)
 print(rewritten)
 
 
-# ============================================================
-# 2. QUERY DECOMPOSITION
-# ============================================================
+# 2. Query decomposition
 
 print("\nRunning Query Decomposer...")
 
@@ -180,9 +174,7 @@ print("=" * 80)
 print(decomposed)
 
 
-# ============================================================
-# 3. SCHEMA LINKING
-# ============================================================
+# 3. Schema linking
 
 print("\nRunning Schema Linker...")
 
@@ -199,9 +191,7 @@ print("=" * 80)
 print(linked_schema)
 
 
-# ============================================================
-# 4. SQL GENERATION
-# ============================================================
+# 4. SQL generation
 
 print("\nRunning SQL Generator...")
 

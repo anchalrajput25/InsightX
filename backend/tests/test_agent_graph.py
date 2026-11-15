@@ -176,9 +176,7 @@ def test_query_endpoint_agent_failure_is_not_http_500(agent_engine, fake_llms, m
     assert body["error_stage"] == "decompose"
 
 
-# ============================================================
 # VALUE GROUNDING (regression: 'São Paulo' vs stored 'sao paulo')
-# ============================================================
 
 def test_wrong_filter_value_is_corrected_using_stored_value(agent_engine, fake_llms):
     seen_prompts = []
@@ -237,9 +235,7 @@ def test_follow_up_sees_exact_stored_values(agent_engine, fake_llms):
     assert "DATABASE RESULT (exact stored values): customer_city=sao paulo" in contexts[0]
 
 
-# ============================================================
-# MULTI-QUERY REWRITING
-# ============================================================
+# Multi-query rewriting
 
 def test_query_variants_reach_retrieval_and_response(agent_engine, fake_llms, monkeypatch):
     from backend.text_to_sql import schema_focus
@@ -298,9 +294,7 @@ def test_thread_history_endpoint(agent_engine, fake_llms, monkeypatch):
     assert missing.status_code == 404
 
 
-# ============================================================
 # FOCUSED SCHEMA (retrieval that scales)
-# ============================================================
 
 def test_linker_and_generator_get_focused_schema_join_and_value_facts(agent_engine, fake_llms):
     prompts = {}
@@ -337,9 +331,7 @@ def test_linker_and_generator_get_focused_schema_join_and_value_facts(agent_engi
     assert "JOIN CONDITIONS" in prompts["generator"]
 
 
-# ============================================================
-# STRUCTURED SCHEMA LINKING + SQL CANDIDATES
-# ============================================================
+# Structured schema linking + SQL candidates
 
 CLARIFY = "STATUS: NEEDS_CLARIFICATION\nCLARIFICATION_REQUIRED: Which metric?\nREASON: ambiguous."
 WRONG_SQL = "SELECT customer_city, COUNT(*) FROM itest_customers GROUP BY 1 ORDER BY 2 ASC LIMIT 1"

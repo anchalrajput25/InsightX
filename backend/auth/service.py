@@ -28,7 +28,7 @@ def clean_email(email: str) -> str:
     return str(email or "").strip().lower()
 
 
-# ------------------------------------------------------------- lockout
+# Lockout
 class _Lockout:
     def __init__(self):
         self.failures: Dict[str, Deque[float]] = defaultdict(deque)
@@ -70,7 +70,7 @@ lockout = _Lockout()
 _DUMMY_HASH = passwords.hash_password("not-a-real-password-1")
 
 
-# ------------------------------------------------------------- accounts
+# Accounts
 def sign_up(email: str, name: str, password: str, now: Optional[float] = None) -> Dict[str, Any]:
     """Create an account and sign it in."""
     email = clean_email(email)

@@ -17,9 +17,7 @@ from typing import Any, Dict, Iterable, List
 from sqlalchemy.engine import Engine
 
 
-# ============================================================
-# INTERNAL (CHECKPOINT) TABLES
-# ============================================================
+# Internal (checkpoint) tables
 
 # Tables created by LangGraph's PostgresSaver, with columns that
 # identify them. A table is internal only if both the name and the
@@ -62,9 +60,7 @@ def filter_business_tables(
     return business_tables
 
 
-# ============================================================
-# PROFILER -> AGENT SCHEMA
-# ============================================================
+# Profiler -> agent schema
 
 def _convert_relationships(profile_relationships: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
@@ -167,10 +163,7 @@ def build_agent_schema(profile: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# ============================================================
-# SCHEMA CACHE
-# ============================================================
-#
+# Schema cache
 # Keyed by database identity (driver, user, host, port, database),
 # not by connection_id, so an import into a database invalidates
 # the schema for every session connected to it.

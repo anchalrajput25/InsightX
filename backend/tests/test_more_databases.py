@@ -25,9 +25,7 @@ def safety(kind, sql):
         return check_sql_safety(sql)
 
 
-# ---------------------------------------------------------------
 # Without a database
-# ---------------------------------------------------------------
 
 def test_sql_server_sql_is_safe():
     for sql in (
@@ -85,9 +83,7 @@ def test_positional_group_by_is_rewritten_for_sql_server():
     assert dialects.prepare_sql(sql) == sql  # PostgreSQL: unchanged
 
 
-# ---------------------------------------------------------------
 # With a database
-# ---------------------------------------------------------------
 
 metadata = MetaData()
 genre = Table("ztest_genre", metadata, Column("genre_id", Integer, primary_key=True, autoincrement=False),

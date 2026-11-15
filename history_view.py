@@ -1,6 +1,6 @@
 # history_view.py
 #
-# "🕘 History": every question asked, from every chat and database,
+# "History": every question asked, from every chat and database,
 # with its answer, SQL and (for "why" questions) the real reason.
 # Search it, open any entry, ask it again or delete it.
 

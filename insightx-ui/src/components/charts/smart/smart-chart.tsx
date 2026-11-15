@@ -293,7 +293,7 @@ export function SmartChart({
   // drill-down is possible when another category is left to break into
   const canDrill = !!plan && plan.xRole === "category" && plan.profile.dimensions.filter((d) => d.name !== plan.x).length > 0;
 
-  // ---- ECharts lifecycle ----
+  // ECharts lifecycle
   const isChart = !!option;
   React.useEffect(() => {
     if (!isChart) return;
@@ -381,7 +381,7 @@ export function SmartChart({
     return () => clearTimeout(timer);
   }, [full, showData]);
 
-  // ---- exports ----
+  // Exports
   const exportPng = () => {
     const url = chartRef.current?.getDataURL({ type: "png", pixelRatio: 2, backgroundColor: theme.surface });
     if (!url) return;

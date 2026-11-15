@@ -78,7 +78,7 @@ class UsageStore:
         self._lock = threading.Lock()  # SQLite allows one writer at a time
         metadata.create_all(self.engine)
 
-    # ---------------------------------------------------------- ledger
+    # Ledger
     def record(self, **row: Any) -> None:
         now = row.pop("ts", None) or time.time()
         values = {
@@ -120,7 +120,7 @@ class UsageStore:
         with self.engine.connect() as connection:
             return [dict(row._mapping) for row in connection.execute(query)]
 
-    # ----------------------------------------------------------- cache
+    # Cache
     def cache_get(self, key: str, ttl_seconds: float) -> Optional[str]:
         with self.engine.connect() as connection:
             row = connection.execute(select(ai_cache).where(ai_cache.c.key == key)).first()

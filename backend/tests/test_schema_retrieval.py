@@ -70,9 +70,7 @@ def multi_domain_schema(filler_tables: int = 40):
     return {"tables": tables, "relationships": relationships}
 
 
-# ============================================================
-# TOKENIZATION AND COLUMN-LEVEL RANKING
-# ============================================================
+# Tokenization and column-level ranking
 
 def test_tokenizer_splits_identifiers_and_drops_question_words():
     assert tokenize("hireDate") == ["hire", "date"]
@@ -98,9 +96,7 @@ def test_relevance_is_relative_and_averaged_over_variants():
     assert by_table["employees"]["matched_queries"] == 2
 
 
-# ============================================================
-# VALUE INDEX
-# ============================================================
+# Value index
 
 def hints_for(question, schema=None):
     return [(h["table"], h["column"], h["value"], h["match"]) for h in match_values(schema or multi_domain_schema(2), [question])]
@@ -137,9 +133,7 @@ def test_values_found_in_too_many_columns_are_ignored():
     assert match_values({"tables": tables}, ["unknown rows"]) == []
 
 
-# ============================================================
-# JOIN-PATH PLANNING
-# ============================================================
+# Join-path planning
 
 def chain_schema():
     names = ["a", "b", "c", "d", "e"]
@@ -188,9 +182,7 @@ def test_a_terminal_reached_as_connector_is_not_listed_as_connector():
     assert plan["tables"] == ["a", "b", "c"]
 
 
-# ============================================================
-# FOCUSED SCHEMA
-# ============================================================
+# Focused schema
 
 def test_focus_sends_a_small_connected_slice_of_a_large_schema():
     schema = multi_domain_schema(filler_tables=60)
@@ -258,9 +250,7 @@ def test_focus_notes_and_prioritized_schema():
     assert len(ordered["tables"]) == len(schema["tables"])
 
 
-# ============================================================
 # PROFILER: value index and differently named joins (database)
-# ============================================================
 
 @pytest.fixture
 def rel_schema(engine):
@@ -306,7 +296,7 @@ def test_profiler_collects_values_and_infers_differently_named_joins(engine, rel
     assert "values" not in columns["driver_full_name"]
 
 
-# ---- big schemas: glued names, database comments, named tables ----
+# Big schemas: glued names, database comments, named tables
 
 def _table(name, columns, description=""):
     return {"table_name": name, "description": description,

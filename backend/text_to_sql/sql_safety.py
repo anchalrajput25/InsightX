@@ -21,9 +21,7 @@ from backend import dialects
 from backend.config import query_settings
 
 
-# ============================================================
-# POLICY
-# ============================================================
+# Policy
 
 ALLOWED_ROOTS = (exp.Select, exp.Union, exp.Intersect, exp.Except)
 
@@ -151,9 +149,7 @@ FORBIDDEN_KEYWORDS = {
 }
 
 
-# ============================================================
-# SQL CLEANING
-# ============================================================
+# SQL cleaning
 
 _FENCE_START_RE = re.compile(r"^```[ \t]*(?:sql|postgresql|postgres)?[ \t]*", re.IGNORECASE)
 _FENCE_END_RE = re.compile(r"\s*```$")
@@ -289,9 +285,7 @@ def strip_literals_and_comments(sql: str) -> str:
     return "".join(out)
 
 
-# ============================================================
-# PARSING
-# ============================================================
+# Parsing
 
 def parse_statements(sql: str) -> List[exp.Expression]:
     """Parse SQL into its non-empty statements (dialect of the current question)."""
@@ -338,9 +332,7 @@ def validate_root_query(ast: exp.Expression) -> tuple[bool, str]:
     return False, f"Unsupported root SQL expression: {type(ast).__name__}"
 
 
-# ============================================================
-# AST CHECKS
-# ============================================================
+# Ast checks
 
 def find_forbidden_operations(ast: exp.Expression) -> List[str]:
     """Write/DDL/session operations anywhere in the tree (incl. CTEs)."""
@@ -433,9 +425,7 @@ def find_disallowed_tables(
     return sorted(disallowed)
 
 
-# ============================================================
-# STRUCTURAL INFORMATION
-# ============================================================
+# Structural information
 
 def extract_tables(ast: exp.Expression) -> List[str]:
     """Physical table references (CTE references excluded)."""
@@ -455,9 +445,7 @@ def extract_ctes(ast: exp.Expression) -> List[str]:
     return sorted({cte.alias_or_name for cte in ast.find_all(exp.CTE) if cte.alias_or_name})
 
 
-# ============================================================
-# RESULT
-# ============================================================
+# Result
 
 def safety_result(
     safe: bool,
@@ -481,9 +469,7 @@ def _unsafe(reason: str, errors: List[str], details: Optional[Dict[str, Any]] = 
     return safety_result(safe=False, status="UNSAFE", reason=reason, errors=errors, details=details)
 
 
-# ============================================================
-# MAIN CHECK
-# ============================================================
+# Main check
 
 def check_sql_safety(sql: str) -> Dict[str, Any]:
     """

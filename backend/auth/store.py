@@ -54,7 +54,7 @@ class UserStore:
         self._lock = threading.Lock()
         metadata.create_all(self.engine)
 
-    # ------------------------------------------------------------ users
+    # Users
     def count(self) -> int:
         with self.engine.connect() as connection:
             return int(connection.execute(select(func.count()).select_from(users)).scalar() or 0)
@@ -90,7 +90,7 @@ class UserStore:
             connection.execute(statement)
         return self.by_id(user_id)
 
-    # ------------------------------------------------------------ chats
+    # Chats
     def chat_owner(self, thread_id: str) -> Optional[int]:
         with self.engine.connect() as connection:
             return connection.execute(

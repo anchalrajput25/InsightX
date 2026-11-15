@@ -21,9 +21,7 @@ def result(columns, *rows, **extra):
             "row_count": len(rows), **extra}
 
 
-# ============================================================
-# CLAIM VERIFICATION
-# ============================================================
+# Claim verification
 
 def test_number_extraction_handles_formats():
     found = {(n["value"], n["decimals"], n["percent"], n["scale"]) for n in extract_numbers(
@@ -62,9 +60,7 @@ def test_no_rows_means_nothing_to_verify():
     assert verify_claims("No matching records.", "q", result(["n"]))["status"] == "not_applicable"
 
 
-# ============================================================
-# JOIN FAN-OUT
-# ============================================================
+# Join fan-out
 
 SCHEMA = {
     "tables": [
@@ -135,9 +131,7 @@ def test_null_only_and_truncated_results_are_warned():
     assert len(sanity["warnings"]) == 2
 
 
-# ============================================================
-# TRUST SCORE
-# ============================================================
+# Trust score
 
 def test_trust_levels_follow_the_evidence():
     clean = assess_trust({
@@ -162,9 +156,7 @@ def test_trust_levels_follow_the_evidence():
     assert {reason["signal"] for reason in bad["reasons"]} == {"answer", "sql"}
 
 
-# ============================================================
-# AGENT INTEGRATION
-# ============================================================
+# Agent integration
 
 def generator_output(sql):
     return f"STATUS: SUCCESS\nSQL:\n{sql}\nCONFIDENCE: High"

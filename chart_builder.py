@@ -63,9 +63,7 @@ class ChartPlan:
     highlight: List = field(default_factory=list)
 
 
-# ------------------------------------------------------------
 # Result -> typed DataFrame
-# ------------------------------------------------------------
 
 def to_frame(rows: List[Dict], columns: Optional[List[str]] = None) -> pd.DataFrame:
     frame = pd.DataFrame(rows or [])
@@ -150,9 +148,7 @@ def column_roles(frame: pd.DataFrame) -> Dict[str, List[str]]:
     return {"time": time, "measures": measures, "labels": labels + ids, "ids": ids}
 
 
-# ------------------------------------------------------------
 # Choosing the chart
-# ------------------------------------------------------------
 
 def plan_chart(frame: pd.DataFrame, question: str = "") -> Optional[ChartPlan]:
     if frame is None or frame.empty or len(frame.columns) == 0:
@@ -277,9 +273,7 @@ def bar_frame(frame: pd.DataFrame, plan: ChartPlan) -> pd.DataFrame:
     return frame[frame[plan.x].isin(top)]
 
 
-# ------------------------------------------------------------
 # One-line summary
-# ------------------------------------------------------------
 
 def compact(value) -> str:
     try:

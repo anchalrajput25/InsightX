@@ -127,9 +127,7 @@ def _picture(name: str, rule: Dict[str, Any], data: Dict[str, Any], points=None)
     return {"evaluation": verdict, "backtest": history}
 
 
-# ------------------------------------------------------------
 # endpoints (fixed paths first, then /{alert_id})
-# ------------------------------------------------------------
 
 @router.get("/suggestions")
 def suggested_numbers(connection_id: str, grain: str = "day", caller: Caller = Depends(current_caller)):

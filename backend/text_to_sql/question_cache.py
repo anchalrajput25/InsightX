@@ -94,9 +94,7 @@ class fresh_answer:
         return False
 
 
-# ------------------------------------------------------------
 # Normalising questions
-# ------------------------------------------------------------
 
 # Words that do not change what is asked.
 FILLER = set("""
@@ -194,9 +192,7 @@ def result_key(execution_result: Dict[str, Any]) -> str:
     return _hash(payload)
 
 
-# ------------------------------------------------------------
 # Store
-# ------------------------------------------------------------
 
 class QuestionCache:
     def __init__(self, url: Optional[str] = None):

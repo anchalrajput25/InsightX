@@ -24,9 +24,7 @@ class MetricError(ValueError):
     """The query result cannot be watched (no number, or no date and many rows)."""
 
 
-# ------------------------------------------------------------
 # suggested numbers (no AI)
-# ------------------------------------------------------------
 
 def suggestions(engine: Engine, schema: Dict[str, Any], grain: str = "day") -> List[Dict[str, Any]]:
     """Numbers worth watching: records per day, total and average amounts per day."""
@@ -70,9 +68,7 @@ def suggestions(engine: Engine, schema: Dict[str, Any], grain: str = "day") -> L
     return out[:MAX_SUGGESTIONS]
 
 
-# ------------------------------------------------------------
 # query result -> points
-# ------------------------------------------------------------
 
 def _number(value: Any) -> Optional[float]:
     if value is None or isinstance(value, bool):

@@ -35,9 +35,7 @@ def make_zip(files: dict) -> bytes:
     return buffer.getvalue()
 
 
-# ============================================================
-# TYPE INFERENCE
-# ============================================================
+# Type inference
 
 @pytest.mark.parametrize(
     "values, expected",
@@ -63,9 +61,7 @@ def test_infer_sql_type(values, expected):
     assert infer_sql_type(series) == expected
 
 
-# ============================================================
-# IDENTIFIERS AND NAMES
-# ============================================================
+# Identifiers and names
 
 def test_normalize_identifier():
     assert normalize_identifier("Orders 2024", "table") == "orders_2024"
@@ -94,9 +90,7 @@ def test_safe_upload_name_strips_directories():
     assert safe_upload_name("") == "upload.zip"
 
 
-# ============================================================
-# ZIP EXTRACTION
-# ============================================================
+# ZIP extraction
 
 def test_extract_rejects_non_zip(tmp_path):
     bad = tmp_path / "bad.zip"
@@ -127,9 +121,7 @@ def test_extract_ignores_macos_metadata_and_finds_nested_files(tmp_path):
     assert [path.relative_to(out).as_posix() for path in files] == ["data/sales.csv"]
 
 
-# ============================================================
-# INSPECTION
-# ============================================================
+# Inspection
 
 def test_inspection_validates_whole_file_and_assigns_unique_tables(tmp_path):
     (tmp_path / "Orders 2024.csv").write_text("Order ID,Total\n1,9.5\n")
@@ -156,9 +148,7 @@ def test_inspection_validates_whole_file_and_assigns_unique_tables(tmp_path):
     ]
 
 
-# ============================================================
-# UPLOAD ENDPOINT
-# ============================================================
+# Upload endpoint
 
 @pytest.fixture
 def api(tmp_path, monkeypatch):
@@ -227,9 +217,7 @@ def test_expired_upload_sessions_are_pruned(api):
     assert list(settings.upload_dir.iterdir()) == []
 
 
-# ============================================================
-# CONNECTION ERRORS
-# ============================================================
+# Connection errors
 
 @pytest.mark.parametrize(
     "message, status",
@@ -267,9 +255,7 @@ def test_connect_endpoint_refused_port_fails_fast():
     assert time.time() - started < 15
 
 
-# ============================================================
 # IMPORT (database)
-# ============================================================
 
 def write_and_inspect(directory: Path, files: dict):
     for name, content in files.items():
@@ -375,9 +361,7 @@ def test_import_does_not_drop_tables_with_dependents(engine, tmp_path, clean_imp
     assert no_staging_schemas(engine)
 
 
-# ============================================================
 # PROFILER (database)
-# ============================================================
 
 def test_profiler_survives_unorderable_columns_and_skips_large_duplicate_scans(engine, clean_imports, monkeypatch):
     from backend import schema_profiler

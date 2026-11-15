@@ -55,6 +55,12 @@
 
 > 92.6% execution accuracy on a 108-table warehouse, 100% of destructive requests blocked, 100% of unanswerable questions declined. All on free LLMs.
 
+### About the source code
+
+- **Full source is private.** A few core AI files (the main agent, the SQL generator and the answer checker) are kept in a private repository. Recruiters and hiring teams can ask me for access.
+- **Live proof:** the complete app runs at [insight-x-pied.vercel.app](https://insight-x-pied.vercel.app). Sign up and ask it a question.
+- **Live walkthrough:** happy to walk through the full code and architecture on a call.
+
 ---
 
 ## Visual Demo
@@ -310,9 +316,32 @@ All model calls go through one **AI gateway** with three tiers (`light`, `sql`, 
 
 **What the numbers say:** the trust score is well calibrated, since high-trust answers are right 96 to 100% of the time. The weak spots are nested queries, ratios and `HAVING` on Olist; see [Limitations](#limitations).
 
+### Performance and load (tested limits)
+
+Measured with `python benchmarks/run_benchmark.py` on one Windows laptop (12 CPU threads, 7.4 GB RAM) and a local PostgreSQL 18 with default settings. The script starts its own throwaway PostgreSQL, runs the real backend, and replaces only the AI model with a free stand-in, so anyone can rerun it. AI speed, tokens and cost come from saved real runs. Full tables: [benchmarks/REPORT.md](benchmarks/REPORT.md).
+
+| What | Tested | Result |
+|:---|:---|:---|
+| CSV loading | 3.05M rows (166 MB CSV) | Loaded in 59 s; backend memory rose 91 MB (streamed, not held in memory) |
+| SQL speed, 3M rows | simple count / join + group / window trend | P95 0.26 s / 0.79 s / 2.2 s |
+| App overhead per question (no AI wait) | 1M rows | P95 0.6 to 1.2 s |
+| Schema size | 100 / 500 / 1,000 tables | Connect 9 s / 83 s / 256 s; question P95 0.4 s / 0.6 s / 2.5 s; SQL prompt stays about 2,500 tokens |
+| Users at once, instant AI | 10 / 50 / 100 users, 3 questions each | All 480 answered; P95 4.8 s / 23 s / 35 s; at most 33 database connections |
+| Users at once, real-speed AI | 10 / 50 / 100 users | All answered; P95 32 s / 147 s / 291 s (about 19 answers per minute) |
+| Runaway query | cross join on 3M rows | Stopped at the 30 s time limit |
+| Huge result | `SELECT *` on 3M rows | 1,000 rows returned, marked as cut, no extra memory |
+| Real AI per question | 128 Spider questions + 473 logged questions | 5 to 6 AI calls, about 6,500 tokens, $0 (free models); about $0.001 at an example paid price |
+| AI errors | 1,534 logged AI calls | 13.6% failed (rate limits, timeouts) and were retried on another free model |
+
+**Limits found:** with free models the bottleneck is AI speed, not the database. The queue answers 4 questions at a time, about 19 per minute, so the 100th person waits about 5 minutes. All requests run in one backend process, so under heavy load other pages slow down (P95 15 s with 100 busy users). Connecting a 1,000-table database is one long request (about 4 minutes). Nothing above 3M rows or 1,000 tables has been tested.
+
+**Fixed because of this benchmark:** connecting a 100-table database went from 59 s to 9 s (dates and amounts are no longer compared as possible table links), and reading a 3M-row CSV went from about 360 MB to about 185 MB of extra memory (the fast CSV reader is capped at 4 threads and 256 MB).
+
 ---
 
 ## Installation & Quick Start
+
+> **Note:** the core AI files are private (see [About the source code](#about-the-source-code)), so this public repo does not run on its own. Use the live demo, or ask for access.
 
 You need **Python 3.11+**, **Node.js 20+**, and at least one free AI key: [Gemini](https://aistudio.google.com/apikey), [Groq](https://console.groq.com/keys) or [OpenRouter](https://openrouter.ai/keys).
 

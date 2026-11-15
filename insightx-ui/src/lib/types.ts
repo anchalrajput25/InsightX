@@ -5,7 +5,7 @@
 export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 export type Row = Record<string, Json>;
 
-// ---------------- auth ----------------
+// Auth
 export interface User {
   id: number;
   email: string;
@@ -24,7 +24,7 @@ export interface MeResponse {
   daily_limit: number;
 }
 
-// ---------------- connections ----------------
+// Connections
 export type DbType = "postgresql" | "mysql" | "mssql";
 export interface SchemaTable {
   table_name: string;
@@ -68,7 +68,7 @@ export interface Connection {
   links?: number;
 }
 
-// ---------------- questions ----------------
+// Questions
 export interface ExecutionSummary {
   success: boolean;
   status: string;
@@ -130,7 +130,7 @@ export interface QueryResponse {
   correction_attempts?: number;
 }
 
-// ---------------- investigation ----------------
+// Investigation
 export interface Headline {
   metric: string;
   baseline_period?: string;
@@ -212,7 +212,7 @@ export interface InvestigationReport {
   conversation_history?: ChatMessage[];
 }
 
-// ---------------- chats & history ----------------
+// Chats & history
 export interface ChatListItem {
   thread_id: string;
   title: string;
@@ -237,7 +237,7 @@ export interface HistoryPage {
   activity?: { ts: number; kind: string }[];
 }
 
-// ---------------- traces ----------------
+// Traces
 export interface TraceListItem {
   id: string;
   ts: number;
@@ -270,7 +270,7 @@ export interface TraceDetail extends TraceListItem {
   detail: { events?: TraceEvent[]; [key: string]: unknown };
 }
 
-// ---------------- AI usage ----------------
+// AI usage
 export interface UsageGroup {
   requests: number;
   ok: number;
@@ -327,7 +327,7 @@ export interface RoutesResponse {
   settings: { user_daily_questions: number; cache_enabled: boolean; cache_ttl_hours: number };
 }
 
-// ---------------- dashboard ----------------
+// Dashboard
 export interface OverviewChart {
   key: string;
   title: string;
@@ -359,7 +359,7 @@ export interface SavedChart {
   error?: string;
 }
 
-// ---------------- alerts ----------------
+// Alerts
 export type RuleType = "smart" | "limit" | "change" | "trend" | "stale";
 export interface AlertRule {
   type: RuleType;

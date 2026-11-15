@@ -11,9 +11,7 @@ print("OBSERVABILITY TEST")
 print("=" * 70)
 
 
-# ---------------------------------------------------------
-# TEST 1: QUERY ID
-# ---------------------------------------------------------
+# Test 1: Query ID
 
 query_id = generate_query_id()
 
@@ -22,9 +20,7 @@ print("-" * 70)
 print("QUERY ID:", query_id)
 
 
-# ---------------------------------------------------------
-# TEST 2: CREATE QUERY TRACE
-# ---------------------------------------------------------
+# Test 2: Create query trace
 
 trace = QueryTrace(
     question="Which cities have the highest number of customers?"
@@ -36,9 +32,7 @@ print("QUERY ID:", trace.query_id)
 print("QUESTION:", trace.data["question"])
 
 
-# ---------------------------------------------------------
-# TEST 3: RECORD PIPELINE STAGES
-# ---------------------------------------------------------
+# Test 3: Record pipeline stages
 
 trace.record_stage(
     "query_rewriting",
@@ -127,9 +121,7 @@ trace.record_stage(
 )
 
 
-# ---------------------------------------------------------
-# TEST 4: ADD METADATA
-# ---------------------------------------------------------
+# Test 4: Add metadata
 
 trace.add_metadata(
     "database",
@@ -142,9 +134,7 @@ trace.add_metadata(
 )
 
 
-# ---------------------------------------------------------
-# TEST 5: RECORD ERROR
-# ---------------------------------------------------------
+# Test 5: Record error
 
 trace.record_error(
     stage="test_stage",
@@ -152,9 +142,7 @@ trace.record_error(
 )
 
 
-# ---------------------------------------------------------
-# TEST 6: FINALIZE TRACE
-# ---------------------------------------------------------
+# Test 6: Finalize trace
 
 final_data = trace.finalize()
 
@@ -190,9 +178,7 @@ print("\nMETADATA:")
 print(final_data["metadata"])
 
 
-# ---------------------------------------------------------
-# TEST 7: WRITE TRACE TO LOG FILE
-# ---------------------------------------------------------
+# Test 7: Write trace to log file
 
 log_result = log_query_trace(trace)
 
@@ -206,9 +192,7 @@ if log_result["error"]:
     print("ERROR:", log_result["error"])
 
 
-# ---------------------------------------------------------
-# TEST 8: LOG INDIVIDUAL EVENT
-# ---------------------------------------------------------
+# Test 8: Log individual event
 
 event_result = log_event(
     event_name="test_event",

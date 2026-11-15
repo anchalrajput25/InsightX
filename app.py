@@ -40,9 +40,7 @@ def thread_registry_file() -> Path:
     return THREAD_REGISTRY_FILE.parent / ".insightx_threads" / f"{user_storage_key(AUTH_USER)}.json"
 
 
-# =========================================================
-# CHAT REGISTRY
-# =========================================================
+# Chat registry
 
 def load_thread_registry():
     """The chat list is kept by the backend; the old local file is moved there once."""
@@ -210,7 +208,6 @@ def create_new_thread():
     )
     st.session_state.pop("last_investigation", None)
 
-    # IMPORTANT:
     # Do not modify current_question here.
     #
     # The current_question widget may already have
@@ -335,9 +332,7 @@ def get_current_thread_title():
     return "New Chat"
 
 
-# =========================================================
-# DATABASE THREAD RESTORATION
-# =========================================================
+# Database thread restoration
 
 def restore_thread_from_database(
     thread_id: str,
@@ -429,9 +424,7 @@ def reset_chat_view():
     ] = True
 
 
-# =========================================================
-# INITIAL SESSION STATE
-# =========================================================
+# Initial session state
 
 ensure_thread_registry()
 
@@ -459,9 +452,7 @@ if "clear_current_question" not in st.session_state:
     ] = False
 
 
-# =========================================================
-# SIDEBAR — CHAT LIST
-# =========================================================
+# Sidebar — chat list
 
 st.sidebar.title(
     "InsightX"
@@ -471,9 +462,7 @@ st.sidebar.caption(
     "Business Data Investigations"
 )
 
-# =========================================================
 # USER (for AI usage tracking)
-# =========================================================
 
 def current_user_name():
     if AUTH_USER is not None:
@@ -503,7 +492,7 @@ app_page = st.sidebar.radio(
     key="app_page",
     label_visibility="collapsed",
 )
-# Alerts page (alerts_view.py): the "🚨 N open alerts" line under the page list.
+# Alerts page (alerts_view.py): the "N open alerts" line under the page list.
 from alerts_view import render_alert_badge  # noqa: E402
 render_alert_badge(st, BACKEND_URL, st.session_state.get("connection_id"), headers=ai_headers())
 
@@ -572,9 +561,7 @@ for index, thread in enumerate(
     if title in ("New Chat", "New Investigation") and not is_current:
         continue
 
-    # -----------------------------------------------------
     # Chat selection row
-    # -----------------------------------------------------
 
     col_chat, col_menu = (
         st.sidebar.columns(
@@ -610,9 +597,7 @@ for index, thread in enumerate(
             # (history_loaded_for no longer matches thread_id).
             st.rerun()
 
-    # -----------------------------------------------------
     # Chat menu
-    # -----------------------------------------------------
 
     with col_menu:
 
@@ -653,9 +638,7 @@ for index, thread in enumerate(
                 st.rerun()
 
 
-# =========================================================
-# PAGE HEADER
-# =========================================================
+# Page header
 
 st.title(
     "InsightX"
@@ -725,9 +708,7 @@ if app_page == PAGE_BENCHMARK:
     st.stop()
 
 
-# =========================================================
-# BACKEND ERROR
-# =========================================================
+# Backend error
 
 def show_backend_error(
     response,
@@ -765,9 +746,7 @@ def show_backend_error(
     )
 
 
-# =========================================================
-# POSTGRES FORM
-# =========================================================
+# Postgres form
 
 def postgres_form(
     form_key: str,
@@ -823,9 +802,7 @@ def postgres_form(
     )
 
 
-# =========================================================
-# FORM DATA
-# =========================================================
+# Form data
 
 def build_form_data(
     host,
@@ -859,9 +836,7 @@ def build_form_data(
     }
 
 
-# =========================================================
-# DISPLAY SCHEMA
-# =========================================================
+# Display schema
 
 def display_schema(
     schema,
@@ -1019,9 +994,7 @@ def display_schema(
         )
 
 
-# =========================================================
-# SAVE DATABASE CONFIG
-# =========================================================
+# Save database config
 
 def save_database_config(
     host,
@@ -1212,9 +1185,7 @@ def render_chat_text(
     )
 
 
-# =========================================================
-# DISPLAY TEXT-TO-SQL PIPELINE
-# =========================================================
+# Display text-to-sql pipeline
 
 TRUST_STYLES = {
     "high": ("#0f7b4f", "#e7f6ee", "High trust", "Answer checked against the data"),
@@ -1465,9 +1436,7 @@ def display_pipeline(
                 )
             )
 
-    # -----------------------------------------------------
     # 1. Query Rewriting
-    # -----------------------------------------------------
 
     with st.expander(
         "1. Query Rewriting",
@@ -1502,9 +1471,7 @@ def display_pipeline(
                     f"- {escape_markdown(alternative)}"
                 )
 
-    # -----------------------------------------------------
     # 2. Query Decomposition
-    # -----------------------------------------------------
 
     with st.expander(
         "2. Query Decomposition"
@@ -1517,9 +1484,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 3. Hybrid Retrieval
-    # -----------------------------------------------------
 
     with st.expander(
         "3. Hybrid Retrieval"
@@ -1532,9 +1497,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 4. GraphRAG
-    # -----------------------------------------------------
 
     with st.expander(
         "4. GraphRAG"
@@ -1547,9 +1510,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 5. Schema Linking
-    # -----------------------------------------------------
 
     with st.expander(
         "5. Schema Linking"
@@ -1581,9 +1542,7 @@ def display_pipeline(
             language="text",
         )
 
-    # -----------------------------------------------------
     # 5b. SQL Candidates
-    # -----------------------------------------------------
 
     candidates = result.get("sql_candidates") or []
     if len(candidates) > 1:
@@ -1607,9 +1566,7 @@ def display_pipeline(
                 if error:
                     st.caption(error)
 
-    # -----------------------------------------------------
     # 6. Generated SQL
-    # -----------------------------------------------------
 
     with st.expander(
         "6. Generated SQL",
@@ -1628,9 +1585,7 @@ def display_pipeline(
             language="sql",
         )
 
-    # -----------------------------------------------------
     # 7. SQL Validation
-    # -----------------------------------------------------
 
     with st.expander(
         "7. SQL Validation"
@@ -1643,9 +1598,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 8. SQL Safety
-    # -----------------------------------------------------
 
     with st.expander(
         "8. SQL Safety"
@@ -1658,9 +1611,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 9. SQL Correction
-    # -----------------------------------------------------
 
     if result.get(
         "correction_attempts",
@@ -1687,9 +1638,7 @@ def display_pipeline(
                 language="sql",
             )
 
-    # -----------------------------------------------------
     # 10. Query Execution
-    # -----------------------------------------------------
 
     execution = result.get(
         "execution_result"
@@ -1745,9 +1694,7 @@ def display_pipeline(
                 "an earlier stage did not complete."
             )
 
-    # -----------------------------------------------------
     # 11. Result Validation
-    # -----------------------------------------------------
 
     with st.expander(
         "11. Result Validation"
@@ -1760,9 +1707,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 12. AI Answer
-    # -----------------------------------------------------
 
     st.subheader(
         "12. AI Answer"
@@ -1791,9 +1736,7 @@ def display_pipeline(
             )
         )
 
-    # -----------------------------------------------------
     # 13. Chart (picked automatically from the result)
-    # -----------------------------------------------------
 
     if execution.get("success") and execution.get("rows"):
         chart_key = "chart_" + hashlib.md5(
@@ -1815,9 +1758,7 @@ def display_pipeline(
                 )
 
 
-# =========================================================
-# DATA SOURCE
-# =========================================================
+# Data source
 
 st.subheader(
     "Add Data Source"
@@ -1838,9 +1779,7 @@ source_type = st.radio(
 st.divider()
 
 
-# =========================================================
-# UPLOAD DATABASE FOLDER
-# =========================================================
+# Upload database folder
 
 if source_type == "Upload Database Folder":
 
@@ -1954,9 +1893,7 @@ if source_type == "Upload Database Folder":
                         traceback.format_exc()
                     )
 
-    # -----------------------------------------------------
     # Uploaded result
-    # -----------------------------------------------------
 
     if "upload_result" in st.session_state:
 
@@ -2432,9 +2369,7 @@ if source_type == "Upload Database Folder":
             )
 
 
-# =========================================================
-# SQLITE FILE
-# =========================================================
+# SQLite file
 
 elif source_type == "Upload SQLite File":
 
@@ -2516,9 +2451,7 @@ elif source_type == "Upload SQLite File":
         )
 
 
-# =========================================================
-# DIRECT POSTGRESQL / MYSQL / SQL SERVER
-# =========================================================
+# Direct PostgreSQL / MySQL / SQL server
 
 else:
 
@@ -2676,9 +2609,7 @@ else:
         )
 
 
-# =========================================================
-# ASK YOUR DATA — CURRENT CHAT
-# =========================================================
+# Ask your data — current chat
 
 st.divider()
 
@@ -2726,10 +2657,7 @@ else:
         f"{(db_config or {}).get('database', '?')}"
     )
 
-    # =====================================================
-    # IMPORTANT:
     # Clear widget state BEFORE text_area is instantiated.
-    # =====================================================
 
     if st.session_state.pop(
         "clear_current_question",
@@ -2745,9 +2673,7 @@ else:
     if pending_question:
         st.session_state["current_question"] = pending_question
 
-    # =====================================================
-    # RESTORE SELECTED THREAD
-    # =====================================================
+    # Restore selected thread
 
     if st.session_state.get(
         "history_loaded_for"
@@ -2761,9 +2687,7 @@ else:
             ]
         )
 
-    # =====================================================
-    # DISPLAY CHAT HISTORY
-    # =====================================================
+    # Display chat history
 
     if st.session_state.get(
         "chat_messages"
@@ -2794,9 +2718,7 @@ else:
                     )
                 )
 
-    # =====================================================
-    # QUESTION INPUT
-    # =====================================================
+    # Question input
 
     question = st.text_area(
         "Ask a question about your data",
@@ -2804,9 +2726,7 @@ else:
         key="current_question",
     )
 
-    # =====================================================
     # RUN QUERY — via backend POST /query
-    # =====================================================
 
     query_mode = st.radio(
         "Mode",
@@ -2831,7 +2751,7 @@ else:
         use_container_width=True,
     ) or bool(pending_question)
 
-    # "🔍 Find out why" under an answer investigates that answer.
+    # "Find out why" under an answer investigates that answer.
     why_question = st.session_state.pop("investigate_question", None)
     if why_question and connection_id:
         run_investigation_request(why_question)
@@ -2929,9 +2849,7 @@ else:
 
                     result = response.json()
 
-                    # -------------------------------------
                     # Update chat history
-                    # -------------------------------------
 
                     st.session_state[
                         "chat_messages"
@@ -2943,20 +2861,16 @@ else:
                         ),
                     )
 
-                    # -------------------------------------
                     # Update thread metadata
-                    # -------------------------------------
 
                     update_thread_metadata(
                         thread_id=current_thread_id,
                         question=question,
                     )
 
-                    # -------------------------------------
                     # Persist result so st.rerun() does not
                     # wipe the pipeline display (this looked
                     # like "nothing happens").
-                    # -------------------------------------
 
                     st.session_state[
                         "last_query_result"
@@ -2968,9 +2882,7 @@ else:
                         "clear_current_question"
                     ] = True
 
-                    # -------------------------------------
                     # Display pipeline
-                    # -------------------------------------
 
                     display_pipeline(
                         result

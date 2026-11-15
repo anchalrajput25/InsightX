@@ -72,9 +72,7 @@ from backend.text_to_sql.schema_context import (
 )
 
 
-# ============================================================
-# APP
-# ============================================================
+# App
 
 logger = logging.getLogger("insightx.api")
 
@@ -109,14 +107,12 @@ app.include_router(password_reset_router)  # forgot password / reset link
 app.include_router(email_check_router)  # is reset email working? (no secrets shown)
 
 
-# ============================================================
 # CONNECTION SESSIONS
 #
 # Open engines are kept in memory; the connection details (password
 # encrypted) are also saved by backend.connections, so after a restart,
 # or on another backend server, the connection is opened again on
 # first use.
-# ============================================================
 
 POSTGRES_SESSIONS: dict[str, dict] = {}
 
@@ -128,9 +124,7 @@ UPLOAD_SESSIONS: dict[str, dict] = {}
 _UPLOAD_LOCK = threading.Lock()
 
 
-# ============================================================
-# REQUEST MODELS
-# ============================================================
+# Request models
 
 class QueryRequest(BaseModel):
 
@@ -272,9 +266,7 @@ def build_query_response(
     )
 
 
-# ============================================================
-# HEALTH
-# ============================================================
+# Health
 
 @app.get("/")
 def health_check():
@@ -295,9 +287,7 @@ def test():
     }
 
 
-# ============================================================
-# SESSION HELPERS
-# ============================================================
+# Session helpers
 
 def create_connection_id() -> str:
 
@@ -392,9 +382,7 @@ def restore_connection(connection_id: str) -> Optional[dict]:
         return session
 
 
-# ============================================================
-# CONNECTION HELPERS
-# ============================================================
+# Connection helpers
 
 def open_verified_engine(
     host: str,
@@ -487,9 +475,7 @@ def _first_line(exc: Exception) -> str:
     return message.splitlines()[0] if message else type(exc).__name__
 
 
-# ============================================================
-# CONNECT POSTGRESQL
-# ============================================================
+# Connect PostgreSQL
 
 @app.post("/connect-postgres")
 def connect_postgres(
@@ -546,9 +532,7 @@ def connect_postgres(
     }
 
 
-# ============================================================
-# CONNECT A SQLITE FILE
-# ============================================================
+# Connect a SQLite file
 
 SQLITE_DIR = Path(__file__).resolve().parents[1] / "logs" / "sqlite_files"
 
@@ -603,9 +587,7 @@ def connect_sqlite(
     }
 
 
-# ============================================================
-# UPLOAD SESSIONS
-# ============================================================
+# Upload sessions
 
 def _remove_directory(path: Path) -> None:
     try:
@@ -669,9 +651,7 @@ def finish_upload_session(session_id: str) -> None:
         _remove_directory(Path(session["directory"]))
 
 
-# ============================================================
-# UPLOAD DATABASE FOLDER
-# ============================================================
+# Upload database folder
 
 @app.get("/upload/fast-loader")
 def fast_loader_status(caller: Caller = Depends(current_caller)):
@@ -779,9 +759,7 @@ def upload_folder(
     }
 
 
-# ============================================================
-# IMPORT UPLOADED FILES INTO POSTGRESQL
-# ============================================================
+# Import uploaded files into PostgreSQL
 
 @app.post("/import-uploaded-files")
 def import_uploaded_files(
@@ -875,9 +853,7 @@ def import_uploaded_files(
     }
 
 
-# ============================================================
-# QUERY ENDPOINT
-# ============================================================
+# Query endpoint
 
 def _start_question(caller: Caller) -> str:
     """Who is asking; refuses with 429 once their daily question limit is used."""
@@ -902,9 +878,7 @@ def query_database(
 
     user_id = _start_question(caller)
 
-    # --------------------------------------------------------
     # Get correct user's database session
-    # --------------------------------------------------------
 
     connection_session = (
         get_connection_session(
@@ -917,9 +891,7 @@ def query_database(
         "engine"
     ]
 
-    # --------------------------------------------------------
     # Create thread if frontend did not provide one
-    # --------------------------------------------------------
 
     thread_id = (
         request.thread_id
@@ -927,9 +899,7 @@ def query_database(
     )
     _own_chat(thread_id, caller)
 
-    # --------------------------------------------------------
     # Run LangGraph Text-to-SQL pipeline
-    # --------------------------------------------------------
 
     # Everything this question does is timed and saved as its trace.
     with telemetry.collect() as stats:
@@ -1018,9 +988,7 @@ def _query_failure(error: Exception, request: "QueryRequest", thread_id: str):
     )
 
 
-# ============================================================
 # INVESTIGATION MODE ("why did the metric change?")
-# ============================================================
 
 class InvestigateRequest(BaseModel):
     connection_id: str
@@ -1072,9 +1040,7 @@ def investigate(request: InvestigateRequest, caller: Caller = Depends(current_ca
     return jsonable_encoder(report)
 
 
-# ============================================================
 # TRACES (every step of a question, with timings)
-# ============================================================
 
 @app.get("/traces")
 def list_traces(limit: int = 50, caller: Caller = Depends(current_caller)):
@@ -1091,9 +1057,7 @@ def get_trace(trace_id: str, caller: Caller = Depends(current_caller)):
     return jsonable_encoder(trace)
 
 
-# ============================================================
 # AI USAGE (gateway status, usage ledger, provider credits)
-# ============================================================
 
 @app.get("/ai/usage")
 def ai_usage(days: int = 30, user: Optional[str] = None, caller: Caller = Depends(current_caller)):
@@ -1129,9 +1093,7 @@ def investigation_route(question: str, caller: Caller = Depends(current_caller))
     return {"investigation": looks_like_investigation(question)}
 
 
-# ============================================================
-# CHAT LIST
-# ============================================================
+# Chat list
 
 def _chat_list_owner(caller: Caller) -> str:
     # With sign-in off everyone shares one list, as before.
@@ -1154,9 +1116,7 @@ def put_chats(body: ChatListBody, caller: Caller = Depends(current_caller)):
     return {"chats": chat_list.get_store().put(_chat_list_owner(caller), body.chats)}
 
 
-# ============================================================
 # QUESTION HISTORY (every question, every chat)
-# ============================================================
 
 def _database_label(session: Dict[str, Any]) -> str:
     database = str(session.get("database") or "")
@@ -1185,9 +1145,7 @@ def clear_history(caller: Caller = Depends(current_caller)):
     return {"deleted": history.get_store().clear(_chat_list_owner(caller))}
 
 
-# ============================================================
-# CHAT HISTORY
-# ============================================================
+# Chat history
 
 @app.get("/threads/{thread_id}/history")
 def thread_history(
@@ -1221,9 +1179,7 @@ def thread_history(
     }
 
 
-# ============================================================
-# DISCONNECT DATABASE
-# ============================================================
+# Disconnect database
 
 @app.delete(
     "/disconnect-postgres/{connection_id}"

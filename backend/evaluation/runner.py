@@ -58,9 +58,7 @@ REPORT_SCHEMA = "insightx-benchmark/1"
 AgentFn = Callable[..., Dict[str, Any]]
 
 
-# ============================================================
 # GOLDEN SET CHECK (no LLM)
-# ============================================================
 
 def check_golden_set(golden: GoldenSet, engine: Engine, include_unverified: bool = True) -> List[Dict[str, Any]]:
     """
@@ -93,9 +91,7 @@ def check_golden_set(golden: GoldenSet, engine: Engine, include_unverified: bool
     return report
 
 
-# ============================================================
-# ONE CASE
-# ============================================================
+# One case
 
 @dataclass
 class CaseResult:
@@ -369,9 +365,7 @@ def evaluate_case(
     return result
 
 
-# ============================================================
-# MANY CASES
-# ============================================================
+# Many cases
 
 def _units(cases: List[GoldenCase]) -> List[List[GoldenCase]]:
     """Work units: a follow-up thread runs in order as one unit; other cases alone."""
@@ -553,9 +547,7 @@ def evaluate_golden_set(
     }
 
 
-# ============================================================
 # BENCHMARK: variants x repeats, resumable
-# ============================================================
 
 def _load_partial(path: Optional[Path]) -> Tuple[Dict[Tuple[str, int, str], Dict[str, Any]], float]:
     """Rows of an earlier run (latest row per key wins) and the money it already spent."""
@@ -760,9 +752,7 @@ def compare_variants(variants: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return comparisons
 
 
-# ============================================================
-# METRICS
-# ============================================================
+# Metrics
 
 def _rate(numerator: int, denominator: int) -> Optional[float]:
     return round(numerator / denominator, 4) if denominator else None
@@ -902,9 +892,7 @@ def summarize(results: List[CaseResult]) -> Dict[str, Any]:
     }
 
 
-# ============================================================
-# REPORTS
-# ============================================================
+# Reports
 
 def _pct(value: Optional[float]) -> str:
     return "n/a" if value is None else f"{value * 100:.1f}%"

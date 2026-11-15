@@ -48,3 +48,7 @@ out/
 .idea/
 .DS_Store
 Thumbs.db
+
+# ---- Benchmark raw runs (REPORT.md is kept) ----
+benchmarks/results/
+benchmarks/REPORT_QUICK.md

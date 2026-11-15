@@ -233,7 +233,7 @@ def summarise(findings: List[Dict[str, Any]], claims: Optional[Dict[str, Any]] =
     }
 
 
-# ------------------------------------------------------------ AI judge
+# AI judge
 JUDGE_PROMPT = """You check whether an answer is fully supported by a SQL result.
 Question: {question}
 SQL: {sql}

@@ -1,6 +1,6 @@
 # usage_view.py
 #
-# "📊 AI usage" page: how much AI the app uses, on which free models,
+# "AI usage" page: how much AI the app uses, on which free models,
 # for whom, and whether anything is running out. Reads the backend's
 # /ai/usage and /ai/routes; never calls an AI model itself.
 #
@@ -65,9 +65,7 @@ def _pct(value: Optional[float]) -> str:
     return "–" if value is None else f"{value * 100:.0f}%"
 
 
-# ============================================================
 # QUOTA (from /ai/routes)
-# ============================================================
 
 def unique_routes(routes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Each model once (a model can serve several tiers), first-listed tier kept."""
@@ -106,9 +104,7 @@ def route_state(row: Dict[str, Any]):
     return "Ready", "ok"
 
 
-# ============================================================
-# HTML
-# ============================================================
+# Html
 
 def summary_text(usage: Dict[str, Any], period: str) -> str:
     totals = usage["totals"]
@@ -223,9 +219,7 @@ def models_table_html(routes: List[Dict[str, Any]], t: Theme = LIGHT) -> str:
             f'<thead><tr style="background:{t.card}">{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>')
 
 
-# ============================================================
-# CHARTS
-# ============================================================
+# Charts
 
 def daily_chart(usage: Dict[str, Any], t: Theme = LIGHT):
     rows = []
@@ -275,9 +269,7 @@ def jobs_chart(usage: Dict[str, Any], t: Theme = LIGHT):
     return _style(chart, t, 30 * len(rows) + 60, "Where the AI requests go", "Each step of answering a question")
 
 
-# ============================================================
-# TABLE ROWS
-# ============================================================
+# Table rows
 
 def model_rows(usage: Dict[str, Any]) -> List[Dict[str, Any]]:
     rows = []
@@ -306,9 +298,7 @@ def failure_rows(usage: Dict[str, Any]) -> List[Dict[str, Any]]:
             for item in usage.get("failures") or []]
 
 
-# ============================================================
-# PAGE
-# ============================================================
+# Page
 
 def _get(backend_url: str, path: str, params: Optional[Dict[str, Any]] = None,
          headers: Optional[Dict[str, str]] = None):

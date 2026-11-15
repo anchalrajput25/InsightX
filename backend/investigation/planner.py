@@ -89,9 +89,7 @@ def looks_like_investigation(question: str) -> bool:
     return (bool(WHY_RE.search(question)) and bool(CHANGE_RE.search(question))) or bool(IMPROVE_RE.search(question))
 
 
-# ============================================================
-# SCHEMA CONTEXT FOR THE LLM
-# ============================================================
+# Schema context for the LLM
 
 def describe_for_planning(schema: Dict[str, Any], question: str) -> str:
     from backend.text_to_sql.schema_focus import build_schema_focus
@@ -114,9 +112,7 @@ def describe_for_planning(schema: Dict[str, Any], question: str) -> str:
     return "\n".join(lines)[:20000]
 
 
-# ============================================================
-# VERIFICATION
-# ============================================================
+# Verification
 
 def _split(reference: Any) -> Tuple[str, str]:
     text = str(reference or "").strip().strip('"')

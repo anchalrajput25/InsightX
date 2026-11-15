@@ -60,7 +60,7 @@ function useTraceEvents(traceId: string | undefined) {
   return { events: query.data?.detail?.events ?? [], loading: query.isLoading && !!traceId, failed: query.isError };
 }
 
-// ---------------------------------------------------------------- flow map
+// Flow map
 
 function FlowMap({ states, running, onPick }: { states: StageState[]; running?: boolean; onPick?: (key: string) => void }) {
   return (
@@ -112,7 +112,7 @@ function FlowMap({ states, running, onPick }: { states: StageState[]; running?: 
   );
 }
 
-// ---------------------------------------------------------------- timing
+// Timing
 
 function Timing({ states, events, total }: { states: StageState[]; events: TraceEvent[]; total: number }) {
   const mapped = new Set(states.flatMap((state) => state.def.steps));
@@ -154,7 +154,7 @@ function Timing({ states, events, total }: { states: StageState[]; events: Trace
   );
 }
 
-// ---------------------------------------------------------------- stage list
+// Stage list
 
 function StageItem({ state, index, open, onToggle, result }: { state: StageState; index: number; open: boolean; onToggle: () => void; result: PipelineResult }) {
   const meta = STATUS[state.status];
@@ -200,7 +200,7 @@ function StageItem({ state, index, open, onToggle, result }: { state: StageState
   );
 }
 
-// ---------------------------------------------------------------- running
+// Running
 
 export function RunningView({ question, startedAt }: { question: string; startedAt: number }) {
   const [now, setNow] = React.useState(() => Date.now());
@@ -230,7 +230,7 @@ export function RunningView({ question, startedAt }: { question: string; started
   );
 }
 
-// ---------------------------------------------------------------- run view
+// Run view
 
 export function RunView({ run }: { run: Extract<Run, { state: "done" }> }) {
   const result = run.result;

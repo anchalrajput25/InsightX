@@ -114,7 +114,7 @@ function leverTitle(lever: LeverSpec): string {
   }
 }
 
-// ------------------------------------------------------------ inputs
+// Inputs
 
 function QuestionBox({ busy, onAsk }: { busy: boolean; onAsk: (question: string) => void }) {
   const [text, setText] = React.useState("");
@@ -274,7 +274,7 @@ function LeverChips({
   );
 }
 
-// ------------------------------------------------------------ results
+// Results
 
 function Summary({ report }: { report: WhatIfReport }) {
   const Arrow = (report.delta ?? 0) >= 0 ? ArrowUpRight : ArrowDownRight;
@@ -583,7 +583,7 @@ function SqlPanel({ sql }: { sql: Record<string, string | undefined> }) {
   );
 }
 
-// ------------------------------------------------------------ screen
+// Screen
 
 export function WhatIfScreen() {
   const { connection, ready, setConnection } = useConnection();

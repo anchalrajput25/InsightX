@@ -49,9 +49,7 @@ class InvestigationError(ValueError):
     pass
 
 
-# ============================================================
 # SCHEMA GRAPH: many-to-one joins away from the fact table
-# ============================================================
 
 def _q(identifier: str) -> str:
     return dialects.quote(identifier)
@@ -131,9 +129,7 @@ class SchemaGraph:
         return None
 
 
-# ============================================================
-# PLAN
-# ============================================================
+# Plan
 
 @dataclass
 class Metric:
@@ -161,9 +157,7 @@ class Plan:
     notes: List[str] = field(default_factory=list)
 
 
-# ============================================================
-# QUERY HELPERS
-# ============================================================
+# Query helpers
 
 def _run(sql: str, engine: Engine, max_rows: int = 5000) -> Dict[str, Any]:
     safety = check_sql_safety(sql)
@@ -217,7 +211,7 @@ class Investigation:
         self.time_sql = col_sql(plan.time_table, plan.time_column)
         self.period_sql = dialects.period(plan.grain, self.time_sql)
 
-    # ---------------- helpers ----------------
+    # Helpers
     def _base_tables(self, extra: Sequence[str] = ()) -> List[str]:
         return list(dict.fromkeys([self.plan.time_table, *self.plan.metric.tables, *self.plan.filter_tables, *extra]))
 
@@ -242,7 +236,7 @@ class Investigation:
             parts += [f"SUM({metric.average_argument}) AS s", f"COUNT({metric.average_argument}) AS c"]
         return ", ".join(parts)
 
-    # ---------------- 1. trend ----------------
+    # 1. trend
     def trend(self) -> Dict[str, Any]:
         sql = (
             f"SELECT {self.period_sql} AS period, {self._measure_columns()} "
@@ -297,7 +291,7 @@ class Investigation:
                     )
         return latest[0], latest[1], "latest complete period vs the one before"
 
-    # ---------------- 2. headline ----------------
+    # 2. headline
     def headline(self, points: List[Dict[str, Any]], baseline: str, current: str) -> Dict[str, Any]:
         by_period = {point["period"]: point for point in points}
         old, new = by_period[baseline]["value"], by_period[current]["value"]
@@ -353,7 +347,7 @@ class Investigation:
             "direction": "decrease" if (new or 0) < (old or 0) else "increase" if (new or 0) > (old or 0) else "flat",
         }
 
-    # ---------------- 3. drivers ----------------
+    # 3. drivers
     def breakdown(self, table: str, column: str, baseline: str, current: str, extra_where: str = "") -> Dict[str, Any]:
         segment_sql = f"COALESCE({dialects.cast_text(col_sql(table, column))}, '(missing)')"
         sql = (
@@ -470,7 +464,7 @@ class Investigation:
             result["rate_effect"] = _round(sum(item.get("rate_effect") or 0 for item in items))
         return result
 
-    # ---------------- 4. volume vs value ----------------
+    # 4. volume vs value
     def volume_value(self, headline: Dict[str, Any], points: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
         metric = self.plan.metric
         if metric.kind != "additive" or not re.match(r"(?is)^\s*sum\s*\(", metric.expression):
@@ -496,7 +490,7 @@ class Investigation:
             "factors_opposed": volume * per_record < 0,
         }
 
-    # ---------------- 5. drill-down ----------------
+    # 5. drill-down
     def drilldown(self, first: Dict[str, Any], second_dimension: Tuple[str, str], baseline: str, current: str) -> Optional[Dict[str, Any]]:
         if self.plan.metric.kind not in ("additive", "average") or not first["top"]:
             return None
@@ -541,7 +535,7 @@ class Investigation:
             "top_inside": inside_top[:3],
         }
 
-    # ---------------- 6. signals ----------------
+    # 6. signals
     def signal_candidates(self) -> List[Dict[str, str]]:
         metric_columns = set(re.findall(r'"([^"]+)"\."([^"]+)"', self.plan.metric.expression))
         metric_columns |= {tuple(match.split(".")) for match in re.findall(r"\b(\w+\.\w+)\b", self.plan.metric.expression)}
@@ -653,7 +647,7 @@ class Investigation:
                 entry["scope"] = scopes[1][0]
         return signals[:8]
 
-    # ---------------- run everything ----------------
+    # Run everything
     def run(self) -> Dict[str, Any]:
         trend = self.trend()
         baseline, current, reason = self.choose_periods(trend["points"])

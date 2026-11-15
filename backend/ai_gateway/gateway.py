@@ -86,7 +86,7 @@ class Gateway:
         self._seeded = False
         self._seed_lock = threading.Lock()
 
-    # ------------------------------------------------------------ helpers
+    # Helpers
     @staticmethod
     def key_configured(route: Route) -> bool:
         env_name = PROVIDER_KEYS.get(route.provider)
@@ -186,7 +186,7 @@ class Gateway:
         except Exception:
             logger.warning("Could not write AI usage record", exc_info=True)
 
-    # ------------------------------------------------------------ limits
+    # Limits
     def check_user_quota(self, user_id: str) -> None:
         """Raise UsageLimitError when a user has asked their daily number of questions."""
         limit = self.settings.user_daily_questions
@@ -219,7 +219,7 @@ class Gateway:
             raise UsageLimitError(f"This month's AI budget (${budget:.2f}) is used up.")
         return free
 
-    # -------------------------------------------------------------- call
+    # Call
     def complete(self, prompt: str, job: str = "light", temperature: float = 0.0, max_tokens: int = 2500) -> str:
         if not prompt or not str(prompt).strip():
             raise ValueError("LLM prompt cannot be empty.")
@@ -330,7 +330,7 @@ class Gateway:
             wait_seconds=wait, attempts=[(r.id, why) for r, why in attempts],
         )
 
-    # ------------------------------------------------------------ status
+    # Status
     def status(self) -> List[Dict[str, Any]]:
         rows = []
         for tier, tier_routes in self.routes.items():

@@ -15,9 +15,7 @@ from backend.evaluation.runner import check_golden_set, evaluate_golden_set, ren
 GOLDEN_DIR = Path(__file__).resolve().parents[1] / "evaluation" / "golden"
 
 
-# ============================================================
-# COMPARISON
-# ============================================================
+# Comparison
 
 def rows(columns, *values):
     return [dict(zip(columns, row)) for row in values], list(columns)
@@ -71,9 +69,7 @@ def test_timestamps_compare_by_value():
     assert compare_results(exp, ec, pred, pc)["match"]
 
 
-# ============================================================
-# GOLDEN SETS
-# ============================================================
+# Golden sets
 
 def test_bundled_golden_sets_load():
     for path in GOLDEN_DIR.glob("*.yaml"):
@@ -103,9 +99,7 @@ def test_golden_round_trip(tmp_path):
     assert loaded.selected() == [] and len(loaded.selected(include_unverified=True)) == 1
 
 
-# ============================================================
 # RUNNER (real PostgreSQL, scripted agent)
-# ============================================================
 
 GOLDEN = GoldenSet(name="itest", cases=[
     GoldenCase(id="count", question="How many customers?", expected_sql="SELECT COUNT(*) FROM itest_customers", tags=["simple"]),
@@ -192,9 +186,7 @@ def test_check_golden_set_flags_broken_expected_sql(engine):
     assert "unsafe" in report["unsafe"]["problems"][0]
 
 
-# ============================================================
 # CANDIDATE GENERATION (scripted LLM)
-# ============================================================
 
 class ScriptedLLM:
     def __init__(self, text):
@@ -273,9 +265,7 @@ def test_trust_calibration_and_faithfulness_are_reported(engine):
     assert "Accuracy when trust is high / medium / low | 100.0% / n/a / 0.0%" in render_markdown(report)
 
 
-# ============================================================
 # BENCHMARK: behaviours, diagnosis, statistics, variants
-# ============================================================
 
 from backend.evaluation import stats
 from backend.evaluation.diagnose import diagnose
@@ -444,7 +434,7 @@ def test_diagnosis_spots_a_different_calculation():
     assert all(signal["category"] != "wrong_calculation" for signal in same["signals"])
 
 
-# ---- regressions found in review ------------------------------------------
+# Regressions found in review
 
 def test_a_crash_is_never_a_pass(engine):
     def crashing(question, engine, thread_id):

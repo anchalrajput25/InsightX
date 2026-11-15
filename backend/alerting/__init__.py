@@ -1,6 +1,6 @@
 # backend/alerting
 #
-# "🚨 Alerts": InsightX watches numbers in your database and warns you
+# "Alerts": InsightX watches numbers in your database and warns you
 # when something unusual happens.
 #
 #   detect.py     the maths: is the latest value unusual? (no AI)

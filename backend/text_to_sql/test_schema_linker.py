@@ -3,9 +3,7 @@ from query_decomposer import decompose_query
 from schema_linker import link_schema
 
 
-# ============================================================
-# TEST QUESTION
-# ============================================================
+# Test question
 
 question = """
 Which customers generated the highest revenue growth
@@ -15,9 +13,7 @@ contributed most to that growth?
 """
 
 
-# ============================================================
-# SAMPLE SCHEMA
-# ============================================================
+# Sample schema
 
 schema = {
     "tables": [
@@ -162,9 +158,7 @@ schema = {
 }
 
 
-# ============================================================
-# STEP 1 — REWRITE
-# ============================================================
+# Step 1 — rewrite
 
 rewritten = rewrite_query(question)
 
@@ -175,9 +169,7 @@ print("=" * 80)
 print(rewritten)
 
 
-# ============================================================
-# STEP 2 — DECOMPOSE
-# ============================================================
+# Step 2 — decompose
 
 decomposed = decompose_query(
     question,
@@ -191,9 +183,7 @@ print("=" * 80)
 print(decomposed)
 
 
-# ============================================================
-# STEP 3 — SCHEMA LINKING
-# ============================================================
+# Step 3 — schema linking
 
 linked_schema = link_schema(
     question=question,

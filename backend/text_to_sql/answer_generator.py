@@ -6,15 +6,11 @@ from backend.config import query_settings
 from backend.llm_service import get_llm
 
 
-# ---------------------------------------------------------
 # LLM
-# ---------------------------------------------------------
 
 llm = get_llm(job="answer")
 
-# ---------------------------------------------------------
-# HELPERS
-# ---------------------------------------------------------
+# Helpers
 
 def compact_rows(
     rows: List[Dict[str, Any]],
@@ -96,9 +92,7 @@ Return only the natural-language answer.
 """.strip()
 
 
-# ---------------------------------------------------------
-# ANSWER GENERATION
-# ---------------------------------------------------------
+# Answer generation
 
 def generate_answer(
     question: str,
@@ -185,9 +179,7 @@ def generate_answer(
         }
 
 
-# ---------------------------------------------------------
-# SIMPLE HELPER
-# ---------------------------------------------------------
+# Simple helper
 
 def get_answer(
     question: str,

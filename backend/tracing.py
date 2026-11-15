@@ -129,9 +129,7 @@ def set_store(store: Optional[TraceStore]) -> None:
         _store = store
 
 
-# ------------------------------------------------------------
 # Building a trace from a finished question
-# ------------------------------------------------------------
 
 def build(collector, user_id: str, question: str, kind: str = "question",
           result: Optional[Dict[str, Any]] = None, error: str = "") -> Dict[str, Any]:

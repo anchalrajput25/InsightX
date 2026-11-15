@@ -22,9 +22,7 @@ def mysql_safety(sql):
         return check_sql_safety(sql)
 
 
-# ---------------------------------------------------------------
 # Without a database
-# ---------------------------------------------------------------
 
 def test_mysql_sql_with_backticks_and_functions_is_safe():
     for sql in (
@@ -61,9 +59,7 @@ def test_mysql_period_and_prompt_adaptation():
     assert dialects.adapt_text("Write one PostgreSQL statement.") == "Write one PostgreSQL statement."
 
 
-# ---------------------------------------------------------------
 # With a MySQL database
-# ---------------------------------------------------------------
 
 @pytest.fixture(scope="module")
 def mysql_engine():
