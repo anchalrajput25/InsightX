@@ -501,7 +501,7 @@ Contributions are welcome. Open an issue to discuss a bug or an idea, or send a 
 2. Run `pytest` and, for UI changes, `npm run lint && npm run typecheck` in `insightx-ui/`.
 3. Describe what changed and why in the pull request.
 
-**License:** [MIT](LICENSE) © 2026 Anchal Rajput. The core AI files are kept private and are not covered by this repository.
+**License:** [Apache License 2.0](LICENSE) © 2026 Anchal Rajput. The core AI files are kept private and are not covered by this repository.
 
 ---
 
